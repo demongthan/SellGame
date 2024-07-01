@@ -1,9 +1,11 @@
-import ContentBannerSlide from "./ContentBannerSlide";
+import ContentBannerSlide from "./HomePage/ContentBannerSlide";
 import Footer from "./Footer";
-import GameCategory from "./GameCategory";
-import GameService from "./GameService";
 import Header from "./Header/Header";
-import OutstandingService from "./OutstandingService";
+import OutstandingService from "./HomePage/OutstandingService";
+import GameCategory from "./HomePage/GameCategory";
+import GameService from "./HomePage/GameService";
+import MenuRecharge from "./Recharge/MenuRecharge";
+import TitleRecharge from "./Common/TitleRecharge";
 
 export{
     Header,
@@ -11,5 +13,7 @@ export{
     OutstandingService,
     GameCategory,
     GameService,
-    Footer
+    Footer,
+    MenuRecharge,
+    TitleRecharge,
 }

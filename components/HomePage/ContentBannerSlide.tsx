@@ -13,9 +13,9 @@ const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000}:Props) => 
     const [curr, setCurr] = useState<number>(0);
 
     const imgUrls:string[]=[
-        "https://cdn.pixabay.com/photo/2020/06/15/01/06/sunset-5299957_1280.jpg",
-        "https://c.wallhere.com/photos/9a/40/1500x1000_px_austria_Colorful_Fall_forest_lake_landscape_nature-1001649.jpg!d",
-        "https://wallpaperaccess.com/full/809523.jpg"
+        "https://cdn.upanh.info/storage/upload/images/Banner%20shop/banner-nickvn-1%20(1).jpg",
+        "https://cdn.upanh.info/storage/upload/images/Banner%20shop/banner-nickvn-2%20(2).jpg",
+        "https://cdn.upanh.info/storage/upload/images/Banner%20shop/banner-nickvn-1%20(3).jpg"
     ]
 
     const prev = ():void =>
@@ -35,11 +35,11 @@ const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000}:Props) => 
   return (
     <div className="overflow-hidden relative w-full h-full mx-auto">
         <div
-            className="flex transition-transform ease-out duration-500"
+            className="flex transition-transform ease-out duration-1000"
             style={{ transform: `translateX(-${curr * 100}%)` }}
         >
             {imgUrls.map((url, index)=>(
-                <Image key={index} src={url} alt="" width={0} height={0} sizes="100vw" style={{ width: '100%', height: '50%' }}></Image>
+                <Image key={index} className='p-2 bg-black' src={url} alt="" width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
             ))}
         </div>
 

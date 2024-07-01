@@ -17,7 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-customFont">
         <Header></Header>
-        {children}
+        <div className="pt-[140px]">
+          {children}
+        </div>
         <Footer></Footer>
       </body>
     </html>

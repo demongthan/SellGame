@@ -4,10 +4,34 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components{
-  .nav__link{
-    @apply relative text-xl w-fit block after:block after:content-[''] after:absolute after:h-[3px]
-    after:bg-yellow-400 text-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition
-    after:duration-300 after:origin-right
+@layer base {
+  :root {
+    --color-odd-table: rgba(0, 0, 0, .05);
+    --color-title-table:#212529;
+  }
+}
+
+@layer account-information{
+  .info__row{
+    width: 100%;
+    color: var(--color-title-table);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+  }
+
+  .info__row:nth-child(odd){
+    background-color: var(--color-odd-table);
+  }
+
+  .info__row .info__row__title{
+    width: 70%;
+    padding:0.75rem;
+  }
+
+  .info__row .info__row__data{
+    width: 30%;
+    padding:0.75rem;
+    font-style: italic;
   }
 }

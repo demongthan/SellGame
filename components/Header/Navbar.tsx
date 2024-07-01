@@ -17,11 +17,11 @@ const Navbar = ({openNav}:Props) => {
 
     useEffect(()=>{
       const handler=()=>{
-        if(window.scrollY>=90){
+        if(window.scrollY>=10){
           setNavSticky(true);
         }
   
-        if(window.scrollY<=90){
+        if(window.scrollY<=10){
           setNavSticky(false);
         }
       };
@@ -29,17 +29,20 @@ const Navbar = ({openNav}:Props) => {
       window.addEventListener('scroll', handler);
     }, []);
   
-    const stickyStyle=navSticky?'bg-[#212428] shadow-gray-900 shadow-sm':'';
+    const stickyStyle=navSticky?'shadow-custom':'';
     
   return (
-    <div className={`flex w-[100%] z-[1000] transition-all duration-300 ${stickyStyle}`}>
-        <div className='flex items-center h-[12vh] justify-between w-[90%] sm:w-[70%] mx-auto'>
-            <Image src="" alt="logo" className="md:cursor-pointer h-9" />
+    <div className={`fixed ${stickyStyle} bg-white w-[100%] z-[1000] transition-all duration-100`}>
+        <div className='flex items-center h-[130px] justify-between w-[90%] sm:w-[70%] mx-auto'>
+            <div className='w-[10%]'>
+                <Image src={"https://cdn.upanh.info/storage/upload/images/Logo%20shop/logo-nickvn.png"} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '50%' }}
+                alt="logo" className="md:cursor-pointer h-9" />
+            </div>
 
-            <ul className='md:flex hidden items-center space-x-10 h-[100%]'>
+            <ul className='md:flex hidden items-center space-x-10 h-[100%] w-[60%] justify-end'>
                 {navItems. map((navItem, index)=>(
                     <li key={index} className='group relative text-xl w-fit block transition-all h-[100%]'>
-                        <Link href={navItem.link} className="flex cursor-pointer items-center text-base h-[100%] font-semibold gap-2 text-black group-hover:text-[#007bff]">
+                        <Link href={navItem.link} className="flex cursor-pointer items-center text-base h-[100%] font-semibold gap-2 text-black group-hover:text-blue-650">
                             <span>{navItem.label}</span>
 
                             {navItem.children && (
@@ -48,10 +51,10 @@ const Navbar = ({openNav}:Props) => {
                         </Link>
 
                         {navItem.children &&(
-                            <ul className="fixed flex-col hidden bg-[#2c3137] rounded-lg top-[9.5%] left-[33.5%] group-hover:flex z-[10000000]">
+                            <ul className="fixed flex-col hidden bg-gray-750 rounded-lg top-[9.5%] left-[42.5%] group-hover:flex z-[10000000]">
                                 {navItem.children.map((navItemChild, index)=>(
-                                    <li key={index} className='group w-[100%] py-4 px-5 relative text-xl block hover:bg-[#1f2227] hover:rounded-lg'>
-                                        <Link href={navItemChild.link} className="flex cursor-pointer items-center text-base font-semibold gap-2 text-white hover:text-[#007bff]">
+                                    <li key={index} className='group w-[100%] py-4 px-5 relative text-xl block hover:bg-gray-850 hover:rounded-lg'>
+                                        <Link href={navItemChild.link} className="flex cursor-pointer items-center text-base font-semibold gap-2 text-white hover:text-blue-650">
                                             <span>{navItemChild.label}</span>
                                         </Link>
                                     </li>

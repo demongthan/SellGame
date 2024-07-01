@@ -2,7 +2,7 @@ import { ContentBannerSlide, GameCategory, GameService, OutstandingService } fro
 
 export default function Home() {
   return (
-    <div className='flex flex-col w-[90%] sm:w-[70%] mx-auto gap-10'>
+    <div className='flex flex-col w-[90%] sm:w-[65%] mx-auto gap-10'>
       <div className="w-full h-[23rem]">
         <ContentBannerSlide></ContentBannerSlide>
       </div>

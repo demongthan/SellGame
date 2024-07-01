@@ -1,6 +1,6 @@
 import React from 'react'
-import TitleService from './Common/TitleService'
-import CardGame from './Common/CardGame'
+import TitleService from '../Common/TitleService'
+import CardGame from '../Common/CardGame'
 
 const GameCategory = () => {
   return (
