@@ -25,7 +25,7 @@ export const navItems:NavItem[] = [
     },
     {
        label:"Mua tài khoản",
-       link: "/buy-account"
+       link: "/buy-account?title='Mua tài khoản'/atm-card"
     },
     {
         label:"Dịch vụ",

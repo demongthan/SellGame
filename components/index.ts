@@ -12,6 +12,7 @@ import InputUI from "./Common/UI/InputUI";
 import FromToDateUI from "./Common/UI/FromToDateUI";
 import ButtonSearchUI from "./Common/UI/Button/ButtonSearchUI";
 import ButtonV1UI from "./Common/UI/Button/ButtonV1";
+import BreadCrumb from "./Common/BreadCrumb";
 
 export{
     Header,
@@ -27,5 +28,6 @@ export{
     InputUI,
     FromToDateUI,
     ButtonSearchUI,
-    ButtonV1UI
+    ButtonV1UI,
+    BreadCrumb
 }

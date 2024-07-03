@@ -1,6 +1,10 @@
 import React from 'react'
 
-const BuyAccount = () => {
+interface Props{
+  title:string
+}
+
+const BuyAccount = ({title}:Props) => {
   return (
     <div>page</div>
   )
