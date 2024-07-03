@@ -29,7 +29,7 @@ const NavbarMobile = ({showNav, closeNav}:Props) => {
             
             {navItems. map((navItem, index)=>(
                 <li key={index} className='relative text-xl w-fit block transition-all' onClick={()=>toggleItem(navItem.children!=null)}>
-                    <Link href={navItem.link} className="flex cursor-pointer items-center text-base font-semibold gap-2 text-black group-hover:text-blue-650">
+                    <Link href={navItem.link} className="flex cursor-pointer items-center text-base font-semibold gap-2 text-black group-hover:text-s2blue1">
                         <span>{navItem.label}</span>
 
                         {navItem.children && (

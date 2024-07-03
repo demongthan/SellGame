@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const CardGame = () => {
   return (
-    <div className='flex flex-col border divide-solid border-gray-250 p-0.5 items-center justify-center gap-7 w-1/4'>
+    <div className='flex flex-col border divide-solid border-s2gray1 p-0.5 items-center justify-center gap-7 w-1/4'>
         <div className='h-1/2 w-full'>
             <Image src={"https://cdn3.upanh.info/upload/server-sw3/acc-category-nickvn/55590/images/BAN%20ACC%20ROBLOX.jpg"} 
             alt="" width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
@@ -12,7 +12,7 @@ const CardGame = () => {
 
         <div>
             <Link href={"/"} >
-                <h3 className='text-yellow-450 hover:text-blue-650'><strong>Bán Acc Roblox</strong></h3>
+                <h3 className='text-s2yellow1 hover:text-s2blue1'><strong>Bán Acc Roblox</strong></h3>
             </Link>
         </div>
 
@@ -21,8 +21,8 @@ const CardGame = () => {
         </div>
         
         <div className='pb-5'>
-            <Link href={"/"} className='text-center border-2 divide-solid border-gray-250 text-slate-450 text-base px-10 py-3 
-            hover:text-blue-650 hover:border-blue-650'>
+            <Link href={"/"} className='text-center border-2 divide-solid border-s2gray1 text-s2slate1 text-base px-10 py-3 
+            hover:text-s2blue1 hover:border-s2blue1'>
                 Xem tất cả
             </Link>
         </div>

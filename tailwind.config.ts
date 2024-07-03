@@ -1,10 +1,12 @@
 import type { Config } from "tailwindcss";
+const colors = require('tailwindcss/colors')
 
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
   ],
   theme: {
     fontFamily:{
@@ -12,42 +14,33 @@ const config: Config = {
     },
     transitionProperty:{
       'input':'border-color, box-shadow',
+      'button':'color, background-color, border-color, box-shadow'
     },
     boxShadow:{
       custom:'rgba(0, 0, 0, 0.18) 0px 6px 12px'
     },
-    colors:{
-      black:"#000000",
-      white:"#fff",
-      yellow:{
-        450:"#f1c40f"
-      },
-      blue:{
-        650:"#007bff",
-        750:"#2579f2"
-      },
-      cyan:{
-        450:"#32c5d2"
-      },
-      gray:{
-        250:"#ccc",
-        350:"#ced4da",
-        750:"#2c3137",
-        760:"#505050",
-        850:"#1f2227"
-      },
-      slate:{
-        450:"#3f444a",
-        150:"#f2f2f2",
-      },
-      red:{
-        750:"#db3869",
-        650:"#dc3545"
+    colors:{...colors,
+      ...{
+        s2blue1:"#007bff",
+        s2blue2:"#2579f2",
+        s2yellow1:"#f1c40f",
+        s2cyan1:"#32c5d2",
+        s2cyan2:"#d1ecf1",
+        s2gray1:"#ccc",
+        s2gray2:"#ced4da",
+        s2gray3:"#2c3137",
+        s2gray4:"#505050",
+        s2gray5:"#1f2227",
+        s2gray6:"#dee2e6",
+        s2slate1:"#3f444a",
+        s2slate2:"#f2f2f2",
+        s2slate3:"#0c5460",
+        s2red1:"#db3869",
+        s2red2:"#dc3545"
       }
     }
 
   },
   plugins: [],
-
 };
 export default config;

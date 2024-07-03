@@ -35,7 +35,11 @@ export const menuRechargeTransaction:MenuRecharge={
         },
         {
             title:"Dịch vụ đã mua",
-            link:"recharge/purchased-service"
+            link:"/recharge/purchased-service"
+        },
+        {
+            title:"Thẻ cào đã mua",
+            link:"/recharge/purchased-scratch-card"
         },
         {
             title:"Nạp thẻ tự động",
@@ -43,7 +47,7 @@ export const menuRechargeTransaction:MenuRecharge={
         },
         {
             title:"Lịch sử nạp thẻ",
-            link:"recharge/recharge-history"
+            link:"/recharge/recharge-history"
         },
         {
             title:"Nạp tiền từ ATM",

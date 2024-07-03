@@ -42,7 +42,7 @@ const Navbar = ({openNav}:Props) => {
             <ul className='md:flex hidden items-center space-x-10 h-[100%] w-[60%] justify-end'>
                 {navItems. map((navItem, index)=>(
                     <li key={index} className='group relative text-xl w-fit block transition-all h-[100%]'>
-                        <Link href={navItem.link} className="flex cursor-pointer items-center text-base h-[100%] font-semibold gap-2 text-black group-hover:text-blue-650">
+                        <Link href={navItem.link} className="flex cursor-pointer items-center text-base h-[100%] font-semibold gap-2 text-black group-hover:text-s2blue1">
                             <span>{navItem.label}</span>
 
                             {navItem.children && (
@@ -51,10 +51,10 @@ const Navbar = ({openNav}:Props) => {
                         </Link>
 
                         {navItem.children &&(
-                            <ul className="fixed flex-col hidden bg-gray-750 rounded-lg top-[9.5%] left-[42.5%] group-hover:flex z-[10000000]">
+                            <ul className="fixed flex-col hidden bg-s2gray3 rounded-lg top-[9.5%] left-[42.5%] group-hover:flex z-[10000000]">
                                 {navItem.children.map((navItemChild, index)=>(
-                                    <li key={index} className='group w-[100%] py-4 px-5 relative text-xl block hover:bg-gray-850 hover:rounded-lg'>
-                                        <Link href={navItemChild.link} className="flex cursor-pointer items-center text-base font-semibold gap-2 text-white hover:text-blue-650">
+                                    <li key={index} className='group w-[100%] py-4 px-5 relative text-xl block hover:bg-s2gray5 hover:rounded-lg'>
+                                        <Link href={navItemChild.link} className="flex cursor-pointer items-center text-base font-semibold gap-2 text-white hover:text-s2blue1">
                                             <span>{navItemChild.label}</span>
                                         </Link>
                                     </li>
