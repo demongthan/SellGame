@@ -1,3 +1,4 @@
+import CardGame from '@/components/Common/CardGame'
 import React from 'react'
 
 interface Props{
@@ -6,7 +7,12 @@ interface Props{
 
 const BuyAccount = ({title}:Props) => {
   return (
-    <div>page</div>
+    <div className='flex flex-row gap-10 w-full float-none overflow-hidden'>
+      <CardGame isDiscount={true} isButtonImage={true}></CardGame>
+      <CardGame isDiscount={true} isButtonImage={true}></CardGame>
+      <CardGame isDiscount={true} isButtonImage={true}></CardGame>
+      <CardGame isDiscount={true} isButtonImage={true}></CardGame>
+    </div>
   )
 }
 

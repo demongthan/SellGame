@@ -6,7 +6,7 @@ const layout = ({children}:{children:ReactNode}) => {
     <div className='flex flex-col w-[90%] sm:w-[70%] h-[85vh] mx-auto pb-20 gap-10'>
         <BreadCrumb></BreadCrumb>
 
-        <div>{children}</div>
+        <div className='w-full'>{children}</div>
     </div>
   )
 }
