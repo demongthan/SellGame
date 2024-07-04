@@ -8,6 +8,7 @@ const OutstandingService = () => {
     const urlImg:string[]=[
         "https://cdn.upanh.info/storage/upload/images/D%E1%BB%8Bch%20v%E1%BB%A5/nap-tien.jpg",
         "https://cdn.upanh.info/storage/upload/images/D%E1%BB%8Bch%20v%E1%BB%A5/mua-the(1).jpg",
+        "https://cdn.upanh.info/storage/upload/images/a2(1).jpg",
         "https://cdn.upanh.info/storage/upload/images/a1(2).jpg"
     ]
 

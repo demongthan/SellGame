@@ -7,9 +7,10 @@ import Image from 'next/image'
 interface Props{
   autoSlide?:boolean,
   autoSlideInterval?:number,
+  className?:string
 }
 
-const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000}:Props) => {
+const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000, className}:Props) => {
     const [curr, setCurr] = useState<number>(0);
 
     const imgUrls:string[]=[
@@ -33,7 +34,7 @@ const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000}:Props) => 
     }, [])
 
   return (
-    <div className="overflow-hidden relative w-full h-full mx-auto">
+    <div className={`overflow-hidden relative ${className} mx-auto`}>
         <div
             className="flex transition-transform ease-out duration-1000"
             style={{ transform: `translateX(-${curr * 100}%)` }}

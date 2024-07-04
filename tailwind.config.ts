@@ -23,6 +23,7 @@ const config: Config = {
       ...{
         s2blue1:"#007bff",
         s2blue2:"#2579f2",
+        s2blue3:"#E0EBF9",
         s2yellow1:"#f1c40f",
         s2cyan1:"#32c5d2",
         s2cyan2:"#d1ecf1",
@@ -36,7 +37,9 @@ const config: Config = {
         s2slate2:"#f2f2f2",
         s2slate3:"#0c5460",
         s2red1:"#db3869",
-        s2red2:"#dc3545"
+        s2red2:"#dc3545",
+        s2red3:"#D03631",
+        s2green1:"#3CB878"
       }
     }
 
