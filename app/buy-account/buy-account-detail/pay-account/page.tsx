@@ -6,9 +6,6 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
-import imagemin from "imagemin";
-import imageminJpegtran from "imagemin-jpegtran";
-
 const PayAccount = () => {
     const imgUrls:string[]=[
         "https://cdn.upanh.info/storage/upload/images/Banner%20shop/banner-nickvn-1%20(1).jpg",
@@ -16,29 +13,16 @@ const PayAccount = () => {
         "https://cdn.upanh.info/storage/upload/images/Banner%20shop/banner-nickvn-1%20(3).jpg"
     ]
 
-    const [blurDataUrl, setblurDataUrl]=useState<string>("");
-
-    async function getBase64ImageUrl(imageUrl: string) {
-        console.log(imageUrl)
-        // fetch image and convert it to base64
-        const response = await fetch(imageUrl);
-        const buffer = await response.arrayBuffer();
-          const minified = await imagemin.buffer(Buffer.from(buffer), {
-          plugins: [imageminJpegtran()],
-        });
-        const base64 = Buffer.from(minified).toString("base64")
-        return `data:image/jpeg;base64,${base64}`;
-      }
-
-      useEffect(() =>{
-        getBase64ImageUrl('https://res.cloudinary.com/demo/image/upload/ar_1.0,c_thumb,g_face,w_0.6,z_0.7/r_max/co_black,e_outline/co_dimgrey,e_shadow,x_30,y_40/actor.png')
-        .then( res=>{setblurDataUrl(res); console.log(res);});
-      })
-
   return (
-    <div className='flex flex-row gap-10 w-full float-none overflow-hidden'>
+    <div className='flex flex-col gap-10 w-full float-none overflow-hidden'>
         <div className='flex flex-row gap-5'>
-            <ContentBannerSlide className={"w-1/2 h-[20rem]"}></ContentBannerSlide>
+            <div className='flex flex-col'>
+                <ContentBannerSlide className={"w-1/2 h-[20rem]"}></ContentBannerSlide>
+
+                <div className='flex flex-row'>
+                    
+                </div>
+            </div>
 
             <div className='flex flex-col w-1/2 gap-3'>
                 <div className='bg-s2cyan1 text-white p-3'>
@@ -72,37 +56,6 @@ const PayAccount = () => {
                     <ButtonV1UI className={"w-1/2 h-[2.5rem] bg-s2green1"} title={'ATM - Ví điện tử'}></ButtonV1UI>
                     <ButtonV1UI className={"w-1/2 h-[2.5rem] bg-s2green1"} title={'Nạp thẻ cào'}></ButtonV1UI>
                 </div>
-            </div>
-
-            <div className='text-black'>
-                {imgUrls.map((url, id)=>(
-                    <Link
-                    key={id}
-                    href={`/buy-account/buy-account-detail/pay-account?photoId=${id}`}
-                    as={`/p/${id}`}
-                    shallow
-                    className="..."
-                  >
-                    <Image src={url} alt='' className="" width={500} height={500}  />
-                  </Link>
-                ))}
-
-                <Image
-                alt={"111"}
-                style={{ transform: "translate3d(0, 0, 0)" }}
-                className="transform rounded-lg brightness-90 transition group-hover:brightness-110"
-                placeholder="blur"
-                blurDataURL={blurDataUrl}
-                src={`https://res.cloudinary.com/demo/image/upload/ar_1.0,c_thumb,g_face,w_0.6,z_0.7/r_max/co_black,e_outline/co_dimgrey,e_shadow,x_30,y_40/actor.png`}
-                width={720}
-                height={480}
-                loading={ "eager"}
-                sizes="(max-width: 640px) 100vw,
-                    (max-width: 1280px) 50vw,
-                    (max-width: 1536px) 33vw,
-                    25vw"
-                />
-
             </div>
         </div>
     </div>

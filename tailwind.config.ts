@@ -39,6 +39,7 @@ const config: Config = {
         s2red1:"#db3869",
         s2red2:"#dc3545",
         s2red3:"#D03631",
+        s2red4:"#FB236A",
         s2green1:"#3CB878"
       }
     }
