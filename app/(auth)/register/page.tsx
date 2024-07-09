@@ -1,23 +1,31 @@
+'use client';
+
 import { ButtonV1UI, InputUI } from '@/components'
 import React from 'react'
+import { FormEvent } from 'react'
 
 const Register = () => {
+    const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
+        event.preventDefault()
+     
+        console.log("1111111")
+    }
+
   return (
     <div className="flex flex-col h-[85vh] items-center justify-center px-6 mx-auto">
-
         <div className="w-[30%] bg-white rounded-lg shadow-custom border border-gray-700">
             <div className="p-6 space-y-4">
                 <h1 className="text-4xl font-bold text-center leading-tight tracking-tight text-gray-900">
                     Đăng kí
                 </h1>
 
-                <form className="space-y-4" action="#">
+                <form className="space-y-4" onSubmit={onSubmit}>
                     <InputUI value={undefined} isBlockLabel={true} label={"Tài Khoản"} classDiv='w-full' classInput='w-full'></InputUI>
                     <InputUI value={undefined} isBlockLabel={true} label={"Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
                     <InputUI value={undefined} isBlockLabel={true} label={"Xác nhận Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
                     <InputUI value={undefined} isBlockLabel={true} label={"Mã giới thiệu"} classDiv='w-full' classInput='w-full'></InputUI>
 
-                    <ButtonV1UI className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng nhập' isIconCard={false}></ButtonV1UI>
+                    <ButtonV1UI type='submit' className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
 
                     <div className='flex justify-center items-center'>
                         <p className='border w-[45%] inline-block'></p>

@@ -1,15 +1,16 @@
 import {ShoppingCartIcon } from '@heroicons/react/20/solid'
-import React from 'react'
+import React, { ButtonHTMLAttributes, DetailedHTMLProps, HTMLProps } from 'react'
 
 interface Props{
     className?:string
     title:string,
-    isIconCard?:boolean
+    isIconCard?:boolean,
+    type?:'submit' | 'reset' | 'button' | undefined;
 }
 
-const ButtonV1UI = ({title, className, isIconCard}:Props) => {
+const ButtonV1UI = ({title, className, isIconCard, type}:Props) => {
   return (
-    <button className={`${className} text-white border border-transparent rounded-md px-4 hover:opacity-70`}>
+    <button type={type} className={`${className} text-white border border-transparent rounded-md px-4 hover:opacity-70`}>
       {isIconCard && (
         <ShoppingCartIcon className='w-[1.2rem] h-[1.2rem]'></ShoppingCartIcon>
       )}

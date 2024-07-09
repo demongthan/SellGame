@@ -75,15 +75,15 @@ const Navbar = ({openNav}:Props) => {
                     </div>
                 </div>
 
-                <div className='flex flex-row py-1.5 px-4 border border-black rounded-2xl'>
+                <Link href={"/login"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
                     <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
                     <div className="pl-1 text-base">Đăng nhập</div>
-                </div>
-
-                <div className='flex flex-row py-1.5 px-4 border border-black rounded-2xl'>
+                </Link>
+                
+                <Link href={"/register"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
                     <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
                     <div className="pl-1 text-base">Đăng kí</div>
-                </div>
+                </Link>
             </div>
 
             <Bars3CenterLeftIcon className='w-[2.3rem] md:hidden h-[2.3rem] text-black rotate-180' onClick={openNav}></Bars3CenterLeftIcon>
