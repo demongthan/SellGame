@@ -1,14 +1,22 @@
 'use client';
 
 import { ButtonV1UI, InputUI } from '@/components'
-import React from 'react'
+import React, { useState } from 'react'
 import { FormEvent } from 'react'
 
 const Register = () => {
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault()
-     
-        console.log("1111111")
+
+        const formData = new FormData(event.currentTarget)
+
+        console.log(formData.get("userName"));
+        await fetch('/api/submit', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+        }).then(res=>{
+            console.log(res.json());
+        })
     }
 
   return (
@@ -20,10 +28,10 @@ const Register = () => {
                 </h1>
 
                 <form className="space-y-4" onSubmit={onSubmit}>
-                    <InputUI value={undefined} isBlockLabel={true} label={"Tài Khoản"} classDiv='w-full' classInput='w-full'></InputUI>
-                    <InputUI value={undefined} isBlockLabel={true} label={"Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
-                    <InputUI value={undefined} isBlockLabel={true} label={"Xác nhận Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
-                    <InputUI value={undefined} isBlockLabel={true} label={"Mã giới thiệu"} classDiv='w-full' classInput='w-full'></InputUI>
+                    <InputUI name="userName" value={undefined} isBlockLabel={true} label={"Tài Khoản"} classDiv='w-full' classInput='w-full'></InputUI>
+                    <InputUI name="password" value={undefined} isBlockLabel={true} label={"Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
+                    <InputUI name="confirmPassword" value={undefined} isBlockLabel={true} label={"Xác nhận Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
+                    <InputUI name="referralCode" value={undefined} isBlockLabel={true} label={"Mã giới thiệu"} classDiv='w-full' classInput='w-full'></InputUI>
 
                     <ButtonV1UI type='submit' className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
 
