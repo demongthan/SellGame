@@ -1,22 +1,44 @@
 'use client';
 
+import { authApiRequest } from '@/apiRequests/auth';
 import { ButtonV1UI, InputUI } from '@/components'
-import React, { useState } from 'react'
+import React, { use, useState } from 'react'
 import { FormEvent } from 'react'
 
 const Register = () => {
+
+    const [errArr, seterrArr]=useState<ErrorValidate[]>();
+
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault()
 
         const formData = new FormData(event.currentTarget)
 
-        console.log(formData.get("userName"));
-        await fetch('/api/submit', {
+        const response = await fetch('/api/submit', {
             method: 'POST',
-            body: JSON.stringify(formData),
-        }).then(res=>{
-            console.log(res.json());
+            body: formData,
         })
+
+        const data = await response.json();
+
+        if(data.isSuccess){
+            const registerDto={
+                userName: data.data.userName,
+                password:data.data.password
+            }
+
+            const result = await authApiRequest.register(registerDto);
+
+            
+        }
+        else{
+            const errorArr: ErrorValidate[] =data.data.map(({...item})=>({
+                for:item.for,
+                message: item.message
+            }))
+    
+            seterrArr(errorArr);
+        }
     }
 
   return (
@@ -28,9 +50,36 @@ const Register = () => {
                 </h1>
 
                 <form className="space-y-4" onSubmit={onSubmit}>
-                    <InputUI name="userName" value={undefined} isBlockLabel={true} label={"Tài Khoản"} classDiv='w-full' classInput='w-full'></InputUI>
-                    <InputUI name="password" value={undefined} isBlockLabel={true} label={"Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
-                    <InputUI name="confirmPassword" value={undefined} isBlockLabel={true} label={"Xác nhận Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
+                    <InputUI 
+                        name="userName"  
+                        value={undefined} 
+                        errArr={errArr?.filter((error)=>error.for==="userName")} 
+                        isBlockLabel={true} 
+                        label={"Tài Khoản"} 
+                        classDiv='w-full' 
+                        classInput='w-full'>
+                    </InputUI>
+
+                    <InputUI 
+                        name="password" 
+                        value={undefined} 
+                        errArr={errArr?.filter((error)=>error.for==="password")}
+                        isBlockLabel={true} 
+                        label={"Mật khẩu"} 
+                        classDiv='w-full' 
+                        classInput='w-full'>
+                    </InputUI>
+
+                    <InputUI 
+                        name="confirmPassword" 
+                        value={undefined} 
+                        isBlockLabel={true} 
+                        errArr={errArr?.filter((error)=>error.for==="confirmPassword")} 
+                        label={"Xác nhận Mật khẩu"} 
+                        classDiv='w-full' 
+                        classInput='w-full'>
+                    </InputUI>
+
                     <InputUI name="referralCode" value={undefined} isBlockLabel={true} label={"Mã giới thiệu"} classDiv='w-full' classInput='w-full'></InputUI>
 
                     <ButtonV1UI type='submit' className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
