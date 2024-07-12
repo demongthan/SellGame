@@ -1,19 +1,26 @@
 'use client';
 
+import React, { useState } from 'react'
+import { FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
+
 import { authApiRequest } from '@/apiRequests/auth';
 import { ButtonV1UI, InputUI } from '@/components'
-import React, { use, useState } from 'react'
-import { FormEvent } from 'react'
+import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
+
 
 const Register = () => {
 
+    const router = useRouter();
+    const { setUser } = useGlobalState() as GlobalContextProps;
     const [errArr, seterrArr]=useState<ErrorValidate[]>();
+    const [isloading, setisLoading] = useState<boolean>(false);
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault()
+        setisLoading(true);
 
         const formData = new FormData(event.currentTarget)
-
         const response = await fetch('/api/submit', {
             method: 'POST',
             body: formData,
@@ -22,13 +29,20 @@ const Register = () => {
         const data = await response.json();
 
         if(data.isSuccess){
-            const registerDto={
-                userName: data.data.userName,
-                password:data.data.password
+            const result = await authApiRequest.register(data.data);
+
+            await authApiRequest.auth({
+                sessionToken: result.payload.data.Token,
+                expiresAt: "12/10/2024"
+            })
+
+            const userDisplay:UserDisplay={
+                displayName:data.data.UserName
             }
 
-            const result = await authApiRequest.register(registerDto);
+            setUser(userDisplay);
 
+            router.push('/')
             
         }
         else{
@@ -38,6 +52,7 @@ const Register = () => {
             }))
     
             seterrArr(errorArr);
+            setisLoading(false);
         }
     }
 
@@ -57,7 +72,8 @@ const Register = () => {
                         isBlockLabel={true} 
                         label={"Tài Khoản"} 
                         classDiv='w-full' 
-                        classInput='w-full'>
+                        classInput='w-full'
+                        max={256}>
                     </InputUI>
 
                     <InputUI 
@@ -67,7 +83,9 @@ const Register = () => {
                         isBlockLabel={true} 
                         label={"Mật khẩu"} 
                         classDiv='w-full' 
-                        classInput='w-full'>
+                        classInput='w-full'
+                        type='password'
+                        max={15}>
                     </InputUI>
 
                     <InputUI 
@@ -77,12 +95,14 @@ const Register = () => {
                         errArr={errArr?.filter((error)=>error.for==="confirmPassword")} 
                         label={"Xác nhận Mật khẩu"} 
                         classDiv='w-full' 
-                        classInput='w-full'>
+                        classInput='w-full'
+                        type='password'
+                        max={15}>
                     </InputUI>
 
                     <InputUI name="referralCode" value={undefined} isBlockLabel={true} label={"Mã giới thiệu"} classDiv='w-full' classInput='w-full'></InputUI>
 
-                    <ButtonV1UI type='submit' className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
+                    <ButtonV1UI type='submit' isLoading={isloading} className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
 
                     <div className='flex justify-center items-center'>
                         <p className='border w-[45%] inline-block'></p>

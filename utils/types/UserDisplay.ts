@@ -1,0 +1,3 @@
+interface UserDisplay{
+    displayName:string
+}

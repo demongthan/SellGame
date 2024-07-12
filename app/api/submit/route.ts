@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { z } from 'zod'
 
 const mySchema = z.object({
-        userName: z.string().trim().min(2, {message:"chứa ít nhất 2 kí tự"}).max(256),
-        password: z.string().min(6, {message:"chứa ít nhất 2 kí tự"}).max(100),
-        confirmPassword: z.string().min(6).max(100)
+        userName: z.string().trim().min(2, {message:"Tài khoản chứa ít nhất 2 kí tự"}).max(256),
+        password: z.string().min(6, {message:"Mật khẩu phải chứa ít nhất 6 kí tự"}).max(15),
+        confirmPassword: z.string().max(15)
         })
     .strict()
     .superRefine(({ confirmPassword, password }, ctx) => {
@@ -17,8 +17,7 @@ const mySchema = z.object({
     }
 })
 
-export async function POST(request: any) {
-
+export const POST=async (request: any)=> {
     const data=await request.formData();
 
     const res=mySchema.safeParse({
@@ -41,8 +40,8 @@ export async function POST(request: any) {
     }
     else{
         let dataReturn:RegisterDto={
-            userName: data.get("userName"),
-            password: data.get("password")
+            UserName: data.get("userName"),
+            Password: data.get("password")
         }
 
         return NextResponse.json(

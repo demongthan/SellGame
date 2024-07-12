@@ -49,7 +49,7 @@ export class EntityError extends HttpError {
 let clientLogoutRequest: null | Promise<any> = null
 export const isClient = () => typeof window !== 'undefined'
 
-const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string, options?: CustomOptions | undefined) => {
+const request = async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string, options?: CustomOptions | undefined) => {
     let body: FormData | string | undefined = undefined;
 
     if (options?.body instanceof FormData) {
@@ -81,6 +81,7 @@ const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url:
     const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
 
     console.log(fullUrl);
+    console.log(body)
 
     const res = await fetch(fullUrl, {
         ...options,
@@ -92,7 +93,7 @@ const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url:
         method
       })
 
-    const payload: Response = await res.json()
+    const payload: T = await res.json()
     const data = {
         status: res.status,
         payload

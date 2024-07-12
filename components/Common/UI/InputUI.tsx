@@ -1,4 +1,5 @@
 import React from 'react'
+import { number } from 'zod'
 
 interface Props{
     value:string|undefined,
@@ -9,7 +10,9 @@ interface Props{
     classDiv?:string,
     placeholder?:string,
     name?:string
-    errArr?:ErrorValidate[]
+    errArr?:ErrorValidate[],
+    type?:string,
+    max?:number,
 }
 
 const InputUI = ({value=undefined, 
@@ -20,13 +23,15 @@ const InputUI = ({value=undefined,
   classInput="", 
   placeholder,
   name,
-  errArr
+  errArr,
+  type="text",
+  max
   }:Props) => {
     return (
       <div className={classDiv}>
           {label && (<label htmlFor={name} className={`${isBlockLabel?"block":"inline-block"} text-base text-black font-semibold leading-6 pb-2 ${classLabel}`}>{label}</label>)}
 
-          <input type='text' name={name}
+          <input type={type} name={name} maxLength={max}
           className={`border border-s2gray2 rounded-lg text-gray-900 text-sm transition-input py-2.5 pl-4 pr-14 ${classInput}
           ease-in-out delay-150 focus:outline-none focus:border-s2cyan1`} placeholder={placeholder}></input>
 

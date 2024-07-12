@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Footer, Header } from "@/components";
+import ContextProvider from "@/AppProvider/ContextProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,11 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-customFont">
+      <ContextProvider>
         <Header></Header>
-        <div className="pt-[140px]">
-          {children}
-        </div>
-        <Footer></Footer>
+          <div className="pt-[140px]">
+            {children}
+          </div>
+          <Footer></Footer>
+      </ContextProvider>
       </body>
     </html>
   );

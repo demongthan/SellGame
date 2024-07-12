@@ -6,6 +6,7 @@ import { Bars3CenterLeftIcon, BellIcon, ChevronDownIcon, UserIcon } from '@heroi
 import Link from 'next/link';
 
 import { navItems } from '@/utils/Menu';
+import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
 
 interface Props{
     openNav:()=>void
@@ -13,6 +14,8 @@ interface Props{
   
 
 const Navbar = ({openNav}:Props) => {
+    const { isAuthenticated, userDisplay } = useGlobalState() as GlobalContextProps;
+
     const [navSticky, setNavSticky]=useState(false);
 
     useEffect(()=>{
@@ -75,14 +78,14 @@ const Navbar = ({openNav}:Props) => {
                     </div>
                 </div>
 
-                <Link href={"/login"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
+                <Link href={isAuthenticated?"/recharge/account-information":"/login"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
                     <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
-                    <div className="pl-1 text-base">Đăng nhập</div>
+                    <div className="pl-1 text-base">{isAuthenticated?userDisplay?.displayName:"Đăng nhập"}</div>
                 </Link>
                 
-                <Link href={"/register"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
+                <Link href={isAuthenticated?"":"/register"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
                     <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
-                    <div className="pl-1 text-base">Đăng kí</div>
+                    <div className="pl-1 text-base">{isAuthenticated?"Đăng xuất":"Đăng kí"}</div>
                 </Link>
             </div>
 
