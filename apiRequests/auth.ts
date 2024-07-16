@@ -2,8 +2,11 @@ import http from "./http";
 
 export const authApiRequest = {
     register: (body: RegisterDto) => 
-        http.post<ApiReponse<LoginModelDto>>('/Authentication/Register', body),
+        http.post<ApiReponse<LoginModelDto>>('/Authentication/register', body),
 
-    auth: (body: TokenCookies) => 
-        http.post('/api/auth', body, {baseUrl: '' }),
+    login: (body: AccountSignInDto) =>
+        http.post<ApiReponse<LoginModelDto>>('/Authentication/login', body),
+
+    logout:(userName:string |undefined)=>
+        http.put<ApiReponse<string>>(`/Authentication/revoke/${userName}`, {})
 }

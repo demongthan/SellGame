@@ -6,21 +6,16 @@ interface Props{
     title:string,
     isIconCard?:boolean,
     type?:'submit' | 'reset' | 'button' | undefined;
-    isLoading?:boolean
 }
 
-const ButtonV1UI = ({title, className, isIconCard, type, isLoading=false}:Props) => {
-  console.log(isLoading);
-  
+const ButtonV1UI = ({title, className, isIconCard, type}:Props) => {
   return (
-    <div>
         <button type={type} className={`${className} text-white border border-transparent rounded-md px-4 hover:opacity-70`}>
         {isIconCard && (
           <ShoppingCartIcon className='w-[1.2rem] h-[1.2rem]'></ShoppingCartIcon>
         )}
         {title}
         </button>
-    </div>
   )
 }
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Footer, Header } from "@/components";
+import { Footer, Header, ToastProvider } from "@/components";
 import ContextProvider from "@/AppProvider/ContextProvider";
 
 export const metadata: Metadata = {
@@ -18,11 +18,13 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-customFont">
       <ContextProvider>
-        <Header></Header>
-          <div className="pt-[140px]">
-            {children}
-          </div>
+        <ToastProvider>
+          <Header></Header>
+            <div className="pt-[140px]">
+              {children}
+            </div>
           <Footer></Footer>
+        </ToastProvider>
       </ContextProvider>
       </body>
     </html>

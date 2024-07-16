@@ -41,7 +41,8 @@ export const POST=async (request: any)=> {
     else{
         let dataReturn:RegisterDto={
             UserName: data.get("userName"),
-            Password: data.get("password")
+            Password: data.get("password"),
+            ConfirmPassword: data.get("confirmPassword")
         }
 
         return NextResponse.json(

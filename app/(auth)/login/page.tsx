@@ -1,36 +1,179 @@
-import React from 'react'
-import Image from "next/image";
+"use client"
+
+import React, { FormEvent, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation';
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
 import { InputUI, ButtonV1UI } from '@/components';
+import { authApiRequest } from '@/apiRequests/auth';
+import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
+import {ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 
 const Login = () => {
+    const router = useRouter();
+    const { setUser } = useGlobalState() as GlobalContextProps;
+    const [errArr, seterrArr]=useState<ErrorValidate[]>();
+    const [isloading, setisLoading] = useState<boolean>(false);
+    const [errAction, seterrAction] = useState<string |null>(null);
+    const [rememberAccount, setrememberAccount]=useState<boolean>(true);
+    const [userName, setuserName]=useState<string>("");
+    const [password, setpassword] = useState<string>("");
+    
+    const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
+        event.preventDefault();
+        setisLoading(true);
+        seterrArr([]);
+        seterrAction(null);
+
+        try{
+            const formData = new FormData(event.currentTarget)
+            formData.append("remember", rememberAccount?"remember":"notremember");
+
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                body: formData,
+            })
+    
+            const data = await response.json();
+    
+            if(data.isSuccess){
+                const result = await authApiRequest.login(data.data);
+
+                if(result.payload.data){
+                    const jwtData:JwtPayload=jwtDecode(result.payload.data.Token);
+    
+                    const tokenCookie:TokenCookies={
+                        accessToken: result.payload.data.Token,
+                        expiresAt: jwtData.exp,
+                        refreshToken:result.payload.data.RefreshToken
+                    }
+        
+                    await fetch('/api/auth',{
+                        method: 'POST',
+                        body:JSON.stringify(tokenCookie)
+                    })
+        
+                    const userDisplay:UserDisplay={
+                        displayName:jwtData.sub
+                    }
+        
+                    setUser(userDisplay);
+                    router.push('/');
+                }
+                else{
+                    setisLoading(false);
+                    
+                    seterrAction(result.payload.message);
+                }
+                
+            }
+            else{
+                const errorArr: ErrorValidate[] =data.data.map(({...item})=>({
+                    for:item.for,
+                    message: item.message
+                }))
+        
+                seterrArr(errorArr);
+                setisLoading(false);
+            }
+        }
+        catch(error){
+            seterrAction("Lỗi Server. Vui lòng liên hệ Quản trị viên.");
+            setisLoading(false);
+        }
+
+    }
+
+    const handleChange = (name:string) => (e: any) => {
+        switch (name) {
+            case "remember":
+                setrememberAccount(!rememberAccount);
+                break;
+            case "userName":
+                setuserName(e.target.value);
+                break;
+            case "password":
+                setpassword(e.target.value);
+                break;
+            default:
+                break;
+        }
+    }
+
+    const getDataUserInit=async ():Promise<void>=>{
+        const response = await fetch('/api/auth/login', {
+            method: 'GET'
+        })
+
+        const data = await response.json();
+
+        setuserName(data.userName as string);
+        setpassword(data.password);
+        setrememberAccount(data.remember=="remember");
+    }
+
+    useEffect(() => {
+        getDataUserInit();
+    }, [setuserName])
+
   return (
     <div className="flex flex-col h-[85vh] items-center justify-center px-6 mx-auto">
+        <div className="w-[30%] bg-white rounded-lg shadow border border-gray-700 relative">
+            {isloading &&(
+                <div className='w-full h-full flex items-center justify-center bg-s2gray7 absolute top-0'>
+                    <span className='loader'></span>
+                </div>
+            )}    
 
-        <div className="w-[30%] bg-white rounded-lg shadow border border-gray-700">
             <div className="p-6 space-y-4">
                 <h1 className="text-4xl font-bold text-center leading-tight tracking-tight text-gray-900">
                     Đăng nhập
                 </h1>
 
-                <form className="space-y-4" action="#">
-                    <InputUI value={undefined} isBlockLabel={true} label={"Tài Khoản"} classDiv='w-full' classInput='w-full'></InputUI>
-                    <InputUI value={undefined} isBlockLabel={true} label={"Mật khẩu"} classDiv='w-full' classInput='w-full'></InputUI>
+                <form className="space-y-4" onSubmit={onSubmit}>
+                    <InputUI value={userName} 
+                            isBlockLabel={true} 
+                            label={"Tài Khoản"} 
+                            classDiv='w-full' 
+                            classInput='w-full'
+                            name='userName'
+                            max={256}
+                            errArr={errArr?.filter((error)=>error.for==="userName")} 
+                            onChangeEvent={handleChange("userName")}
+                    ></InputUI>
+
+                    <InputUI 
+                            value={password} 
+                            isBlockLabel={true} 
+                            label={"Mật khẩu"} 
+                            classDiv='w-full' 
+                            classInput='w-full'
+                            name='password'
+                            max={15}
+                            errArr={errArr?.filter((error)=>error.for==="password")}
+                            type='password'
+                            onChangeEvent={handleChange("password")}
+                    ></InputUI>
 
                     <div className="flex items-center justify-between">
                         <div className="flex items-start">
                             <div className="flex items-center h-5">
-                                <input id="remember" aria-describedby="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 "/>
+                                <input id="remember" name="remember" checked={rememberAccount} onChange={handleChange("remember")} aria-describedby="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 "/>
                             </div>
 
                             <div className="ml-3 text-sm">
-                                <label className="text-black">Nhớ tài khoản</label>
+                                <label htmlFor='remember' className="text-black">Nhớ tài khoản</label>
                             </div>
                         </div>
 
                         <a href="#" className="text-sm font-medium text-primary-600 hover:underline">Quên mật khẩu?</a>
                     </div>
 
-                    <ButtonV1UI className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng nhập' isIconCard={false}></ButtonV1UI>
+                    {errAction && (<p className='text-lg text-center text-red-500'>
+                        <ExclamationTriangleIcon className='h-[1.5rem] w-[1.5rem] inline-block'></ExclamationTriangleIcon>
+                        {errAction}
+                    </p>)}
+                    <ButtonV1UI type='submit' className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng nhập' isIconCard={false}></ButtonV1UI>
 
                     <div className='flex justify-center items-center'>
                         <p className='border w-[45%] inline-block'></p>
@@ -55,10 +198,6 @@ const Login = () => {
                             <path fill="#2962ff" d="M15,36V6.827l-1.211-0.811C8.64,8.083,5,13.112,5,19v10c0,7.732,6.268,14,14,14h10	c4.722,0,8.883-2.348,11.417-5.931V36H15z"></path><path fill="#eee" d="M29,5H19c-1.845,0-3.601,0.366-5.214,1.014C10.453,9.25,8,14.528,8,19	c0,6.771,0.936,10.735,3.712,14.607c0.216,0.301,0.357,0.653,0.376,1.022c0.043,0.835-0.129,2.365-1.634,3.742	c-0.162,0.148-0.059,0.419,0.16,0.428c0.942,0.041,2.843-0.014,4.797-0.877c0.557-0.246,1.191-0.203,1.729,0.083	C20.453,39.764,24.333,40,28,40c4.676,0,9.339-1.04,12.417-2.916C42.038,34.799,43,32.014,43,29V19C43,11.268,36.732,5,29,5z"></path><path fill="#2962ff" d="M36.75,27C34.683,27,33,25.317,33,23.25s1.683-3.75,3.75-3.75s3.75,1.683,3.75,3.75	S38.817,27,36.75,27z M36.75,21c-1.24,0-2.25,1.01-2.25,2.25s1.01,2.25,2.25,2.25S39,24.49,39,23.25S37.99,21,36.75,21z"></path><path fill="#2962ff" d="M31.5,27h-1c-0.276,0-0.5-0.224-0.5-0.5V18h1.5V27z"></path><path fill="#2962ff" d="M27,19.75v0.519c-0.629-0.476-1.403-0.769-2.25-0.769c-2.067,0-3.75,1.683-3.75,3.75	S22.683,27,24.75,27c0.847,0,1.621-0.293,2.25-0.769V26.5c0,0.276,0.224,0.5,0.5,0.5h1v-7.25H27z M24.75,25.5	c-1.24,0-2.25-1.01-2.25-2.25S23.51,21,24.75,21S27,22.01,27,23.25S25.99,25.5,24.75,25.5z"></path><path fill="#2962ff" d="M21.25,18h-8v1.5h5.321L13,26h0.026c-0.163,0.211-0.276,0.463-0.276,0.75V27h7.5	c0.276,0,0.5-0.224,0.5-0.5v-1h-5.321L21,19h-0.026c0.163-0.211,0.276-0.463,0.276-0.75V18z"></path>
                         </svg>
                     </div>
-
-                    <p className="text-sm font-light text-gray-500">
-                        Don’t have an account yet? <a href="#" className="font-medium text-primary-600 hover:underline">Sign up</a>
-                    </p>
                 </form>
             </div>
         </div>

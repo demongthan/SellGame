@@ -14,6 +14,7 @@ import ButtonSearchUI from "./Common/UI/Button/ButtonSearchUI";
 import ButtonV1UI from "./Common/UI/Button/ButtonV1";
 import BreadCrumb from "./Common/BreadCrumb";
 import TitleService from "./Common/TitleService";
+import ToastProvider from "./Common/ToastProvider";
 
 export{
     Header,
@@ -31,5 +32,6 @@ export{
     ButtonSearchUI,
     ButtonV1UI,
     BreadCrumb,
-    TitleService
+    TitleService,
+    ToastProvider,
 }

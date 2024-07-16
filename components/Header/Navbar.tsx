@@ -7,6 +7,9 @@ import Link from 'next/link';
 
 import { navItems } from '@/utils/Menu';
 import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
+import { usePathname, useRouter } from 'next/navigation';
+import { authApiRequest } from '@/apiRequests/auth';
+import { showToast } from '@/utils/showToast';
 
 interface Props{
     openNav:()=>void
@@ -14,7 +17,8 @@ interface Props{
   
 
 const Navbar = ({openNav}:Props) => {
-    const { isAuthenticated, userDisplay } = useGlobalState() as GlobalContextProps;
+    const { isAuthenticated, userDisplay, setUser, isLoadingTotal, changeIsLoadingTotal, isLogin, isRegister} = useGlobalState() as GlobalContextProps;
+    const router = useRouter();
 
     const [navSticky, setNavSticky]=useState(false);
 
@@ -34,6 +38,36 @@ const Navbar = ({openNav}:Props) => {
   
     const stickyStyle=navSticky?'shadow-custom':'';
     
+    const processLogout=async (): Promise<void>=> {
+        changeIsLoadingTotal(true);
+        try{
+            await fetch('/api/auth', {
+                method: 'DELETE'
+            })
+
+            const response= await authApiRequest.logout(userDisplay?.displayName);
+
+            if(response.payload.data){
+                setUser(null);
+                router.push('/');
+            }
+            changeIsLoadingTotal(false);
+
+        }
+        catch(error){
+            showToast("warning", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên!</p>);
+            changeIsLoadingTotal(false);
+        }
+    }
+
+    if(isLoadingTotal){
+        return (
+            <div className="w-full h-[100vh] flex items-center justify-center">
+                <span className="loader"></span>
+            </div>
+        )
+    }
+
   return (
     <div className={`fixed ${stickyStyle} bg-white w-[100%] z-[1000] transition-all duration-100`}>
         <div className='flex items-center h-[130px] justify-between w-[90%] sm:w-[70%] mx-auto'>
@@ -78,15 +112,31 @@ const Navbar = ({openNav}:Props) => {
                     </div>
                 </div>
 
-                <Link href={isAuthenticated?"/recharge/account-information":"/login"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
-                    <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
-                    <div className="pl-1 text-base">{isAuthenticated?userDisplay?.displayName:"Đăng nhập"}</div>
-                </Link>
+                {!isLogin && (
+                    <Link href={isAuthenticated?"/recharge/account-information":"/login"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
+                        <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
+                        <div className="pl-1 text-base">{isAuthenticated?userDisplay?.displayName:"Đăng nhập"}</div>
+                    </Link>
+                )}
                 
-                <Link href={isAuthenticated?"":"/register"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
-                    <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
-                    <div className="pl-1 text-base">{isAuthenticated?"Đăng xuất":"Đăng kí"}</div>
-                </Link>
+                {!isRegister && !isAuthenticated && (
+                    <Link href="/register" className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
+                        <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
+                        <div className="pl-1 text-base">Đăng kí</div>
+                    </Link>
+                )}
+
+                {!isRegister && isAuthenticated &&(
+                    <button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                        event.preventDefault();
+                        
+                        processLogout();
+                      }} 
+                      className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
+                        <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
+                        <div className="pl-1 text-base">Đăng xuất</div>
+                    </button>
+                )}
             </div>
 
             <Bars3CenterLeftIcon className='w-[2.3rem] md:hidden h-[2.3rem] text-black rotate-180' onClick={openNav}></Bars3CenterLeftIcon>

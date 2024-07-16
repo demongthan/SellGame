@@ -1,5 +1,5 @@
 interface RegisterDto{
     UserName:string,
-    Email?:string,
-    Password:string
+    Password:string,
+    ConfirmPassword:string
 }

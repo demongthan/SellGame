@@ -1,4 +1,5 @@
 interface TokenCookies{
-    sessionToken: string, 
-    expiresAt: string
+    accessToken: string, 
+    expiresAt: number |undefined,
+    refreshToken: string
 }

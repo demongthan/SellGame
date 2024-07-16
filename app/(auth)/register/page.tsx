@@ -3,62 +3,95 @@
 import React, { useState } from 'react'
 import { FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 import { authApiRequest } from '@/apiRequests/auth';
 import { ButtonV1UI, InputUI } from '@/components'
 import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
+import { showToast } from '@/utils/showToast';
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 
 
 const Register = () => {
-
     const router = useRouter();
     const { setUser } = useGlobalState() as GlobalContextProps;
     const [errArr, seterrArr]=useState<ErrorValidate[]>();
     const [isloading, setisLoading] = useState<boolean>(false);
+    const [errAction, seterrAction] = useState<string |null>(null);
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault()
         setisLoading(true);
+        seterrArr([]);
+        seterrAction(null);
 
-        const formData = new FormData(event.currentTarget)
-        const response = await fetch('/api/submit', {
-            method: 'POST',
-            body: formData,
-        })
-
-        const data = await response.json();
-
-        if(data.isSuccess){
-            const result = await authApiRequest.register(data.data);
-
-            await authApiRequest.auth({
-                sessionToken: result.payload.data.Token,
-                expiresAt: "12/10/2024"
+        try{
+            const formData = new FormData(event.currentTarget)
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                body: formData,
             })
 
-            const userDisplay:UserDisplay={
-                displayName:data.data.UserName
+            const data = await response.json();
+
+            if(data.isSuccess){
+                const result = await authApiRequest.register(data.data);
+
+                if(result.payload.data){
+                    const jwtData:JwtPayload=jwtDecode(result.payload.data.Token);
+
+                    const tokenCookie:TokenCookies={
+                        accessToken: result.payload.data.Token,
+                        expiresAt: jwtData.exp,
+                        refreshToken:result.payload.data.RefreshToken
+                    }
+
+                    await fetch('/api/auth',{
+                        method: 'POST',
+                        body:JSON.stringify(tokenCookie)
+                    })
+
+                    const userDisplay:UserDisplay={
+                        displayName:data.data.UserName
+                    }
+
+                    setUser(userDisplay);
+
+                    router.push('/')
+                }
+                else{
+                    setisLoading(false);
+
+                    seterrAction(result.payload.message);
+                }
+                
             }
-
-            setUser(userDisplay);
-
-            router.push('/')
-            
+            else{
+                const errorArr: ErrorValidate[] =data.data.map(({...item})=>({
+                    for:item.for,
+                    message: item.message
+                }))
+        
+                seterrArr(errorArr);
+                setisLoading(false);
+            }
         }
-        else{
-            const errorArr: ErrorValidate[] =data.data.map(({...item})=>({
-                for:item.for,
-                message: item.message
-            }))
-    
-            seterrArr(errorArr);
+        catch(error){
+            seterrAction("Lỗi Server. Vui lòng liên hệ Quản trị viên.");
+
             setisLoading(false);
         }
     }
 
   return (
     <div className="flex flex-col h-[85vh] items-center justify-center px-6 mx-auto">
-        <div className="w-[30%] bg-white rounded-lg shadow-custom border border-gray-700">
+        <div className="w-[30%] bg-white rounded-lg shadow-custom border border-gray-700 relative">
+            {isloading &&(
+                <div className='w-full h-full flex items-center justify-center bg-s2gray7 absolute top-0'>
+                    <span className='loader'></span>
+                </div>
+            )}    
+
             <div className="p-6 space-y-4">
                 <h1 className="text-4xl font-bold text-center leading-tight tracking-tight text-gray-900">
                     Đăng kí
@@ -102,7 +135,12 @@ const Register = () => {
 
                     <InputUI name="referralCode" value={undefined} isBlockLabel={true} label={"Mã giới thiệu"} classDiv='w-full' classInput='w-full'></InputUI>
 
-                    <ButtonV1UI type='submit' isLoading={isloading} className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
+                    {errAction && (<p className='text-lg text-center text-red-500'>
+                        <ExclamationTriangleIcon className='h-[1.5rem] w-[1.5rem] inline-block'></ExclamationTriangleIcon>
+                        {errAction}
+                    </p>)}
+                    
+                    <ButtonV1UI type='submit' className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
 
                     <div className='flex justify-center items-center'>
                         <p className='border w-[45%] inline-block'></p>

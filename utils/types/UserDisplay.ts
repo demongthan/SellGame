@@ -1,3 +1,3 @@
 interface UserDisplay{
-    displayName:string
+    displayName?:string
 }
