@@ -8,10 +8,11 @@ import { InputUI, ButtonV1UI } from '@/components';
 import { authApiRequest } from '@/apiRequests/auth';
 import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
 import {ExclamationTriangleIcon } from '@heroicons/react/20/solid';
+import { showToast } from '@/utils/showToast';
 
 const Login = () => {
     const router = useRouter();
-    const { setUser } = useGlobalState() as GlobalContextProps;
+    const { setUser, changeIsLoadingTotal } = useGlobalState() as GlobalContextProps;
     const [errArr, seterrArr]=useState<ErrorValidate[]>();
     const [isloading, setisLoading] = useState<boolean>(false);
     const [errAction, seterrAction] = useState<string |null>(null);
@@ -27,7 +28,6 @@ const Login = () => {
 
         try{
             const formData = new FormData(event.currentTarget)
-            formData.append("remember", rememberAccount?"remember":"notremember");
 
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -101,15 +101,25 @@ const Login = () => {
     }
 
     const getDataUserInit=async ():Promise<void>=>{
-        const response = await fetch('/api/auth/login', {
-            method: 'GET'
-        })
-
-        const data = await response.json();
-
-        setuserName(data.userName as string);
-        setpassword(data.password);
-        setrememberAccount(data.remember=="remember");
+        changeIsLoadingTotal(true);
+        try{
+            const res= await fetch('/api/auth/login', {
+                method: 'GET'
+            })
+    
+            await res.json().then(data => {
+                setuserName(data.data.userName);
+                setpassword(data.data.password);
+                setrememberAccount(data.data.remember=="on");
+    
+                changeIsLoadingTotal(false);
+            })
+        }
+        catch(error){
+            showToast("error", <p>Lỗi hệ thống. Vui lòng liên hệ Quản trị viên</p>)
+            changeIsLoadingTotal(false);
+        }
+        
     }
 
     useEffect(() => {

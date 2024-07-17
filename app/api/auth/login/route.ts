@@ -37,7 +37,7 @@ export const POST=async (request: any)=> {
         const isRemember:string=data.get("remember");
         cookies().set('Remember', isRemember, { httpOnly:true})
 
-        if(isRemember=="remember"){
+        if(isRemember=="on"){
             cookies().set('UserName', dataReturn.UserName, { httpOnly:true});
             cookies().set('Password', dataReturn.Password, { httpOnly:true});
         }
@@ -54,16 +54,16 @@ export const POST=async (request: any)=> {
 
 export const GET=(request: any)=>{
     const cookieStore = cookies();
-    let returnData:{userName:any, password:any, remember:any}={userName:"", password:"", remember:"notremember"};
+    let returnData:{userName:any, password:any, remember:any}={userName:"", password:"", remember:"off"};
 
     if(cookieStore.get("Remember")){
         const isRemember:any=cookieStore.get("Remember")?.value;
 
-        if(isRemember=="remember"){
+        if(isRemember=="on"){
             returnData={
                 userName:cookieStore.get("UserName")?.value,
                 password:cookieStore.get("Password")?.value,
-                remember:"remember"
+                remember:"on"
             }
         }
     }
