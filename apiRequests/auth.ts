@@ -8,5 +8,8 @@ export const authApiRequest = {
         http.post<ApiReponse<LoginModelDto>>('/Authentication/login', body),
 
     logout:(userName:string |undefined)=>
-        http.put<ApiReponse<string>>(`/Authentication/revoke/${userName}`, {})
+        http.put<ApiReponse<string>>(`/Authentication/revoke/${userName}`, {}),
+
+    getAllImageUrl:(code:string) =>
+        http.get<ApiReponse<ImageDetailDto[]>>(`/ImageDetail/GetAllByCode/${code}?fileds=PathUrl`),
 }

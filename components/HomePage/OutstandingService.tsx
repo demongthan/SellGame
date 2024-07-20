@@ -1,16 +1,30 @@
-import React from 'react'
+"use client"
+
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import TitleService from '../Common/TitleService'
 import Link from 'next/link'
+import { authApiRequest } from '@/apiRequests/auth'
 
 const OutstandingService = () => {
-    const urlImg:string[]=[
-        "https://cdn.upanh.info/storage/upload/images/D%E1%BB%8Bch%20v%E1%BB%A5/nap-tien.jpg",
-        "https://cdn.upanh.info/storage/upload/images/D%E1%BB%8Bch%20v%E1%BB%A5/mua-the(1).jpg",
-        "https://cdn.upanh.info/storage/upload/images/a2(1).jpg",
-        "https://cdn.upanh.info/storage/upload/images/a1(2).jpg"
-    ]
+    const [urlImgs, seturlImgs] = useState<string[]>([]);
+
+    const getImageUrls= async():Promise<void>=>{
+        try{
+            const res=await authApiRequest.getAllImageUrl("OUTSTANDINGSERVICE");
+
+            const urls:string[]=res.payload.data.map(url => url.PathUrl);
+            seturlImgs(urls);
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        getImageUrls();
+    }, [seturlImgs]);
 
   return (
     <div className='flex flex-col gap-5 h-full w-full'>
@@ -18,9 +32,9 @@ const OutstandingService = () => {
             <TitleService title={'Dịch vụ nổi bật'} ></TitleService>
         </div>
         <div className='flex flex-row gap-10 w-full float-none overflow-hidden'>
-            {urlImg.map((url, index)=>(
+            {urlImgs.map((url, index)=>(
                 <div key={index} className='h-full w-full'>
-                    <Link href={"/like"}>
+                    <Link href={"/"}>
                         <Image src={url} 
                         alt="" width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
                     </Link>
