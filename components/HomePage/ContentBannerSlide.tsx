@@ -3,6 +3,8 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { authApiRequest } from '@/apiRequests/auth';
+import { StringValidation } from 'zod';
 
 interface Props{
   autoSlide?:boolean,
@@ -12,26 +14,35 @@ interface Props{
 
 const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000, className}:Props) => {
     const [curr, setCurr] = useState<number>(0);
-
-    const imgUrls:string[]=[
-        "https://cdn.upanh.info/storage/upload/images/Banner%20shop/banner-nickvn-1%20(1).jpg",
-        "https://cdn.upanh.info/storage/upload/images/Banner%20shop/banner-nickvn-2%20(2).jpg",
-        "https://cdn.upanh.info/storage/upload/images/Banner%20shop/banner-nickvn-1%20(3).jpg"
-    ]
+    const [imgUrls, setimgUrls] = useState<string[]>([]);
 
     const prev = ():void =>
         setCurr((curr) => (curr === 0 ? imgUrls.length - 1 : curr - 1))
     const next = ():void =>
     setCurr((curr) => (curr === imgUrls.length - 1 ? 0 : curr + 1))
+
+    const getImageUrls= async():Promise<void>=>{
+        try{
+            const res=await authApiRequest.getAllImageUrl("CONTENTBANNERSLIDE");
+
+            const urls:string[]=res.payload.data.map(url => url.PathUrl);
+            setimgUrls(urls);
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
     
 
     useEffect(() => {
+        getImageUrls();
+
         if (!autoSlide) return
 
         const slideInterval = setInterval(next, autoSlideInterval)
         
         return () => clearInterval(slideInterval)
-    }, [])
+    }, [setimgUrls])
 
   return (
     <div className={`overflow-hidden relative ${className} mx-auto`}>
