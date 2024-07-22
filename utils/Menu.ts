@@ -15,7 +15,7 @@ export const navItems:NavItem[] = [
         children:[
             {
                 label:"Nạp thẻ",
-                link:"/recharge/card"
+                link:"/recharge/auto-recharge"
             },
             {
                 label:"Nạp thẻ ATM",

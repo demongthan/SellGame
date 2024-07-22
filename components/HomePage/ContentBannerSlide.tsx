@@ -26,6 +26,7 @@ const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000, className}
             const res=await authApiRequest.getAllImageUrl("CONTENTBANNERSLIDE");
 
             const urls:string[]=res.payload.data.map(url => url.PathUrl);
+
             setimgUrls(urls);
         }
         catch(error){

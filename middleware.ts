@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 
-const privatePaths = ['/me']
+const privatePaths = ['/recharge/account-information']
 const authPaths = ['/login', '/register']
 
 export const middleware=(request: NextRequest)=> {
@@ -20,5 +20,5 @@ export const middleware=(request: NextRequest)=> {
 }
 
 export const config = {
-    matcher: ['/', '/login', '/register']
+    matcher: ['/', '/login', '/register', '/recharge/account-information']
 }

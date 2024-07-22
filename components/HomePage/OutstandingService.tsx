@@ -31,7 +31,7 @@ const OutstandingService = () => {
         <div>
             <TitleService title={'Dịch vụ nổi bật'} ></TitleService>
         </div>
-        <div className='flex flex-row gap-10 w-full float-none overflow-hidden'>
+        <div className='flex flex-row gap-5 w-full float-none overflow-hidden'>
             {urlImgs.map((url, index)=>(
                 <div key={index} className='h-full w-full'>
                     <Link href={"/"}>
