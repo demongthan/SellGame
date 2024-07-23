@@ -1,3 +1,4 @@
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { usePathname } from "next/navigation";
 import React, {createContext, useCallback, useContext, useEffect, useState} from "react";
 
@@ -45,7 +46,20 @@ const GlobalUpdateContext = createContext<{} | undefined>(undefined);
 
             const data = await response.json();
 
-            setuserDisplay(data.data);
+            let userDisplay:UserDisplay|null;
+            if(data.data){
+                const jwtData:JwtPayload=jwtDecode(data.data);
+                
+                userDisplay={
+                    displayName:jwtData.sub,
+                    id:jwtData.jti,
+                }
+            }
+            else{
+                userDisplay=null;
+            }
+
+            setuserDisplay(userDisplay);
             setIsLoadingTotal(false);
         }
         catch (error) {

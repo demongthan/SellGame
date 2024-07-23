@@ -27,19 +27,15 @@ export const GET=async (request: NextRequest)=>{
   const cookieStore = cookies()
   const accessToken:any = cookieStore.get('AccessToken');
 
-  let userDisplay:UserDisplay|null;
+  let data:string|null;
   if(accessToken){
-    const jwtData:JwtPayload=jwtDecode(accessToken.value);
-    
-     userDisplay={
-      displayName:jwtData.sub
-    }
+    data=accessToken.value;
   }
   else{
-    userDisplay=null;
+    data=null;
   }
 
-  return NextResponse.json({status:200, data:userDisplay});
+  return NextResponse.json({status:200, data:data});
 }
 
 export const DELETE = async (request: NextRequest)=>{

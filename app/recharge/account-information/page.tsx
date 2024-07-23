@@ -1,9 +1,42 @@
+import { accountInformationApiRequest } from '@/apiRequests/accountInformation'
+import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider'
 import { ButtonV1UI, InputUI, TitleRecharge } from '@/components'
+import { showToast } from '@/utils/showToast'
+
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Accountnformation = () => {
+    const {userDisplay, changeIsLoadingTotal}= useGlobalState() as GlobalContextProps;
+
+    const [accountInformation, setaccountInformation]=useState<AccountInformationDto>({
+        Id:'',
+        DisplayName:'',
+        Balance:0,
+        AcoinBalance:0,
+        PromotionalBalance:0
+    })
+
+    const getAccountInformationInit =async (): Promise<void>=>{
+        changeIsLoadingTotal(true);
+        try{
+            const res=await accountInformationApiRequest.getAccountInformation(userDisplay?.id);
+
+            setaccountInformation(res.payload.data);
+
+            changeIsLoadingTotal(false);
+        }
+        catch{
+            showToast("error", <p>Lỗi hệ thống. Vui lòng liên hệ Quản trị viên</p>)
+            changeIsLoadingTotal(false);
+        }
+    }
+
+    useEffect(() => {
+        getAccountInformationInit();
+    }, [setaccountInformation])
+
   return (
     <div className='flex flex-col gap-10'>
         <TitleRecharge title={'Thông tin tài khoản'}></TitleRecharge>
