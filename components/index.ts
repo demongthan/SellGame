@@ -15,6 +15,7 @@ import ButtonV1UI from "./Common/UI/Button/ButtonV1";
 import BreadCrumb from "./Common/BreadCrumb";
 import TitleService from "./Common/TitleService";
 import ToastProvider from "./Common/ToastProvider";
+import LoadingUI from "./Common/LoadingUI";
 
 export{
     Header,
@@ -34,4 +35,5 @@ export{
     BreadCrumb,
     TitleService,
     ToastProvider,
+    LoadingUI,
 }

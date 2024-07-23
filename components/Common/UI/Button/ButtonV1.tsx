@@ -10,7 +10,7 @@ interface Props{
 
 const ButtonV1UI = ({title, className, isIconCard, type}:Props) => {
   return (
-        <button type={type} className={`${className} text-white border border-transparent rounded-md px-4 hover:opacity-70`}>
+        <button type={type} className={`${className} text-white bg-s2cyan1 border border-transparent rounded-md px-4 hover:opacity-70`}>
         {isIconCard && (
           <ShoppingCartIcon className='w-[1.2rem] h-[1.2rem]'></ShoppingCartIcon>
         )}

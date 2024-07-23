@@ -13,18 +13,18 @@ import { showToast } from '@/utils/showToast';
 const Login = () => {
     const router = useRouter();
     const { setUser, changeIsLoadingTotal } = useGlobalState() as GlobalContextProps;
-    const [errArr, seterrArr]=useState<ErrorValidate[]>();
-    const [isloading, setisLoading] = useState<boolean>(false);
-    const [errAction, seterrAction] = useState<string |null>(null);
-    const [rememberAccount, setrememberAccount]=useState<boolean>(true);
-    const [userName, setuserName]=useState<string>("");
-    const [password, setpassword] = useState<string>("");
+    const [errArr, setErrArr]=useState<ErrorValidate[]>();
+    const [isloading, setIsLoading] = useState<boolean>(false);
+    const [errAction, setErrAction] = useState<string |null>(null);
+    const [rememberAccount, setRememberAccount]=useState<boolean>(true);
+    const [userName, setUserName]=useState<string>("");
+    const [password, setPassword] = useState<string>("");
     
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
-        setisLoading(true);
-        seterrArr([]);
-        seterrAction(null);
+        setIsLoading(true);
+        setErrArr([]);
+        setErrAction(null);
 
         try{
             const formData = new FormData(event.currentTarget)
@@ -61,9 +61,9 @@ const Login = () => {
                     router.push('/');
                 }
                 else{
-                    setisLoading(false);
+                    setIsLoading(false);
                     
-                    seterrAction(result.payload.message);
+                    setErrAction(result.payload.message);
                 }
                 
             }
@@ -73,13 +73,13 @@ const Login = () => {
                     message: item.message
                 }))
         
-                seterrArr(errorArr);
-                setisLoading(false);
+                setErrArr(errorArr);
+                setIsLoading(false);
             }
         }
         catch(error){
-            seterrAction("Lỗi Server. Vui lòng liên hệ Quản trị viên.");
-            setisLoading(false);
+            setErrAction("Lỗi Server. Vui lòng liên hệ Quản trị viên.");
+            setIsLoading(false);
         }
 
     }
@@ -87,13 +87,13 @@ const Login = () => {
     const handleChange = (name:string) => (e: any) => {
         switch (name) {
             case "remember":
-                setrememberAccount(!rememberAccount);
+                setRememberAccount(!rememberAccount);
                 break;
             case "userName":
-                setuserName(e.target.value);
+                setUserName(e.target.value);
                 break;
             case "password":
-                setpassword(e.target.value);
+                setPassword(e.target.value);
                 break;
             default:
                 break;
@@ -108,9 +108,9 @@ const Login = () => {
             })
     
             await res.json().then(data => {
-                setuserName(data.data.userName);
-                setpassword(data.data.password);
-                setrememberAccount(data.data.remember=="on");
+                setUserName(data.data.userName);
+                setPassword(data.data.password);
+                setRememberAccount(data.data.remember=="on");
     
                 changeIsLoadingTotal(false);
             })
@@ -124,7 +124,7 @@ const Login = () => {
 
     useEffect(() => {
         getDataUserInit();
-    }, [setuserName])
+    }, [setUserName])
 
   return (
     <div className="flex flex-col h-[85vh] items-center justify-center px-6 mx-auto">

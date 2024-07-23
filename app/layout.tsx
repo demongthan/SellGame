@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Footer, Header, ToastProvider } from "@/components";
-import ContextProvider from "@/AppProvider/ContextProvider";
+import GlobalProvider from "@/AppProvider/GlobalProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-customFont">
-      <ContextProvider>
+      <GlobalProvider>
         <ToastProvider>
           <Header></Header>
             <div className="pt-[140px]">
@@ -25,7 +25,7 @@ export default function RootLayout({
             </div>
           <Footer></Footer>
         </ToastProvider>
-      </ContextProvider>
+      </GlobalProvider>
       </body>
     </html>
   );

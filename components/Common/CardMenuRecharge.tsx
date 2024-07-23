@@ -1,5 +1,6 @@
 import { MenuRechargeItem } from '@/utils/MenuAccount'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 interface Props{
@@ -9,7 +10,7 @@ interface Props{
 }
 
 const CardMenuRecharge = ({title, itemMenus, url}:Props) => {
-
+    const router = useRouter();
   return (
     <div className='flex flex-col gap-5'>
         <div className='border-l-4 border-s2cyan1 border-solid text-xl text-s2slate1 pl-5 py-1'>
