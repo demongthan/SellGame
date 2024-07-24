@@ -1,20 +1,23 @@
 "use client"
 
+import { accountInformationApiRequest } from '@/apiRequests/accountInformation';
+import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
 import { ButtonV1UI, InputUI, LoadingUI, TitleRecharge } from '@/components'
+import { showToast } from '@/utils/showToast';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import React, { FormEvent, useEffect, useState } from 'react'
 
 const ChangePassword = () => {
+  const { userDisplay } = useGlobalState() as GlobalContextProps;
+
   const [errArr, setErrArr]=useState<ErrorValidate[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [errAction, setErrAction] = useState<string |null>(null);
 
   
   const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
     event.preventDefault();
     setIsLoading(true);
     setErrArr([]);
-    setErrAction(null);
 
     try{
       const formData = new FormData(event.currentTarget)
@@ -27,7 +30,14 @@ const ChangePassword = () => {
       const data = await response.json();
 
       if(data.isSuccess){
-        
+        const result = await accountInformationApiRequest.changePassword({id:userDisplay?.id, body:data.data});
+
+        if(result.payload.data){
+          showToast("success", <p>{result.payload.message}</p>)
+        }
+        else{
+          showToast("error", <p>{result.payload.message}</p>)
+        }
 
       }
       else{
@@ -42,7 +52,7 @@ const ChangePassword = () => {
       setIsLoading(false);
     }
     catch(error){
-      setErrAction("Lỗi Server. Vui lòng liên hệ Quản trị viên.");
+      showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
       setIsLoading(false);
     }
   }
@@ -97,10 +107,6 @@ const ChangePassword = () => {
             </InputUI>
 
             <div>
-              {errAction && (<p className='text-lg text-center text-red-500'>
-                <ExclamationTriangleIcon className='h-[1.5rem] w-[1.5rem] inline-block'></ExclamationTriangleIcon>
-                {errAction}
-              </p>)}
               <ButtonV1UI type='submit' title={'Xác nhận'} className={"w-full h-[2.5rem]"}></ButtonV1UI>
             </div>
           </form>

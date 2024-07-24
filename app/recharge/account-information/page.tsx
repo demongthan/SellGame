@@ -90,7 +90,7 @@ const Accountnformation = () => {
 
             <div className='flex flex-row gap-5 h-12'>
                 <InputUI value={undefined} isBlockLabel={false} label={null} classDiv={"w-11/12"} classInput={"w-full"} placeholder={"Nhập mã giới thiệu"}></InputUI>
-                <ButtonV1UI title={'Gửi'} className={"w-1/12"}></ButtonV1UI>
+                <ButtonV1UI title={'Gửi'} className={"w-1/12 h-[2.5rem]"}></ButtonV1UI>
             </div>
             </>
         )}

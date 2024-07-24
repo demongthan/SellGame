@@ -6,6 +6,6 @@ export const accountInformationApiRequest = {
     getAccountInformation:(id?:string)=>
         http.get<ApiReponse<AccountInformationDto>>(`/Account/GetAccountInformation/${id}`, true),
 
-    changePassword:(id?:string, body:ChangePasswordDto)=>
-        http.put<ApiReponse<boolean>>(`/Account/ChangePassword/${id}`, true, body)
+    changePassword:(input:{id?:string, body:ChangePasswordDto})=>
+        http.put<ApiReponse<boolean>>(`/Account/ChangePassword/${input.id}`, true, input.body)
 }

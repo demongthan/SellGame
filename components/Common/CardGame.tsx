@@ -35,6 +35,10 @@ const CardGame = ({isDiscount,
             </div>
 
             <div className='h-[7%]'>
+                <p className='font-semibold text-red-500'>Số tài khoản: {totalSale}</p>
+            </div>
+
+            <div className='h-[7%]'>
                 <p className='font-semibold text-red-500'>Đã bán: {totalSale}</p>
             </div>
 
@@ -46,13 +50,13 @@ const CardGame = ({isDiscount,
                 ))}
             </div>
 
-            <div className='h-[35%] flex justify-center items-center'>
+            <div className='h-[28%] flex justify-center items-center'>
                 {isButtonImage?(
                     <Image src={'https://nick.vn/assets/frontend/theme_1/images/muangay.jpg'}
                     alt="" width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
                 ):(
                     <Link href={"/"} className='border-2 divide-solid rounded-full border-red-400 text-red-400 font-normal text-base px-7 py-2 hover:border-s2cyan1 hover:text-s2cyan1'>
-                        Mua ngay
+                        Xem tất cả
                     </Link>
                 )
                 }
