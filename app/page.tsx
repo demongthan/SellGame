@@ -4,19 +4,8 @@ import { ContentBannerSlide, GameCategory, GameService, LoadingUI, OutstandingSe
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(()=>{
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 250);
-  }, [setIsLoading])
-
   return (
     <div className='flex flex-col w-[90%] sm:w-[65%] mx-auto gap-10'>
-
-      {isLoading?(<div className="h-[85vh]"><LoadingUI></LoadingUI></div>):(
-        <>
           <div className="w-full h-[23rem]">
             <ContentBannerSlide className={"w-full h-full"}></ContentBannerSlide>
           </div>
@@ -34,8 +23,6 @@ export default function Home() {
           </div>
 
           <div></div>
-        </>
-      )}
     </div>
   );
 }

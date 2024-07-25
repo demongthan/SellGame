@@ -77,7 +77,7 @@ const Navbar = ({openNav}:Props) => {
 
     if(isLoadingTotal){
         return (
-            <div className="w-full h-[100vh] flex items-center justify-center">
+            <div className="fixed bg-white z-[10000] w-full h-[100vh] flex items-center justify-center">
                 <span className="loader"></span>
             </div>
         )

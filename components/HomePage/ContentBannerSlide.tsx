@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { authApiRequest } from '@/apiRequests/auth';
 import { StringValidation } from 'zod';
+import LoadingUI from '../Common/LoadingUI';
 
 interface Props{
   autoSlide?:boolean,
@@ -14,7 +15,8 @@ interface Props{
 
 const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000, className}:Props) => {
     const [curr, setCurr] = useState<number>(0);
-    const [imgUrls, setimgUrls] = useState<string[]>([]);
+    const [imgUrls, setImgUrls] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const prev = ():void =>
         setCurr((curr) => (curr === 0 ? imgUrls.length - 1 : curr - 1))
@@ -27,10 +29,14 @@ const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000, className}
 
             const urls:string[]=res.payload.data.map(url => url.PathUrl);
 
-            setimgUrls(urls);
+            setImgUrls(urls);
+
+            setIsLoading(false);
         }
         catch(error){
             console.error(error);
+
+            setIsLoading(false);
         }
     }
     
@@ -43,7 +49,11 @@ const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000, className}
         const slideInterval = setInterval(next, autoSlideInterval)
         
         return () => clearInterval(slideInterval)
-    }, [setimgUrls])
+    }, [setImgUrls])
+
+    if(isLoading){
+        return (<LoadingUI></LoadingUI>)
+    }
 
   return (
     <div className={`overflow-hidden relative ${className} mx-auto`}>
