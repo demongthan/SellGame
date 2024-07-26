@@ -10,7 +10,7 @@ const BreadCrumb = () => {
     const paths = usePathname()
     const params = useSearchParams();
     const pathNames:string[] = paths.split('/').filter(_=>_!="");
-    const pathTitle:any= params.get("title")?.split(',');
+    const pathTitles:any= params.get("title")?.split(',');
 
     console.log(pathNames, params.get("title"))
 
@@ -28,12 +28,12 @@ const BreadCrumb = () => {
                     {index==(pathNames.length-1)?(
                         <div className="flex items-center">
                             <ChevronDoubleRightIcon className="rtl:rotate-180 block w-5 h-5 mx-1 text-gray-400 "></ChevronDoubleRightIcon>
-                            <span className="ms-1 text-sm font-medium text-gray-500 md:ms-2">{pathTitle[index]}</span>
+                            <span className="ms-1 text-sm font-medium text-gray-500 md:ms-2">{pathTitles[index]}</span>
                         </div>
                     ):(
                         <div className="flex items-center">
                             <ChevronDoubleRightIcon className="rtl:rotate-180 block w-5 h-5 mx-1 text-gray-400 "></ChevronDoubleRightIcon>
-                            <Link href={`/${pathNames.slice(0, index + 1).join('/')}`} className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2">{pathTitle[index]}</Link>
+                            <Link href={`/${pathNames.slice(0, index + 1).join('/')}?title=${pathTitles.slice(0, index + 1).join(',')}`} className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2">{pathTitles[index]}</Link>
                         </div>
                     )} 
                 </li>
