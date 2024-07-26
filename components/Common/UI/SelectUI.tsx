@@ -1,35 +1,35 @@
 "use client"
 
-import { Combobox, Transition } from '@headlessui/react'
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import React, { Fragment, useState } from 'react'
 
 interface Props{
-    value:string|undefined,
-    isBlockLabel:boolean,
-    label:string |null,
+    isBlockLabel?:boolean,
+    label?:string |null,
     classLabel?:string,
     classDiv?:string,
     data:ValueKey[],
-    selected:string,
-    setSelected:any
+    name?:string
 }
 
-const SelectUI = ({value=undefined, 
-  isBlockLabel, 
+const SelectUI = ({
+  isBlockLabel=true, 
   label="", 
   classLabel="", 
   classDiv="", 
   data,
-  selected,
-  setSelected
+  name
   }:Props) => {
     const [query, setQuery] = useState("");
+    const [selected, setSelected] = useState<ValueKey | null>({Name:""});
+
+    console.log(data);
 
     const filteredItem =
     query === ""
       ? data
-      : data.filter((item:ValueKey) =>
+      : data?.filter((item:ValueKey) =>
           item.Name
             .toLowerCase()
             .replace(/\s+/g, "")
@@ -38,24 +38,24 @@ const SelectUI = ({value=undefined,
 
   return (
     <div className={classDiv}>
-        {label && (<label className={`${isBlockLabel?"block pb-2":"inline-block pr-3"} text-base text-black font-semibold leading-6 ${classLabel}`}>{label}</label>)}
+        {label && (<label htmlFor={name} className={`${isBlockLabel?"block pb-2":"inline-block pr-3"} text-base text-black font-semibold leading-6 ${classLabel}`}>{label}</label>)}
 
-         <Combobox value={selected} onChange={setSelected}>
+         <Combobox name={name} value={selected} onChange={(event)=>setSelected(event)}>
           <div className="relative">
             <div className="relative w-full cursor-default overflow-hidden bg-white text-left">
-              <Combobox.Input
+              <ComboboxInput
                 className="w-full border-s2gray2 border rounded-lg py-2.5 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:border-s2cyan1 focus:outline-none"
                 displayValue={(item:ValueKey) => item.Name}
                 onChange={(event) => setQuery(event.target.value)}
               >
-              </Combobox.Input>
+              </ComboboxInput>
 
-              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+              <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUpDownIcon
                   className="h-5 w-5 text-gray-400 hover:text-gray-500"
                   aria-hidden="true"
                 />
-              </Combobox.Button>
+              </ComboboxButton>
             </div>
 
             <Transition
@@ -65,23 +65,19 @@ const SelectUI = ({value=undefined,
               leaveTo="opacity-0"
               afterLeave={() => setQuery("")}
             >
-              <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <ComboboxOption className="absolute mt-1 max-h-40 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" value={undefined}>
                 {filteredItem.length === 0 && query !== "" ? (
                   <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                     Nothing found.
                   </div>
                 ) : (
-                  filteredItem.map((item:ValueKey) => (
-                    <Combobox.Option
-                      key={item.Key}
-                      className={({ active }) =>
-                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                          active ? "bg-teal-600 text-white" : "text-gray-900"
-                        }`
-                      }
+                  filteredItem.map((item:ValueKey, index) => (
+                    <ComboboxOption
+                      key={index}
+                      className={`relative cursor-default select-none py-2 pl-10 pr-4 text-gray-900`}
                       value={item}
                     >
-                      {({ selected, active }) => (
+                      {({ selected}) => (
                         <>
                           <span
                             className={`block truncate ${
@@ -92,19 +88,17 @@ const SelectUI = ({value=undefined,
                           </span>
                           {selected ? (
                             <span
-                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                active ? "text-white" : "text-teal-600"
-                              }`}
+                              className={`absolute inset-y-0 left-0 flex items-center pl-3 text-teal-600`}
                             >
                               <CheckIcon className="h-5 w-5" aria-hidden="true" />
                             </span>
                           ) : null}
                         </>
                       )}
-                    </Combobox.Option>
+                    </ComboboxOption>
                   ))
                 )}
-              </Combobox.Options>
+              </ComboboxOption>
             </Transition>
           </div>
          </Combobox>

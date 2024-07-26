@@ -1,0 +1,3 @@
+interface SystemParameterDto{
+    Content:string
+}

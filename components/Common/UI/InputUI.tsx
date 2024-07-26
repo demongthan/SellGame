@@ -3,7 +3,7 @@ import React, { ChangeEventHandler } from 'react'
 import { number } from 'zod'
 
 interface Props{
-    value:string|undefined,
+    value?:string|undefined,
     isBlockLabel:boolean,
     label:string |null,
     classLabel?:string,
