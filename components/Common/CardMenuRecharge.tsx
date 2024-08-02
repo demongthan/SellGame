@@ -1,4 +1,4 @@
-import { MenuRechargeItem } from '@/utils/MenuAccount'
+import { MenuRechargeItem } from '@/utils/constant/MenuAccount'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React from 'react'

@@ -1,7 +1,4 @@
 import envConfig from '@/config'
-import { normalizePath } from '@/utils/utils'
-import { access } from 'fs'
-import { redirect } from 'next/navigation'
 
 type CustomOptions = Omit<RequestInit, 'method'> & {
     baseUrl?: string | undefined
@@ -61,7 +58,10 @@ const request = async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string
         body instanceof FormData
         ? {}
         : {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Access-Control-Expose-Headers':' X-Custom-Header',
+            'X-Custom-Header': 'Content-Type'
         }
   
     const baseUrl =envConfig.NEXT_PUBLIC_API_ENDPOINT;
@@ -91,6 +91,7 @@ const request = async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string
     })
 
     const payload: T = await res.json()
+
     const data = {
         status: res.status,
         payload

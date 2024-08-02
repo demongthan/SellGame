@@ -1,4 +1,4 @@
-import ChangePassword from "@/app/recharge/change-password/page"
+import ChangePassword from "@/app/(main)/recharge/change-password/page"
 import http from "./http"
 import { ChangePasswordDto } from "./DataDomain/Account/ChangePasswordDto"
 

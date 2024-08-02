@@ -9,7 +9,7 @@ interface Props{
     label?:string |null,
     classLabel?:string,
     classDiv?:string,
-    data:ValueKey[],
+    data:any,
     name?:string
 }
 
@@ -22,9 +22,7 @@ const SelectUI = ({
   name
   }:Props) => {
     const [query, setQuery] = useState("");
-    const [selected, setSelected] = useState<ValueKey | null>({Name:""});
-
-    console.log(data);
+    const [selected, setSelected] = useState<any>({Name:""});
 
     const filteredItem =
     query === ""
@@ -40,12 +38,12 @@ const SelectUI = ({
     <div className={classDiv}>
         {label && (<label htmlFor={name} className={`${isBlockLabel?"block pb-2":"inline-block pr-3"} text-base text-black font-semibold leading-6 ${classLabel}`}>{label}</label>)}
 
-         <Combobox name={name} value={selected} onChange={(event)=>setSelected(event)}>
+         <Combobox value={selected} onChange={(event)=>setSelected(event)}>
           <div className="relative">
             <div className="relative w-full cursor-default overflow-hidden bg-white text-left">
-              <ComboboxInput
+              <ComboboxInput name={name}
                 className="w-full border-s2gray2 border rounded-lg py-2.5 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:border-s2cyan1 focus:outline-none"
-                displayValue={(item:ValueKey) => item.Name}
+                displayValue={(item:any) => item.Name}
                 onChange={(event) => setQuery(event.target.value)}
               >
               </ComboboxInput>
@@ -65,13 +63,13 @@ const SelectUI = ({
               leaveTo="opacity-0"
               afterLeave={() => setQuery("")}
             >
-              <ComboboxOption className="absolute mt-1 max-h-40 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" value={undefined}>
+              <ComboboxOption className="absolute mt-1 max-h-[4.2rem] z-50 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" value={undefined}>
                 {filteredItem.length === 0 && query !== "" ? (
                   <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                     Nothing found.
                   </div>
                 ) : (
-                  filteredItem.map((item:ValueKey, index) => (
+                  filteredItem.map((item:any, index:any) => (
                     <ComboboxOption
                       key={index}
                       className={`relative cursor-default select-none py-2 pl-10 pr-4 text-gray-900`}

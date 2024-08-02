@@ -1,12 +1,14 @@
 interface ValueKey{
-    Name:string,
-    ValueMax?:number,
-    ValueMin?:number,
-    Value?:string
+    Name:string
 }
 
 interface PropertiesJson{
     Key:string,
     Name:string
     Value:ValueKey[]
+}
+
+interface PropertiesItemJson{
+    Name:string,
+    Value?:string
 }

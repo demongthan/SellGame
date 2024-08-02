@@ -3,9 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props{
-    isDiscount:boolean,
-    isButtonImage:boolean,
-    isHot:boolean,
+    isHot?:boolean,
     totalSale:number,
     rating:number,
     name:string,
@@ -15,9 +13,8 @@ interface Props{
     id:string,
 }
 
-const CardGame = ({isDiscount, 
-    isButtonImage, 
-    isHot, 
+const CardGame = ({
+    isHot=false, 
     urlImage, 
     name,
     totalSale,
@@ -57,27 +54,10 @@ const CardGame = ({isDiscount,
             </div>
 
             <div className='h-[28%] flex justify-center items-center'>
-                {isButtonImage?(
-                    <Image src={'https://nick.vn/assets/frontend/theme_1/images/muangay.jpg'}
-                    alt="" width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
-                ):(
-                    <Link href={`${urlButton},${name}&id=${id}`} className='border-2 divide-solid rounded-full border-red-400 text-red-400 font-normal text-base px-7 py-2 hover:border-s2cyan1 hover:text-s2cyan1'>
-                        {titleButton}
-                    </Link>
-                )
-                }
+                <Link href={`${urlButton},${name}&id=,${id}`} className='border-2 divide-solid rounded-full border-red-400 text-red-400 font-normal text-base px-7 py-2 hover:border-s2cyan1 hover:text-s2cyan1'>
+                    {titleButton}
+                </Link>
             </div>
-            
-            {isDiscount && (
-                <div className="absolute -top-4 right-3 w-[2.3rem] h-[6rem]">
-                    <div className='bg-s2red3 border-l-2 border-r-2 border-white text-center pt-2'>
-                        <span className='text-white font-semibold text-sm relative top-1'>-50%</span>
-                    </div>
-                    <div className="w-[2.3rem] h-[2.1rem] overflow-hidden inline-block">
-                        <div className="h-[1.67rem] w-[1.67rem] bg-s2red3 border-2 border-white -rotate-45 transform origin-top-left"></div>
-                    </div>
-                </div>
-            )}
 
             {isHot && (
                 <div className='absolute top-4 -left-3 h-[2rem] w-[3.5rem] flex justify-center items-center bg-s2cyan1'>

@@ -6,9 +6,10 @@ interface Props{
     classDiv?:string,
     isSearch?:boolean
     isAll?:boolean,
+    eventButtonAllClick:()=>void
 }
 
-const ButtonSearchUI = ({classDiv="", isSearch=true, isAll=true}:Props) => {
+const ButtonSearchUI = ({classDiv="", isSearch=true, isAll=true, eventButtonAllClick}:Props) => {
   return (
     <div className={`${(isAll && isSearch)?"flex flex-row":""} ${classDiv} relative gap-3`}>
         {isSearch && (
@@ -18,7 +19,11 @@ const ButtonSearchUI = ({classDiv="", isSearch=true, isAll=true}:Props) => {
         )}
         
         {isAll && (
-            <Button className='flex flex-row gap-1 items-center w-full h-full bg-s2red2 text-white border border-transparent rounded-md px-4 hover:opacity-60 transition-input ease-in-out delay-150'>
+            <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                event.preventDefault();
+                
+                eventButtonAllClick();
+              }} className='flex flex-row gap-1 items-center w-full h-full bg-s2red2 text-white border border-transparent rounded-md px-4 hover:opacity-60 transition-input ease-in-out delay-150'>
                 <TableCellsIcon className='w-[1.2rem] h-[1.2rem]'></TableCellsIcon> Tất cả
             </Button>
         )}
