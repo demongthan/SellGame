@@ -10,7 +10,10 @@ interface Props{
     classLabel?:string,
     classDiv?:string,
     data:any,
-    name?:string
+    name?:string,
+    classSelect?:string,
+    isInit?:boolean,
+    isDisabled?:boolean
 }
 
 const SelectUI = ({
@@ -19,10 +22,17 @@ const SelectUI = ({
   classLabel="", 
   classDiv="", 
   data,
-  name
+  name,
+  classSelect,
+  isInit=false,
+  isDisabled=false
   }:Props) => {
     const [query, setQuery] = useState("");
-    const [selected, setSelected] = useState<any>({Name:""});
+    const [selected, setSelected] = useState<any>(()=>{
+      if(data && isInit) return data[0];
+
+      return {Name:""}
+    });
 
     const filteredItem =
     query === ""
@@ -35,11 +45,11 @@ const SelectUI = ({
         );
 
   return (
-    <div className={classDiv}>
-        {label && (<label htmlFor={name} className={`${isBlockLabel?"block pb-2":"inline-block pr-3"} text-base text-black font-semibold leading-6 ${classLabel}`}>{label}</label>)}
+    <div className={`${classDiv} ${isBlockLabel?"":"flex flex-row"}`}>
+        {label && (<label htmlFor={name} className={`${isBlockLabel?"block pb-2":"pt-2"} text-base text-black font-semibold leading-6 ${classLabel}`}>{label}</label>)}
 
-         <Combobox value={selected} onChange={(event)=>setSelected(event)}>
-          <div className="relative">
+         <Combobox value={selected} onChange={(event)=>setSelected(event)} disabled={isDisabled}>
+          <div className={`relative ${classSelect}`}>
             <div className="relative w-full cursor-default overflow-hidden bg-white text-left">
               <ComboboxInput name={name}
                 className="w-full border-s2gray2 border rounded-lg py-2.5 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:border-s2cyan1 focus:outline-none"

@@ -1,8 +1,17 @@
-interface CategoryDto{
-    Name:string,
-    TotalSale:number,
-    Rating:number
-    PathUrl:string,
+import { CategoryType } from "@/utils/types/CategoryType";
+
+export interface CategoryDto{
     Id:string,
-    Properties:string
+    Code:string,
+    Name:string,
+    Type:CategoryType,
+    Description:string,
+    Total:number,
+    TotalSale:number,
+    Rating:number,
+    Active:boolean,
+    PathUrl:string,
+    Properties:string,
+    CreatedDateUtc:Date,
+    UpdatedDateUtc:Date
 }

@@ -174,6 +174,7 @@ const config: Config = {
         s2red4:"#FB236A",
         s2green1:"#3CB878",
         lightPrimary: "#F4F7FE",
+        model: "rgba(0, 0, 0, 0.5)",
         navy: {
           50: "#d0dcfb",
           100: "#aac0fe",

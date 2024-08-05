@@ -4,8 +4,8 @@ import { number } from 'zod'
 
 interface Props{
     value?:string|undefined,
-    isBlockLabel:boolean,
-    label:string |null,
+    isBlockLabel?:boolean,
+    label?:string |null,
     classLabel?:string,
     classInput?:string,
     classDiv?:string,
@@ -14,11 +14,12 @@ interface Props{
     errArr?:ErrorValidate[],
     type?:string,
     max?:number,
-    onChangeEvent?:ChangeEventHandler<HTMLInputElement> | undefined
+    onChangeEvent?:ChangeEventHandler<HTMLInputElement> | undefined,
+    isDisabled?:boolean
 }
 
 const InputUI = ({value=undefined, 
-  isBlockLabel, 
+  isBlockLabel=true, 
   label="", 
   classLabel="", 
   classDiv="", 
@@ -28,13 +29,14 @@ const InputUI = ({value=undefined,
   errArr,
   type="text",
   max,
+  isDisabled=false,
   onChangeEvent
   }:Props) => {
     return (
       <div className={classDiv}>
           {label && (<label htmlFor={name} className={`${isBlockLabel?"block":"inline-block"} text-base text-black font-semibold leading-6 pb-2 ${classLabel}`}>{label}</label>)}
 
-          <Input type={type} name={name} maxLength={max} value={value} onChange={onChangeEvent}
+          <Input type={type} name={name} maxLength={max} value={value} onChange={onChangeEvent} disabled={isDisabled}
           className={`border border-s2gray2 rounded-lg text-gray-900 text-sm transition-input py-2.5 pl-3 pr-10 ${classInput}
           ease-in-out delay-150 focus:outline-none focus:border-s2cyan1`} placeholder={placeholder}></Input>
 

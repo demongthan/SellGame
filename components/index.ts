@@ -22,6 +22,13 @@ import { ProductImage } from "./Main/ImageGallery/ProductImage";
 import { CarouselThumbs } from "./Main/ImageGallery/CarouselThumbs";
 import Sidebar from "./Admin/Sidebar/Sidebar";
 import Card from "./Admin/Card";
+import CheckboxUI from "./Common/UI/CheckboxUI";
+import CategoryTypeDisplay from "./Admin/CategoryTypeDisplay";
+import RatingDisplay from "./Common/RatingDisplay";
+import ButtonAddItemUI from "./Common/UI/Button/ButtonAddItemUI";
+import CategoryModalUI from "./Admin/Modal/CategoryModalUI";
+import ButtonUpdateItemUI from "./Common/UI/Button/ButtonUpdateItemUI";
+import UploadImageModalUI from "./Admin/Modal/UploadImageModalUI";
 
 export{
     Header,
@@ -47,5 +54,12 @@ export{
     ProductImage,
     CarouselThumbs,
     Sidebar,
-    Card
+    Card,
+    CheckboxUI,
+    CategoryTypeDisplay,
+    RatingDisplay,
+    ButtonAddItemUI,
+    CategoryModalUI,
+    ButtonUpdateItemUI,
+    UploadImageModalUI
 }

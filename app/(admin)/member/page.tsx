@@ -1,47 +1,17 @@
 "use client"
 
-import { Card } from '@/components'
+import { accountInformationApiRequest } from '@/apiRequests/account-information';
+import { Card, CheckboxUI, DefaultPagination } from '@/components'
 import { adminMemberTable } from '@/utils/constant/TitleTable/AdminMemberTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
 
 const Member = () => {
     const [columnsData]=useState<HeaderItem[]>(adminMemberTable);
-    const [tableData, setTableData]=useState<any[]>([
-        {
-          "name": "Marketplace",
-          "quantity": 2458,
-          "date": "12.Jan.2021",
-          "progress": 75.5
-        },
-        {
-          "name": "Venus DB PRO",
-          "quantity": 1485,
-          "date": "21.Feb.2021",
-          "progress": 35.4
-        },
-        {
-          "name": "Venus DS",
-          "quantity": 1024,
-          "date": "13.Mar.2021",
-          "progress": 25
-        },
-        {
-          "name": "Venus 3D Asset",
-          "quantity": 858,
-          "date": "24.Jan.2021",
-          "progress": 100
-        },
-        {
-          "name": "Marketplace",
-          "quantity": 258,
-          "date": "Oct 24, 2022",
-          "progress": 75
-        }
-      ]
-      );
+    const [tableData, setTableData]=useState<AccountInformationDto[]>([]);
+    const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
 
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
@@ -66,16 +36,36 @@ const Member = () => {
     } = tableInstance;
     initialState.pageSize = 5;
 
+    const getAllAccountInformationSearch=async ():Promise<void> => {
+    }
+
+    const getAllAccountInformation=async ():Promise<void>=>{
+      try{
+        await accountInformationApiRequest.getAllAccountInformation({search:'', pageNumber:1}).then((res)=>{
+          setTableData(res.payload.data.accountInformations);
+          
+          setMetaData(res.payload.data.metaData);
+        })
+      }
+      catch(error){
+        console.log(error);
+      }
+    }
+
+    useEffect(()=>{
+      getAllAccountInformation();
+    }, [setTableData])
+
   return (
     <Card className={"w-full pb-10 p-4 h-full"}>
-        <header className="relative flex items-center justify-between">
-            <div className="text-xl font-bold text-navy-700 dark:text-white">
-            4-Columns Table
-            </div>
+      <header className="relative flex items-center justify-between">
+        <div className="text-xl font-bold text-navy-700">
+          
+        </div>
       </header>
 
       <div className="mt-8 h-full overflow-x-auto">
-      <table {...getTableProps()} className="w-full">
+        <table {...getTableProps()} className="w-full">
           <thead>
             {headerGroups.map((headerGroup:any, index:any) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={index}>
@@ -83,10 +73,10 @@ const Member = () => {
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     key={index}
-                    className="border-b border-gray-200 pr-14 pb-[10px] text-start dark:!border-navy-700"
+                    className="border-b border-gray-200 pr-14 pb-[10px] text-start"
                   >
                     <div className="flex w-full justify-between pr-10 text-xs tracking-wide text-gray-600">
-                      {column.render("Header")}
+                      {column.render("TitleHeader")}
                     </div>
                   </th>
                 ))}
@@ -100,27 +90,55 @@ const Member = () => {
                 <tr {...row.getRowProps()} key={index}>
                   {row.cells.map((cell:any, index:any) => {
                     let data;
-                    if (cell.column.Header === "NAME") {
+                    if (cell.column.Header === "USERNAME") {
                       data = (
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        <p className="text-sm font-bold text-navy-700">
                           {cell.value}
                         </p>
                       );
-                    } else if (cell.column.Header === "PROGRESS") {
+                    } else if (cell.column.Header === "PHONE") {
                       data = (
-                        <p className="mr-[10px] text-sm font-semibold text-navy-700 dark:text-white">
-                          {cell.value}%
-                        </p>
-                      );
-                    } else if (cell.column.Header === "QUANTITY") {
-                      data = (
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        <p className="mr-[10px] text-sm font-semibold text-navy-700">
                           {cell.value}
                         </p>
                       );
-                    } else if (cell.column.Header === "DATE") {
+                    } else if (cell.column.Header === "EMAIL") {
                       data = (
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        <p className="text-sm font-bold text-navy-700">
+                          {cell.value}
+                        </p>
+                      );
+                    } else if (cell.column.Header === "BALANCE") {
+                      data = (
+                        <p className="text-sm font-bold text-navy-700 text-right">
+                          {cell.value}
+                        </p>
+                      );
+                    }
+                    else if (cell.column.Header === "ACOINBALANCE") {
+                      data = (
+                        <p className="text-sm font-bold text-navy-700 text-right">
+                          {cell.value}
+                        </p>
+                      );
+                    }
+                    else if (cell.column.Header === "PROMOTIONALBALANCE") {
+                      data = (
+                        <p className="text-sm font-bold text-navy-700 text-right">
+                          {cell.value}
+                        </p>
+                      );
+                    }
+                    else if (cell.column.Header === "ACTIVE") {
+                      data = (
+                        <p className="text-sm font-bold text-navy-700">
+                          <CheckboxUI disabled={true} isChecked={cell.value}></CheckboxUI>
+                        </p>
+                      );
+                    }
+                    else if (cell.column.Header === "REGISTERDATE") {
+                      data = (
+                        <p className="text-sm font-bold text-navy-700">
                           {cell.value}
                         </p>
                       );
@@ -141,6 +159,15 @@ const Member = () => {
           </tbody>
         </table>
       </div>
+
+      <DefaultPagination 
+          currentPage={metaData.currentPage}
+          totalPages={metaData.totalPages}
+          hasPrevious={metaData.hasPrevious}
+          hasNext={metaData.hasNext} 
+          EventClickSwitchPage={function (numberPage: number): void {
+        throw new Error('Function not implemented.');
+      } }></DefaultPagination>
 
     </Card>
   )
