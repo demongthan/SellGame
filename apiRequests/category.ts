@@ -14,8 +14,14 @@ export const categoryApiRequest = {
     getGame:(type:number)=>
         http.get<ApiReponse<CategoryDto[]>>(`/Category/GetAllCategory?Fields=Id%2C%20Name%2C%20TotalSale%2C%20Rating%2C%20PathUrl&CategoryType=${type}&Active=true`, false),
 
-    getCategoryById:(id:string | null)=>
-        http.get<ApiReponse<CategoryDto>>(`/Category/GetCategoryById/${id}?fileds=Name%2CDescription%2CActive%2CProperties`, false),
+    getCategoryById:(input:{id:string | null, fields: string})=>
+        http.get<ApiReponse<CategoryDto>>(`/Category/GetCategoryById/${input.id}?fileds=${input.fields}`, false),
+
+    uploadImageCategory:(input:{id:string | null, body: FormData})=>
+        http.put<ApiReponse<boolean>>(`/Category/UpdateUrlCategory/${input.id}`, false, input.body),
+
+    deleteCategory:(id:string | null)=>
+        http.delete<ApiReponse<boolean>>(`/Category/DeleteCategory/${id}`, false),
 
     getAllCategory:(input:{search:string, pageNumber:number})=>
         http.get<ApiReponse<CategorySearchDto>>(`/Category/GetAllCategory?Fields=Id%2CCode%2CName%2CType%2CDescription%2CTotal%2CTotalSale%2CRating%2CActive%2CPathUrl%2CCreatedDateUtc%2CUpdatedDateUtc&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`, false)

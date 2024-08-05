@@ -76,9 +76,25 @@ input.defaultCheckbox::before {
 	position: absolute; 
 	left: 50%;
 	transform: translate(-50%, 0px);
+}
+
+input.defaultCheckboxInline::before {
+	content: url(/svg/checked.svg); 
+	color: white;
+	opacity: 0; 
+	height: 16px; 
+	width: 16px;
+	position: absolute; 
+	left: 50%;
+	transform: translate(-50%, 0px);
+  top:0%;
 } 
 
 input:checked.defaultCheckbox::before { 
+	opacity: 1;
+}
+
+input:checked.defaultCheckboxInline::before { 
 	opacity: 1;
 }
 

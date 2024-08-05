@@ -2,14 +2,26 @@
 
 import { categoryApiRequest } from '@/apiRequests/category';
 import { CategoryDto } from '@/apiRequests/DataDomain/Category/CategoryDto';
-import { ButtonAddItemUI, ButtonSearchUI, Card, CategoryModalUI, CategoryTypeDisplay, CheckboxUI, DefaultPagination, InputUI, LoadingUI, RatingDisplay, SelectUI, UploadImageModalUI } from '@/components'
+import { ButtonAddItemUI, 
+  ButtonSearchUI, 
+  Card, 
+  CategoryModalUI, 
+  CategoryTypeDisplay, 
+  CheckboxUI, 
+  DefaultPagination, 
+  DeleteModalUI, 
+  InputUI, LoadingUI, 
+  RatingDisplay, SelectUI, 
+  UploadImageModalUI 
+} from '@/components'
 import { categoryTypeSearch, CategoryTypeSearchValue } from '@/utils/constant/CategoryTypeSearch';
 import { adminCategoryTable } from '@/utils/constant/TitleTable/AdminCategoryTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
+import { showToast } from '@/utils/showToast';
 import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
-import { Button } from '@headlessui/react';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 
+import { Button } from '@headlessui/react';
+import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image'
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
@@ -21,7 +33,9 @@ const Category = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [searchConditions, setSearchConditions]=useState<string[]>([]);
     const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
+    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
     const [idCategory, setIdCategory] = useState<string>('');
+    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
     const ref = useRef<HTMLFormElement>(null);
 
     const columns = useMemo(() => columnsData, [columnsData]);
@@ -47,9 +61,16 @@ const Category = () => {
   } = tableInstance;
   initialState.pageSize = 5;
 
-  const getAllCategory=async():Promise<void>=>{
-    setIsLoading(false);
+  const openModel=()=>
+    setIsOpenModel(!isOpenModel);
 
+  const openImageModel=()=>
+    setIsOpenImageModel(!isOpenImageModel);
+
+  const openDeleteModal=()=>
+    setIsOpenDeleteModal(!isOpenDeleteModal);
+
+  const getAllCategory=async():Promise<void>=>{
     try{
       ref.current?.reset();
       setSearchConditions([]);
@@ -87,6 +108,23 @@ const Category = () => {
       setIsLoading(false);
     }
   }
+
+  const refreshAllCategory=async ():Promise<void>=>{
+    try{
+      await categoryApiRequest.getAllCategory({search:searchConditions.join('&'), pageNumber:metaData.currentPage}).then((res)=>{
+        setTableData(res.payload.data.categories);
+        
+        setMetaData(res.payload.data.metaData);
+
+        setIsLoading(false);
+      })
+    }
+    catch(error){
+      console.log(error);
+
+      setIsLoading(false);
+    }
+  } 
 
   const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
     event.preventDefault();
@@ -134,8 +172,29 @@ const Category = () => {
     }
   }
 
-  const openModel=()=>
-    setIsOpenModel(!isOpenModel);
+  const deleteCategory=async ():Promise<void> => {
+    setIsLoading(true);
+
+    try{
+      await categoryApiRequest.deleteCategory(idCategory).then((res)=>{
+        if(res.payload.data){
+            showToast("success", <p>{res.payload.message}</p>)
+            openDeleteModal()
+            refreshAllCategory();
+        }
+        else{
+            showToast("error", <p>{res.payload.message}</p>)
+        }
+
+        setIsLoading(true);
+    });
+    }
+    catch(error){
+      console.log(error);
+      showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
+      setIsLoading(false);
+    }
+  }
 
   useEffect(()=>{
     getAllCategory();
@@ -143,11 +202,11 @@ const Category = () => {
     
   return (
     <>
-      <UploadImageModalUI closeModel={function (): void {
-        throw new Error('Function not implemented.');
-      } }></UploadImageModalUI>
+      {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'danh mục'} eventDeleteItem={deleteCategory }></DeleteModalUI>)}
 
-      {isOpenModel && (<CategoryModalUI refreshAllCategory={getAllCategory} closeModel={openModel} idCategory={idCategory} ></CategoryModalUI>)}
+      {isOpenImageModel && (<UploadImageModalUI closeModel={openImageModel} idCategory={idCategory} refreshAllCategoryUpdate={refreshAllCategory}></UploadImageModalUI>)}
+
+      {isOpenModel && (<CategoryModalUI refreshAllCategoryCreate={getAllCategory} closeModel={openModel} idCategory={idCategory} refreshAllCategoryUpdate={refreshAllCategory} ></CategoryModalUI>)}
 
       <Card className={"w-full pb-10 p-4 h-full"}>
           <header className="relative">
@@ -172,7 +231,7 @@ const Category = () => {
                 <ButtonAddItemUI titleButton={'Thêm danh mục'} eventButtonClicked={openModel} ></ButtonAddItemUI>
               </div>
               <div className="mt-8 w-full h-[50vh] overflow-auto">
-                <table {...getTableProps()} className="w-[106rem]">
+                <table {...getTableProps()} className="w-[107rem]">
                   <thead className='sticky top-0 z-10 bg-white shadow-custom'>
                     {headerGroups.map((headerGroup:any, index:any) => (
                       <tr {...headerGroup.getHeaderGroupProps()} key={index}>
@@ -269,18 +328,28 @@ const Category = () => {
                             }
                             else if (cell.column.Header === "ACTION") {
                               data = (
-                                <div className='flex flex-row w-[6rem] gap-3'>
+                                <div className='flex flex-row w-[7rem] gap-3'>
+                                  <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                      event.preventDefault();                                       
+                                      setIdCategory(cell.value);
+                                      openImageModel();
+                                    }}>
+                                    <ArrowUpTrayIcon className='h-[25px] w-[25px] text-blue-600'></ArrowUpTrayIcon>
+                                  </Button>
+
                                   <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                       event.preventDefault();
-                                        
                                       setIdCategory(cell.value);
-
                                       openModel();
                                     }}>
                                     <PencilSquareIcon className='h-[25px] w-[25px] text-green-500'></PencilSquareIcon>
                                   </Button>
 
-                                  <Button>
+                                  <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                      event.preventDefault();
+                                      setIdCategory(cell.value);
+                                      openDeleteModal();
+                                    }}>
                                     <TrashIcon className='h-[25px] w-[25px] text-red-600'></TrashIcon>
                                   </Button>
                                 </div>

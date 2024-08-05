@@ -2,27 +2,91 @@
 
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { LoadingUI } from '@/components';
+import { categoryApiRequest } from '@/apiRequests/category';
+import { showToast } from '@/utils/showToast';
 
 interface Props{
     closeModel:()=>void,
+    idCategory:string,
+    refreshAllCategoryUpdate:()=>Promise<void>,
 }
 
-const UploadImageModalUI = ({closeModel}:Props) => {
-    const [file, setFile] = useState<any>("")
+const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:Props) => {
+    const [file, setFile] = useState<any>(null);
+    const [srcFile, setSrcFile]=useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
 
   const handleFileChange = (event:any) => {
     const fileUpload = event.target.files[0];
 
     setFile(fileUpload);
+
+    setSrcFile(URL.createObjectURL(fileUpload));
   }
+
+  const getUrlFileInit=async ():Promise<void>=>{
+    try{
+        await categoryApiRequest.getCategoryById({id:idCategory,fields: "PathUrl"}).then((res)=>{
+            setSrcFile(res.payload.data.PathUrl);
+
+            setIsLoading(false);
+        })
+    }
+    catch(error){
+        console.log(error);
+
+        setIsLoading(false);
+    }
+  }
+
+  const eventUploadImage = async ():Promise<void>=>{
+    setIsLoadingPopup(true);    
+    try{
+        const formData:FormData = new FormData();
+        formData.append("file", file);
+
+        await categoryApiRequest.uploadImageCategory({id:idCategory,body:formData}).then((res)=>{
+            if(res.payload.data){
+                showToast("success", <p>{res.payload.message}</p>)
+
+                refreshAllCategoryUpdate();
+            }
+            else{
+                showToast("error", <p>{res.payload.message}</p>)
+            }
+
+            setIsLoadingPopup(false); 
+        });
+    }
+    catch(error){
+        console.log(error);
+
+        showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
+
+        setIsLoadingPopup(false); 
+    }
+  }
+
+  useEffect(()=>{
+    getUrlFileInit();
+  }, [setSrcFile])
 
   return (
     <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[200] justify-center bg-model
     items-center w-full md:inset-0 h-full max-h-full">
         <div className="relative p-4 w-full max-w-md max-h-full">
+        {isLoading?(<LoadingUI></LoadingUI>):(
             <div className="relative bg-white rounded-lg shadow">
+                {isLoadingPopup &&(
+                    <div className='w-full h-full flex items-center justify-center bg-s2gray7 absolute top-0 z-[1000]'>
+                        <span className='loader'></span>
+                    </div>
+                )} 
+
                 <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Ảnh
@@ -32,7 +96,7 @@ const UploadImageModalUI = ({closeModel}:Props) => {
                         event.preventDefault();
                         
                         closeModel();
-                      }}>
+                    }}>
                         <XMarkIcon className="w-6 h-6"></XMarkIcon>
                         <span className="sr-only">Close modal</span>
                     </Button>
@@ -40,7 +104,7 @@ const UploadImageModalUI = ({closeModel}:Props) => {
                 
                 <div className="p-4 md:p-5">
                     <div className="flex flex-col gap-4 mb-4">
-                        {file && <Image src={URL.createObjectURL(file)} width={1000} height={1000} alt='Uplaoded Media'></Image>}
+                        <Image src={srcFile} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} alt='Uplaoded Media'></Image>
 
                         <label className="block">
                             <span className="sr-only">Choose profile photo</span>
@@ -55,12 +119,12 @@ const UploadImageModalUI = ({closeModel}:Props) => {
                     </div>
 
                     <div className='mt-6'>
-                    <Button className={`flex flex-row gap-2 justify-center items-center text-white bg-s2cyan1 border border-transparent 
+                    <Button disabled={file==null} className={`flex flex-row gap-2 justify-center items-center text-white bg-s2cyan1 border border-transparent 
                         rounded-md px-4 h-9 disabled:opacity-70 hover:opacity-70`}
                         onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                 event.preventDefault();
                             
-                
+                                eventUploadImage();
                         }}>
                         <ArrowUpTrayIcon className="h-[1.5rem] w-[1.5rem]"></ArrowUpTrayIcon>
                         Tải ảnh
@@ -68,6 +132,7 @@ const UploadImageModalUI = ({closeModel}:Props) => {
                     </div>
                 </div>
             </div>
+        )}
         </div>
     </div>
   )

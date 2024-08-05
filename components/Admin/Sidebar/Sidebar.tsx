@@ -34,7 +34,7 @@ const Sidebar:FC<Props> = () => {
   
           <div className="mt-[58px] mb-7 h-px bg-gray-300" />
             {/* Nav item */}
-            <ul className="mb-auto pt-1">
+            <ul className="flex flex-col gap-3 mb-auto pt-1">
               <Links onClickRoute={isMobile ? () => setOpenSidebar(false) : undefined} />
             </ul>
         </div>

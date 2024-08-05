@@ -7,18 +7,19 @@ import { categoryTypeSearch } from '@/utils/constant/CategoryTypeSearch'
 import { Button } from '@headlessui/react'
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import React, { FormEvent, useEffect, useState } from 'react'
-import PropertiesModalUI from './PropertiesModalUI'
+import PropertiesModalUI from '../PropertiesModalUI'
 import { categoryApiRequest } from '@/apiRequests/category'
 import { showToast } from '@/utils/showToast'
 import { isNullOrEmpty } from '@/utils/utils'
 
 interface Props{
-    refreshAllCategory:()=>Promise<void>,
+    refreshAllCategoryCreate:()=>Promise<void>,
+    refreshAllCategoryUpdate:()=>Promise<void>,
     closeModel:()=>void,
     idCategory:string
 }
 
-const CategoryModalUI = ({closeModel, refreshAllCategory, idCategory}:Props) => {
+const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCategoryUpdate, idCategory}:Props) => {
     const [isOpenPropertiesModal, setIsOpenPropertiesModal]=useState<boolean>(false);
     const [errArr, setErrArr]=useState<ErrorValidate[]>();
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
@@ -55,7 +56,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategory, idCategory}:Props) => 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message}</p>);
 
-                        refreshAllCategory()
+                        refreshAllCategoryCreate()
                     }
                     else{
                         showToast("error", <p>{result.payload.message}</p>);
@@ -67,7 +68,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategory, idCategory}:Props) => 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message}</p>);
 
-                        refreshAllCategory();
+                        refreshAllCategoryUpdate();
                     }
                     else{
                         showToast("error", <p>{result.payload.message}</p>);
@@ -99,7 +100,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategory, idCategory}:Props) => 
 
     const getCategoryInit=async ():Promise<void>=>{
         try{
-            await categoryApiRequest.getCategoryById(idCategory).then((res)=>{
+            await categoryApiRequest.getCategoryById({id:idCategory,fields: "Name%2CDescription%2CActive%2CProperties"}).then((res)=>{
                 if(res.payload.data){
                     setActive(res.payload.data.Active)
 

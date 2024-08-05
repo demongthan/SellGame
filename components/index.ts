@@ -26,9 +26,10 @@ import CheckboxUI from "./Common/UI/CheckboxUI";
 import CategoryTypeDisplay from "./Admin/CategoryTypeDisplay";
 import RatingDisplay from "./Common/RatingDisplay";
 import ButtonAddItemUI from "./Common/UI/Button/ButtonAddItemUI";
-import CategoryModalUI from "./Admin/Modal/CategoryModalUI";
+import CategoryModalUI from "./Admin/Modal/Category/CategoryModalUI";
 import ButtonUpdateItemUI from "./Common/UI/Button/ButtonUpdateItemUI";
-import UploadImageModalUI from "./Admin/Modal/UploadImageModalUI";
+import UploadImageModalUI from "./Admin/Modal/Category/UploadImageModalUI";
+import DeleteModalUI from "./Admin/Modal/DeleteModalUI";
 
 export{
     Header,
@@ -61,5 +62,6 @@ export{
     ButtonAddItemUI,
     CategoryModalUI,
     ButtonUpdateItemUI,
-    UploadImageModalUI
+    UploadImageModalUI,
+    DeleteModalUI,
 }

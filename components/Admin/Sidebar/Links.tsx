@@ -24,7 +24,7 @@ export const SidebarLinks=({ onClickRoute }: Props) =>{
         return (
           // <Link key={index} href={route.layout + "/" + route.path}>
           <Link key={index} href={route.path} onClick={onClickRoute}>
-            <div className="relative mb-3 flex hover:cursor-pointer">
+            <div className="relative py-1 flex hover:cursor-pointer">
               <li
                 className="my-[3px] flex cursor-pointer items-center px-8"
                 key={index}
@@ -38,7 +38,7 @@ export const SidebarLinks=({ onClickRoute }: Props) =>{
                   {route.icon ? parse(route.icon) : <Squares2X2Icon className="h-6 w-6"></Squares2X2Icon>}{" "}
                 </span>
                 <p
-                  className={`leading-1 ml-4 mt-2 flex ${activeRoute(route.path) === true
+                  className={`leading-1 ml-4 flex ${activeRoute(route.path) === true
                     ? "font-bold text-navy-700"
                     : "font-medium text-gray-600"
                     }`}
