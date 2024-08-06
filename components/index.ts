@@ -31,6 +31,7 @@ import ButtonUpdateItemUI from "./Common/UI/Button/ButtonUpdateItemUI";
 import UploadImageModalUI from "./Admin/Modal/Category/UploadImageModalUI";
 import DeleteModalUI from "./Admin/Modal/DeleteModalUI";
 import ImageDetailModalUI from "./Admin/Modal/ImageDetail/ImageDetailModalUI";
+import UploadImageForImageDetailModalUI from "./Admin/Modal/ImageDetail/UploadImageForImageDetailModalUI";
 
 export{
     Header,
@@ -65,5 +66,6 @@ export{
     ButtonUpdateItemUI,
     UploadImageModalUI,
     DeleteModalUI,
-    ImageDetailModalUI
+    ImageDetailModalUI,
+    UploadImageForImageDetailModalUI
 }

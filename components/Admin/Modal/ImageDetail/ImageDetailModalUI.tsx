@@ -6,16 +6,17 @@ import { showToast } from '@/utils/showToast';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 
 interface Props{
     closeModal:()=>void,
     idImageDetail:string,
-    refreshAllCategoryCreate:()=>Promise<void>
+    refreshAllCategoryCreate:()=>Promise<void>,
+    refreshAllCategoryUpdate:()=>Promise<void>,
 }
 
-const ImageDetailModalUI = ({closeModal, idImageDetail}:Props) => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate, refreshAllCategoryUpdate}:Props) => {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
     const [isChangeData, setIsChangeData] = useState<boolean>(false);
     const isCreate=isNullOrEmpty(idImageDetail);
@@ -34,7 +35,7 @@ const ImageDetailModalUI = ({closeModal, idImageDetail}:Props) => {
                 const formData = new FormData(event.currentTarget)
                 formData.append("isCreate", isCreate?"true":"false");
 
-                const response = await fetch('/api/category', {
+                const response = await fetch('/api/image-detail', {
                     method: 'POST',
                     body: formData,
                 })
@@ -45,7 +46,7 @@ const ImageDetailModalUI = ({closeModal, idImageDetail}:Props) => {
                     const result = await imageDetailApiRequest.createImageDetail(data.data);
 
                     if(result.payload.data){
-                        showToast("success", <p>{result.payload.message}</p>);
+                        showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
 
                         refreshAllCategoryCreate()
                     }
@@ -64,6 +65,25 @@ const ImageDetailModalUI = ({closeModal, idImageDetail}:Props) => {
                     setErrArr(errorArr);
                     setIsLoadingPopup(false);
                 }
+            }
+            else{
+                const updateImageDetailDto:UpdateImageDetailDto={
+                    Description:description,
+                    Active:active
+                }
+
+                const result = await imageDetailApiRequest.updateImageDetail({id:idImageDetail, body:updateImageDetailDto});
+
+                    if(result.payload.data){
+                        showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
+
+                        refreshAllCategoryUpdate();
+                    }
+                    else{
+                        showToast("error", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
+                    }
+
+                setIsLoadingPopup(false);
             }
         }
         catch(error){
@@ -88,6 +108,30 @@ const ImageDetailModalUI = ({closeModal, idImageDetail}:Props) => {
                 break;
         }
     }
+
+    const getImageDetailInit=async (): Promise<void> => {
+        try{
+            await imageDetailApiRequest.getImageDetailById({id:idImageDetail, fields:"Description%2CActive"}).then((res)=>{
+                setActive(res.payload.data.Active);
+                setDescription(res.payload.data.Description);
+                setIsLoading(false);
+            })
+        }
+        catch(error){
+            console.log(error);
+
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(()=>{
+        if(!isCreate){
+            getImageDetailInit();
+        }
+        else{
+            setIsLoading(false);
+        }
+    },[setActive, setDescription])
 
   return (
     <>

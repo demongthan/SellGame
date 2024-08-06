@@ -1,31 +1,29 @@
 "use client"
 
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, ImageDetailModalUI, InputUI, LoadingUI, SelectUI, UploadImageForImageDetailModalUI } from '@/components'
-import { adminImageDetailTable } from '@/utils/constant/TitleTable/AdminImageDetailTable';
+import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI, SelectUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
-
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
 import Image from 'next/image'
 import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
-import { imageDetailApiRequest } from '@/apiRequests/image-detail';
-import { showToast } from '@/utils/showToast';
-import { ImageDetailDto } from '@/apiRequests/DataDomain/ImageDetail/ImageDetailDto';
+import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
+import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 
-const ImageDetail = () => {
+const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);
-    const [columnsData]=useState<HeaderItem[]>(adminImageDetailTable);
-    const [tableData, setTableData]=useState<ImageDetailDto[]>([]);
     const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true"]);
+    const [columnsData]=useState<HeaderItem[]>(adminAccGameDetailTable);
+    const [tableData, setTableData]=useState<AccGameDetailDto[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [searchConditions, setSearchConditions]=useState<string[]>([]);
+
     const [active, setActive] = useState<boolean>(true);
-    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
-    const [idImageDetail, setIdImageDetail] = useState<string>('');
-    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
-    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
+    const [category, setCategory]=useState<any>({Name:""});
+    const [categorySearch, setCategorySearch]=useState<ItemSelect[]>([]);
+    const [code, setCode]=useState<string>();
+    
 
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
@@ -50,21 +48,10 @@ const ImageDetail = () => {
     } = tableInstance;
     initialState.pageSize = 5;
 
-    const openModel=()=>
-        setIsOpenModel(!isOpenModel);
-
-    const openDeleteModal=()=>
-        setIsOpenDeleteModal(!isOpenDeleteModal);
-
-    const openImageModel=()=>
-        setIsOpenImageModel(!isOpenImageModel);
-
     const openCreateModal=()=>{
-        setIdImageDetail('');
 
-        openModel();
     }
-    
+
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
         setIsLoading(true);
@@ -79,55 +66,55 @@ const ImageDetail = () => {
             else{
                 searches.push("Active=false");
             }
-        
+
             if(!isNullOrEmpty(formData.get("Code")?.toString())){
                 searches.push("Code="+formData.get("Code")?.toString());
             }
-        
+
             setSearchConditions(searches);
 
-            await imageDetailApiRequest.getAllImageDetail({search:searches.join('&'), pageNumber:1}).then((res)=>{
-                setTableData(res.payload.data.imageDetails);
-                
+            await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searches.join('&'), pageNumber:1, 
+                fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
-        
                 setIsLoading(false);
             })
         }
         catch(error){
             console.log(error);
             setIsLoading(false);
-            showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
         }
     }
 
-    const getAllImageDetailInit=async ():Promise<void> => {
+    const getAllAccGameDetailByPageNumber=async (pageNumber:number):Promise<void> => {
         setIsLoading(true);
+
         try{
-            ref.current?.reset();
+            await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:pageNumber, 
+                fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                setTableData(res.payload.data.accGameDetails);
+                setMetaData(res.payload.data.metaData);
+                setIsLoading(false);
+            })
+        }
+        catch(error){
+            console.log(error);
+            setIsLoading(false);
+        }
+    }
+
+    const getAllImageDetail=async ():Promise<void> => {
+        setIsLoading(true);
+
+        try{
             setActive(true);
-            setSearchConditions(["Active=true"]);
-      
-            await imageDetailApiRequest.getAllImageDetail({search:'Active=true', pageNumber:1}).then((res)=>{
-                setTableData(res.payload.data.imageDetails);
-                
-                setMetaData(res.payload.data.metaData);
-        
-                setIsLoading(false);
-            })
-        }catch(error){
-            console.log(error);
-    
-            setIsLoading(false);
-        }
-    }
+            setCode('');
+            setSearchConditions([]);
+            setCategory(categorySearch[0]);
 
-    const refreshAllImageDetail=async (): Promise<void> =>{
-        setIsLoading(true);
-
-        try{
-            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:1}).then((res)=>{
-                setTableData(res.payload.data.imageDetails); 
+            await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:categorySearch[0].Value, search:searchConditions.join('&'), pageNumber:1, 
+                fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
             })
@@ -138,76 +125,64 @@ const ImageDetail = () => {
         }
     }
 
-    const getAllImageDetailByPageNumber=async (pageNumber:number):Promise<void> => {
-        setIsLoading(true);
-        
+    const handleChange = (name:string) => (e: any) => {
+        switch (name) {
+            case "active":
+                setActive(e.target.isChecked);
+                break;
+            case "category":
+                setCategory(e);
+                break;
+            case "code":
+                setCode(e.target.value);
+                break;
+            default:
+                break;
+        }
+    }
+
+    const getAllAccGameDetailInit=async ():Promise<void>=>{
         try{
-            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:pageNumber}).then((res)=>{
-                setTableData(res.payload.data.imageDetails); 
+            await accGameDetailApiRequest.getAllAccGameDetailForAdminInit().then((res)=>{
+                setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
+
+                const itemSelects:ItemSelect[]=res.payload.data.selectSearchItems.map(({...item})=>({
+                    Name:item.name,
+                    Value:item.value
+                }))
+                setCategorySearch(itemSelects);
+                setCategory(itemSelects?itemSelects[0]:{Name:""});
+
                 setIsLoading(false);
             })
         }
         catch(error){
             console.log(error);
-            setIsLoading(false);
-        }
-    }
-
-    const handleChange = ()=> {
-        setActive(!active);
-    }
-
-    const deleteImageDetail=async ():Promise<void> => {
-        setIsLoading(true);
-    
-        try{
-            await imageDetailApiRequest.deleteImageDetail(idImageDetail).then((res)=>{
-                if(res.payload.data){
-                    showToast("success", <p>{res.payload.message.replace("{Item}", "ảnh")}</p>)
-                    openDeleteModal()
-                    refreshAllImageDetail();
-                }
-                else{
-                    showToast("error", <p>{res.payload.message}</p>)
-                }
-        
-                setIsLoading(true);
-            });
-        }
-        catch(error){
-            console.log(error);
-            showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
             setIsLoading(false);
         }
     }
 
     useEffect(()=>{
-        getAllImageDetailInit();
-    }, [setTableData])
+        getAllAccGameDetailInit();
+    }, [setTableData, setMetaData, setCategorySearch, setIsLoading])
 
     return (
         <>
-            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'danh mục'} eventDeleteItem={deleteImageDetail}></DeleteModalUI>)}
-
-            {isOpenImageModel && (<UploadImageForImageDetailModalUI closeModel={openImageModel} idImageDetail={idImageDetail} refreshAllImageDetailUpdate={refreshAllImageDetail}></UploadImageForImageDetailModalUI>)}
-
-            {isOpenModel && (<ImageDetailModalUI closeModal={openModel} idImageDetail={idImageDetail} 
-            refreshAllCategoryCreate={getAllImageDetailInit} refreshAllCategoryUpdate={refreshAllImageDetail}></ImageDetailModalUI>)}
-
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
                     <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
                         <div className='flex flex-row w-full gap-10'>
-                            <SelectUI isBlockLabel={false} label={"Loại :"} name={"CategoryType"} data={[]} classDiv={"w-[28%]"} classLabel={"w-[30%]"} classSelect={"w-[70%]"}></SelectUI>
+                            <SelectUI isBlockLabel={false} label={"Loại :"} name={"Category"} data={categorySearch} selected={category}
+                            classDiv={"w-[30%]"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={setCategory}></SelectUI>
 
-                            <InputUI name='Code' isBlockLabel={false} label={"Mã số :"} classDiv={"w-[30%]"} classInput={"w-[80%]"} classLabel={"w-[20%]"}></InputUI>
+                            <InputUI name='Code' value={code} onChangeEvent={handleChange("code")} isBlockLabel={false} label={"Mã số :"} classDiv={"w-[30%]"} classInput={"w-[80%]"} classLabel={"w-[20%]"}></InputUI>
 
                             <CheckboxUI name='Active' isChecked={active} label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}
-                            onChangeEvent={handleChange}></CheckboxUI>
+                            onChangeEvent={handleChange("active")}></CheckboxUI>
                         </div>
 
-                        <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllImageDetailInit}></ButtonSearchUI>
+                        <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllImageDetail}></ButtonSearchUI>
                     </form>
                 </header>
 
@@ -248,14 +223,27 @@ const ImageDetail = () => {
 
                                                     if (cell.column.Header === "CODE") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 pr-4 w-[12rem]">
+                                                            <p className="text-sm text-navy-700 pr-4 w-[15rem]">
                                                                 {cell.value}
                                                             </p>
                                                         );
-                                                    }else if (cell.column.Header === "DESCRIPTION") {
+                                                    }else if (cell.column.Header === "PRICE") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 w-[15rem] pr-4">
-                                                                {cell.value}
+                                                            <p className="text-sm text-navy-700 w-[12rem] pr-4">
+                                                                {cell.value.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}
+                                                            </p>
+                                                        );
+                                                    }
+                                                    else if (cell.column.Header === "DISCOUNT") {
+                                                        data = (
+                                                            <p className="text-sm text-navy-700 w-[7rem] pr-4">
+                                                                {cell.value}%
+                                                            </p>
+                                                        );
+                                                    }else if (cell.column.Header === "DEPOSIT") {
+                                                        data = (
+                                                            <p className="text-sm text-navy-700 w-[12rem] pr-4">
+                                                                {cell.value.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}
                                                             </p>
                                                         );
                                                     }else if (cell.column.Header === "ACTIVE") {
@@ -290,24 +278,21 @@ const ImageDetail = () => {
                                                             <div className='flex flex-row w-[7rem] gap-3'>
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();                                       
-                                                                    setIdImageDetail(cell.value);
-                                                                    openImageModel();
+                                                                   
                                                                 }}>
                                                                     <ArrowUpTrayIcon className='h-[25px] w-[25px] text-blue-600'></ArrowUpTrayIcon>
                                                                 </Button>
 
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();
-                                                                    setIdImageDetail(cell.value);
-                                                                    openModel();
+                                                                    
                                                                 }}>
                                                                     <PencilSquareIcon className='h-[25px] w-[25px] text-green-500'></PencilSquareIcon>
                                                                 </Button>
 
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();
-                                                                    setIdImageDetail(cell.value);
-                                                                    openDeleteModal();
+                                                                    
                                                                 }}>
                                                                     <TrashIcon className='h-[25px] w-[25px] text-red-600'></TrashIcon>
                                                                 </Button>
@@ -339,7 +324,7 @@ const ImageDetail = () => {
                         totalPages={metaData.totalPages}
                         hasPrevious={metaData.hasPrevious}
                         hasNext={metaData.hasNext} 
-                        EventClickSwitchPage={getAllImageDetailByPageNumber}>                    
+                        EventClickSwitchPage={getAllAccGameDetailByPageNumber}>                    
                     </DefaultPagination>
                 </footer>
             </Card>
@@ -347,4 +332,4 @@ const ImageDetail = () => {
     )
 }
 
-export default ImageDetail
+export default AccGameDetail

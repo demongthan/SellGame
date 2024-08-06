@@ -5,16 +5,16 @@ import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { LoadingUI } from '@/components';
-import { categoryApiRequest } from '@/apiRequests/category';
 import { showToast } from '@/utils/showToast';
+import { imageDetailApiRequest } from '@/apiRequests/image-detail';
 
 interface Props{
     closeModel:()=>void,
-    idCategory:string,
-    refreshAllCategoryUpdate:()=>Promise<void>,
+    idImageDetail:string,
+    refreshAllImageDetailUpdate:()=>Promise<void>,
 }
 
-const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:Props) => {
+const UploadImageForImageDetailModalUI = ({closeModel, idImageDetail, refreshAllImageDetailUpdate}:Props) => {
     const [file, setFile] = useState<any>(null);
     const [srcFile, setSrcFile]=useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -22,23 +22,19 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:P
 
   const handleFileChange = (event:any) => {
     const fileUpload = event.target.files[0];
-
     setFile(fileUpload);
-
     setSrcFile(URL.createObjectURL(fileUpload));
   }
 
   const getUrlFileInit=async ():Promise<void>=>{
     try{
-        await categoryApiRequest.getCategoryById({id:idCategory,fields: "PathUrl"}).then((res)=>{
+        await imageDetailApiRequest.getImageDetailById({id:idImageDetail,fields: "PathUrl"}).then((res)=>{
             setSrcFile(res.payload.data.PathUrl);
-
             setIsLoading(false);
         })
     }
     catch(error){
         console.log(error);
-
         setIsLoading(false);
     }
   }
@@ -49,11 +45,10 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:P
         const formData:FormData = new FormData();
         formData.append("file", file);
 
-        await categoryApiRequest.uploadImageCategory({id:idCategory,body:formData}).then((res)=>{
+        await imageDetailApiRequest.uploadImageForImageDetail({id:idImageDetail,body:formData}).then((res)=>{
             if(res.payload.data){
                 showToast("success", <p>{res.payload.message}</p>)
-
-                refreshAllCategoryUpdate();
+                refreshAllImageDetailUpdate();
             }
             else{
                 showToast("error", <p>{res.payload.message}</p>)
@@ -94,7 +89,6 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:P
                     <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                     w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                         event.preventDefault();
-                        
                         closeModel();
                     }}>
                         <XMarkIcon className="w-6 h-6"></XMarkIcon>
@@ -104,7 +98,7 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:P
                 
                 <div className="p-4 md:p-5">
                     <div className="flex flex-col gap-4 mb-4">
-                        <Image src={srcFile} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} alt='Uplaoded Media'></Image>
+                        {srcFile && (<Image src={srcFile} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }} alt='Uplaoded Media'></Image>)}
 
                         <label className="block">
                             <span className="sr-only">Choose profile photo</span>
@@ -137,4 +131,4 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:P
   )
 }
 
-export default UploadImageModalUI
+export default UploadImageForImageDetailModalUI

@@ -2,7 +2,7 @@
 
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
-import React, { Fragment, useState } from 'react'
+import React, { ChangeEventHandler, Fragment, useState } from 'react'
 
 interface Props{
     isBlockLabel?:boolean,
@@ -12,8 +12,9 @@ interface Props{
     data:any,
     name?:string,
     classSelect?:string,
-    isInit?:boolean,
-    isDisabled?:boolean
+    isDisabled?:boolean,
+    selected?:any,
+    onChangeEvent?:ChangeEventHandler<HTMLInputElement> | undefined,
 }
 
 const SelectUI = ({
@@ -24,15 +25,11 @@ const SelectUI = ({
   data,
   name,
   classSelect,
-  isInit=false,
-  isDisabled=false
+  isDisabled=false,
+  selected,
+  onChangeEvent
   }:Props) => {
     const [query, setQuery] = useState("");
-    const [selected, setSelected] = useState<any>(()=>{
-      if(data && isInit) return data[0];
-
-      return {Name:""}
-    });
 
     const filteredItem =
     query === ""
@@ -48,7 +45,7 @@ const SelectUI = ({
     <div className={`${classDiv} ${isBlockLabel?"":"flex flex-row"}`}>
         {label && (<label htmlFor={name} className={`${isBlockLabel?"block pb-2":"pt-2"} text-base text-black font-semibold leading-6 ${classLabel}`}>{label}</label>)}
 
-         <Combobox value={selected} onChange={(event)=>setSelected(event)} disabled={isDisabled}>
+         <Combobox value={selected} onChange={onChangeEvent} disabled={isDisabled}>
           <div className={`relative ${classSelect}`}>
             <div className="relative w-full cursor-default overflow-hidden bg-white text-left">
               <ComboboxInput name={name}
@@ -73,7 +70,7 @@ const SelectUI = ({
               leaveTo="opacity-0"
               afterLeave={() => setQuery("")}
             >
-              <ComboboxOption className="absolute mt-1 max-h-[4.2rem] z-50 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" value={undefined}>
+              <ComboboxOption className="absolute mt-1 max-h-[10rem] z-50 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" value={undefined}>
                 {filteredItem.length === 0 && query !== "" ? (
                   <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                     Nothing found.

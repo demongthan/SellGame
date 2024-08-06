@@ -1,3 +1,0 @@
-interface ImageDetailDto{
-    PathUrl:string
-}
