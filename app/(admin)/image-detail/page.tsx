@@ -1,6 +1,6 @@
 "use client"
 
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI } from '@/components'
+import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, ImageDetailModalUI, InputUI, LoadingUI } from '@/components'
 import { adminImageDetailTable } from '@/utils/constant/TitleTable/AdminImageDetailTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 
@@ -21,6 +21,7 @@ const ImageDetail = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [searchConditions, setSearchConditions]=useState<string[]>([]);
     const [active, setActive] = useState<boolean>(true);
+    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
 
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
@@ -45,9 +46,8 @@ const ImageDetail = () => {
     } = tableInstance;
     initialState.pageSize = 5;
 
-    const openModel=()=>{
-
-    }
+    const openModel=()=>
+        setIsOpenModel(!isOpenModel);
     
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
@@ -120,6 +120,8 @@ const ImageDetail = () => {
 
     return (
         <>
+            {isOpenModel && (<ImageDetailModalUI closeModal={openModel} idImageDetail={''}></ImageDetailModalUI>)}
+
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
                     <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
