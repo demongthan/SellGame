@@ -1,6 +1,6 @@
 "use client"
 
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI, SelectUI } from '@/components'
+import { AccGameDetailModalUI, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI, SelectUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
@@ -169,6 +169,10 @@ const AccGameDetail = () => {
 
     return (
         <>
+            <AccGameDetailModalUI closeModal={function (): void {
+                throw new Error('Function not implemented.');
+            } } idAccGameDetail={undefined} idCategory={undefined}></AccGameDetailModalUI>
+
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
                     <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>

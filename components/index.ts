@@ -32,6 +32,7 @@ import UploadImageModalUI from "./Admin/Modal/Category/UploadImageModalUI";
 import DeleteModalUI from "./Admin/Modal/DeleteModalUI";
 import ImageDetailModalUI from "./Admin/Modal/ImageDetail/ImageDetailModalUI";
 import UploadImageForImageDetailModalUI from "./Admin/Modal/ImageDetail/UploadImageForImageDetailModalUI";
+import AccGameDetailModalUI from "./Admin/Modal/AccGameDetail/AccGameDetailModalUI";
 
 export{
     Header,
@@ -67,5 +68,6 @@ export{
     UploadImageModalUI,
     DeleteModalUI,
     ImageDetailModalUI,
-    UploadImageForImageDetailModalUI
+    UploadImageForImageDetailModalUI,
+    AccGameDetailModalUI
 }

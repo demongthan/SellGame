@@ -192,7 +192,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                                 </div>
 
                                 {isCreate && (<div className="col-span-2 sm:col-span-1">
-                                    <SelectUI label={"Loại :"} name={"CategoryType"} data={categoryTypeSearch} isInit={true}></SelectUI>
+                                    <SelectUI label={"Loại :"} name={"CategoryType"} data={categoryTypeSearch}></SelectUI>
                                 </div>)}
 
                                 {isCreate && (<div className="col-span-2 sm:col-span-1">
@@ -217,9 +217,8 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                                         <InputUI value={propertiesJson} name='Properties' label={"Danh mục :"} classDiv={"w-[90%]"} classInput={"w-full"} isDisabled={true}></InputUI>
 
                                         <Button className={"w-[10%] flex justify-center items-center pt-6"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
-                                                event.preventDefault();
-                                            
-                                                openModel();
+                                            event.preventDefault();
+                                            openModel();
                                         }}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem]'></PlusCircleIcon></Button>
                                     </div>
                                 </div>
