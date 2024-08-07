@@ -88,9 +88,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
         }
         catch(error){
             console.log(error);
-
             showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
-
             setIsLoadingPopup(false);
         }
     }
@@ -100,7 +98,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
 
     const getCategoryInit=async ():Promise<void>=>{
         try{
-            await categoryApiRequest.getCategoryById({id:idCategory,fields: "Name%2CDescription%2CActive%2CProperties"}).then((res)=>{
+            await categoryApiRequest.getCategoryById({id:idCategory,fields: "?fields=Name%2CDescription%2CActive%2CProperties"}).then((res)=>{
                 if(res.payload.data){
                     setActive(res.payload.data.Active)
 
@@ -182,7 +180,6 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                         )} 
 
                         <form className="p-4 md:p-5" onSubmit={onSubmit}>
-
                             <div className="grid gap-4 mb-4 grid-cols-2">
                                 <div className="col-span-2">
                                     <InputUI name='Name' label={"Danh mục :"} classDiv={"w-full"} classInput={"w-full"}

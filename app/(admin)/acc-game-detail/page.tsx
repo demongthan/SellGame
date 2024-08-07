@@ -16,11 +16,12 @@ const AccGameDetail = () => {
     const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
     const [columnsData]=useState<HeaderItem[]>(adminAccGameDetailTable);
     const [tableData, setTableData]=useState<AccGameDetailDto[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [searchConditions, setSearchConditions]=useState<string[]>([]);
+    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
 
     const [active, setActive] = useState<boolean>(true);
-    const [category, setCategory]=useState<any>({Name:""});
+    const [category, setCategory]=useState<any>({Name:"", Value:""});
     const [categorySearch, setCategorySearch]=useState<ItemSelect[]>([]);
     const [code, setCode]=useState<string>();
     
@@ -48,9 +49,8 @@ const AccGameDetail = () => {
     } = tableInstance;
     initialState.pageSize = 5;
 
-    const openCreateModal=()=>{
-
-    }
+    const openModal=()=>
+        setIsOpenModel(!isOpenModel);
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
@@ -103,7 +103,7 @@ const AccGameDetail = () => {
         }
     }
 
-    const getAllImageDetail=async ():Promise<void> => {
+    const getAllAccGameDetail=async ():Promise<void> => {
         setIsLoading(true);
 
         try{
@@ -152,7 +152,7 @@ const AccGameDetail = () => {
                     Value:item.value
                 }))
                 setCategorySearch(itemSelects);
-                setCategory(itemSelects?itemSelects[0]:{Name:""});
+                setCategory(itemSelects?itemSelects[0]:{Name:"", Value:""});
 
                 setIsLoading(false);
             })
@@ -169,9 +169,8 @@ const AccGameDetail = () => {
 
     return (
         <>
-            <AccGameDetailModalUI closeModal={function (): void {
-                throw new Error('Function not implemented.');
-            } } idAccGameDetail={undefined} idCategory={undefined}></AccGameDetailModalUI>
+            {isOpenModel && (<AccGameDetailModalUI closeModal={openModal} idAccGameDetail={undefined} idCategory={category.Value} 
+            refreshAllAccGameDetailCreate={getAllAccGameDetail}></AccGameDetailModalUI>)}
 
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
@@ -186,14 +185,14 @@ const AccGameDetail = () => {
                             onChangeEvent={handleChange("active")}></CheckboxUI>
                         </div>
 
-                        <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllImageDetail}></ButtonSearchUI>
+                        <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllAccGameDetail}></ButtonSearchUI>
                     </form>
                 </header>
 
                 {isLoading?(<div className='mt-8 h-[58vh]'><LoadingUI></LoadingUI></div>):(
                     <>
                         <div className='mt-8 flex justify-end'>
-                            <ButtonAddItemUI titleButton={'Tạo'} eventButtonClicked={openCreateModal} ></ButtonAddItemUI>
+                            <ButtonAddItemUI titleButton={'Tạo'} eventButtonClicked={openModal} ></ButtonAddItemUI>
                         </div>
 
                         <div className="mt-8 w-full h-[50vh] overflow-auto">

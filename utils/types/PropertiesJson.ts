@@ -4,7 +4,8 @@ interface ValueKey{
 
 interface PropertiesJson{
     Key:string,
-    Name:string
+    Name:string,
+    Only:boolean,
     Value:ValueKey[]
 }
 

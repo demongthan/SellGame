@@ -15,7 +15,7 @@ export const categoryApiRequest = {
         http.get<ApiReponse<CategoryDto[]>>(`/Category/GetAllCategory?Fields=Id%2C%20Name%2C%20TotalSale%2C%20Rating%2C%20PathUrl&CategoryType=${type}&Active=true`, false),
 
     getCategoryById:(input:{id:string | null, fields: string})=>
-        http.get<ApiReponse<CategoryDto>>(`/Category/GetCategoryById/${input.id}?fileds=${input.fields}`, false),
+        http.get<ApiReponse<CategoryDto>>(`/Category/GetCategoryById/${input.id}${input.fields}`, false),
 
     uploadImageCategory:(input:{id:string | null, body: FormData})=>
         http.put<ApiReponse<boolean>>(`/Category/UpdateUrlCategory/${input.id}`, false, input.body),

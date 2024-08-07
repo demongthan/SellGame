@@ -30,7 +30,7 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:P
 
   const getUrlFileInit=async ():Promise<void>=>{
     try{
-        await categoryApiRequest.getCategoryById({id:idCategory,fields: "PathUrl"}).then((res)=>{
+        await categoryApiRequest.getCategoryById({id:idCategory,fields: "?fields=PathUrl"}).then((res)=>{
             setSrcFile(res.payload.data.PathUrl);
 
             setIsLoading(false);

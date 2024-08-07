@@ -1,6 +1,8 @@
 "use client"
 
-import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI } from '@/components';
+import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
+import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, SelectPropertyModalUI } from '@/components';
+import { showToast } from '@/utils/showToast';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
@@ -9,22 +11,119 @@ import React, { FormEvent, useState } from 'react'
 interface Props{
     closeModal:()=>void,
     idAccGameDetail:string | undefined,
-    idCategory:string | undefined,
+    idCategory:string,
+    refreshAllAccGameDetailCreate:()=>Promise<void>
 }
 
-const AccGameDetailModalUI = ({closeModal, idAccGameDetail}:Props) => {
+const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshAllAccGameDetailCreate}:Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
     const isCreate=isNullOrEmpty(idAccGameDetail);
     const [errArr, setErrArr]=useState<ErrorValidate[]>();
     const [isChangeData, setIsChangeData] = useState<boolean>(false);
+    const [isOpenPropertiesModal, setIsOpenPropertiesModal]=useState<boolean>(false);
+
+    const [properties, setProperties]=useState<string>('[]');
+    const [price, setPrice]=useState<number>(0);
+    const [discount, setDiscount]=useState<number>(0);
+    const [active, setActive]=useState<boolean>(true);
+    const [deposit, setDeposit]=useState<number>(0);
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
+        setErrArr([]);
+        setIsLoadingPopup(true);
+
+        try{
+            const formData = new FormData(event.currentTarget)
+            formData.append("IdCategory", idCategory);
+
+            const response = await fetch('/api/acc-game-detail', {
+                method: 'POST',
+                body: formData,
+            })
+
+            const data = await response.json();
+
+            if(data.isSuccess){
+                if(isCreate){
+                    const result = await accGameDetailApiRequest.createAccGameDetail(data.data);
+
+                    if(result.payload.data){
+                        showToast("success", <p>{result.payload.message}</p>);
+
+                        refreshAllAccGameDetailCreate();
+                    }
+                    else{
+                        showToast("error", <p>{result.payload.message}</p>);
+                    }
+                }
+
+                setIsLoadingPopup(false);
+            }
+            else{
+                const errorArr: ErrorValidate[] =data.data.map(({...item})=>({
+                    for:item.for,
+                    message: item.message
+                }))
+        
+                setErrArr(errorArr);
+                setIsLoadingPopup(false);
+            }
+        }
+        catch(error){
+            console.log(error);
+            showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
+            setIsLoadingPopup(false);
+        }
+    }
+
+    const openModal=()=>
+        setIsOpenPropertiesModal(!isOpenPropertiesModal);
+
+    const setPropertyValueJson =(propertyValue:string)=>
+        setProperties(propertyValue);
+
+    const handleChange = (name:string) => (e: any) => {
+        switch (name) {
+            case "price":
+                if (/^\d*\.?\d*$/.test(e.target.value)) {
+                    if(isNullOrEmpty(e.target.value))
+                        setPrice(0);
+                    else
+                        setPrice(e.target.value);
+                }
+                break;
+            case "active":
+                setActive(e.target.isChecked);
+                break;
+            case "deposit":
+                if (/^\d*\.?\d*$/.test(e.target.value)) {
+                    if(isNullOrEmpty(e.target.value))
+                        setDeposit(0);
+                    else
+                        setDeposit(e.target.value);
+                }
+                break;
+            case "discount":
+                if (/^\d*\.?\d*$/.test(e.target.value)) {
+                    if(e.target.value>99)
+                        setDiscount(99);
+                    if(isNullOrEmpty(e.target.value))
+                        setDiscount(0);
+                    else
+                        setDiscount(e.target.value);
+                }
+            default:
+                break;
+        }
     }
     
     return (
         <>
+            {isOpenPropertiesModal && (<SelectPropertyModalUI closeModel={openModal} propertyValueJson={properties} idCategory={idCategory} 
+            setPropertyValueJson={setPropertyValueJson}></SelectPropertyModalUI>)}
+
             <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center bg-model
             items-center w-full md:inset-0 h-full max-h-full">
                 {isLoading?(<LoadingUI></LoadingUI>):(
@@ -52,36 +151,39 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail}:Props) => {
 
                         <form className="p-4 md:p-5" onSubmit={onSubmit}>
                             <div className="grid gap-4 mb-4 grid-cols-2">
-                                {isCreate && (
-                                    <div className="col-span-2">
-                                        <InputUI name='Code' label={"Mã số :"} classDiv={"w-full"} classInput={"w-full"}
-                                        errArr={errArr?.filter((error)=>error.for==="code")} ></InputUI>
-                                    </div>
-                                )}
-
                                 <div className="col-span-2 sm:col-span-1">
-                                    <InputUI name='Price' label={"Giá :"} classDiv={"w-full"} classInput={"w-full"}></InputUI>
+                                    <InputUI value={price} name='Price' label={"Giá :"} classDiv={"w-full"} classInput={"w-[85%]"}
+                                    onChangeEvent={handleChange("price")} max={9}
+                                    errArr={errArr?.filter((error)=>error.for==="price")}
+                                    unit={"VND"} classUint={"w-[15%]"}></InputUI>
                                 </div>
 
-                                <div className="col-span-2 sm:col-span-1 pt-[2.4rem]">
-                                    <CheckboxUI name='Active' isBlockLabel={false} label={"Hiệu lực :"} classDiv={"w-full"} classLabel={"w-2/5"} isChecked={false}></CheckboxUI>
+                                <div className="col-span-2 sm:col-span-1 pt-[2.5rem]">
+                                    <CheckboxUI name='Active' isBlockLabel={false} label={"Hiệu lực :"} classDiv={"w-full"} classLabel={"w-2/5"} 
+                                    isChecked={active} onChangeEvent={handleChange("active")}></CheckboxUI>
                                 </div>
 
                                 <div className="col-span-2 sm:col-span-1">
-                                    <InputUI name='Discount' label={"Giảm giá :"} classDiv={"w-full"} classInput={"w-full"}></InputUI>
+                                    <InputUI value={discount} name='Discount' label={"Giảm giá :"} classDiv={"w-full"} classInput={"w-[85%]"}
+                                    onChangeEvent={handleChange("discount")}
+                                    errArr={errArr?.filter((error)=>error.for==="discount")}
+                                    unit={"%"} classUint={"w-[15%]"}></InputUI>
                                 </div>
 
                                 <div className="col-span-2 sm:col-span-1">
-                                    <InputUI name='Deposit' label={"Đặt cọc :"} classDiv={"w-full"} classInput={"w-full"}></InputUI>
+                                    <InputUI value={deposit} name='Deposit' label={"Đặt cọc :"} classDiv={"w-full"} classInput={"w-[85%]"}
+                                    onChangeEvent={handleChange("deposit")}
+                                    errArr={errArr?.filter((error)=>error.for==="deposit")}
+                                    unit={"VND"} classUint={"w-[15%]"}></InputUI>
                                 </div>
 
                                 <div className="col-span-2">
                                     <div className='flex flex-row gap-1'>
-                                        <InputUI name='Properties' label={"Thuộc tính :"} classDiv={"w-[90%]"} classInput={"w-full"} isDisabled={true}></InputUI>
+                                        <InputUI value={properties} name='Properties' label={"Thuộc tính :"} classDiv={"w-[90%]"} classInput={"w-full"} isDisabled={true}></InputUI>
 
                                         <Button className={"w-[10%] flex justify-center items-center pt-6"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                             event.preventDefault();
-                                            
+                                            openModal();
                                         }}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem]'></PlusCircleIcon></Button>
                                     </div>
                                 </div>

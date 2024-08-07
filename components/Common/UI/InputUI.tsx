@@ -3,7 +3,7 @@ import React, { ChangeEventHandler } from 'react'
 import { number } from 'zod'
 
 interface Props{
-    value?:string|undefined,
+    value?:any,
     isBlockLabel?:boolean,
     label?:string |null,
     classLabel?:string,
@@ -15,7 +15,9 @@ interface Props{
     type?:string,
     max?:number,
     onChangeEvent?:ChangeEventHandler<HTMLInputElement> | undefined,
-    isDisabled?:boolean
+    isDisabled?:boolean,
+    unit?:string,
+    classUint?:string
 }
 
 const InputUI = ({value=undefined, 
@@ -30,15 +32,22 @@ const InputUI = ({value=undefined,
   type="text",
   max,
   isDisabled=false,
-  onChangeEvent
+  onChangeEvent,
+  unit,
+  classUint
   }:Props) => {
     return (
       <div className={classDiv}>
           {label && (<label htmlFor={name} className={`${isBlockLabel?"block":"inline-block"} text-base text-black font-semibold leading-6 pb-2 ${classLabel}`}>{label}</label>)}
 
-          <Input type={type} name={name} maxLength={max} value={value} onChange={onChangeEvent} disabled={isDisabled}
-          className={`border border-s2gray2 rounded-lg text-gray-900 text-sm transition-input py-2.5 pl-3 pr-10 ${classInput}
-          ease-in-out delay-150 focus:outline-none focus:border-s2cyan1`} placeholder={placeholder}></Input>
+          <div className='flex flex-row gap-1 w-full'>
+              <Input type={type} name={name} maxLength={max} value={value} onChange={onChangeEvent} disabled={isDisabled}
+              className={`border border-s2gray2 rounded-lg text-gray-900 text-sm transition-input py-2.5 pl-3 pr-10 ${classInput}
+              ease-in-out delay-150 focus:outline-none focus:border-s2cyan1`} placeholder={placeholder}>
+              </Input>
+
+            {unit && (<p className={`flex justify-center items-center ${classUint}`}>{unit}</p>)}
+          </div>
 
           <div className='pt-2'>
             {errArr?.map((err, index)=>(

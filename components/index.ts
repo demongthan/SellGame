@@ -33,6 +33,8 @@ import DeleteModalUI from "./Admin/Modal/DeleteModalUI";
 import ImageDetailModalUI from "./Admin/Modal/ImageDetail/ImageDetailModalUI";
 import UploadImageForImageDetailModalUI from "./Admin/Modal/ImageDetail/UploadImageForImageDetailModalUI";
 import AccGameDetailModalUI from "./Admin/Modal/AccGameDetail/AccGameDetailModalUI";
+import SelectPropertyValueModalUI from "./Admin/Modal/SelectPropertyValueModalUI";
+import SelectPropertyModalUI from "./Admin/Modal/SelectPropertyModalUI";
 
 export{
     Header,
@@ -69,5 +71,7 @@ export{
     DeleteModalUI,
     ImageDetailModalUI,
     UploadImageForImageDetailModalUI,
-    AccGameDetailModalUI
+    AccGameDetailModalUI,
+    SelectPropertyValueModalUI,
+    SelectPropertyModalUI
 }
