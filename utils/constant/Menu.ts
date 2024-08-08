@@ -29,7 +29,7 @@ export const navItems:NavItem[] = [
     },
     {
         label:"Dịch vụ",
-        link:"/service"
+        link:"/service?title=Dịch vụ"
     },
     {
         label:"Mua thẻ",

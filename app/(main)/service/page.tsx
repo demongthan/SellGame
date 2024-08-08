@@ -1,25 +1,51 @@
-import { ButtonSearchUI, InputUI } from '@/components'
+"use client"
+
+import { categoryApiRequest } from '@/apiRequests/category';
+import { CategoryDto } from '@/apiRequests/DataDomain/Category/CategoryDto';
+import { LoadingUI } from '@/components'
 import CardGame from '@/components/Common/CardGame'
-import React from 'react'
+import { CategoryType } from '@/utils/types/CategoryType';
+import React, { useEffect, useState } from 'react'
 
 const Service = () => {
-  return (
-    <div className='flex flex-col gap-10'>
-        <div className='flex flex-row gap-5 w-full'>
-            <InputUI value={undefined} isBlockLabel={true} label={"Tìm kiếm"}
-            classDiv={"w-1/4"} classInput={"w-full"}></InputUI>
-            <ButtonSearchUI isSearch={true} isAll={true}
-            classDiv={"w-1/5 h-[2.3rem] relative top-[2.2rem]"}></ButtonSearchUI>
-        </div>
+  const [services, setServices]=useState<CategoryDto[] |null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
-        <div className='flex flex-row gap-10 w-full float-none overflow-hidden'>
-            <CardGame isDiscount={true} isButtonImage={true}></CardGame>
-            <CardGame isDiscount={true} isButtonImage={true}></CardGame>
-            <CardGame isDiscount={true} isButtonImage={true}></CardGame>
-            <CardGame isDiscount={true} isButtonImage={true}></CardGame>
-        </div>
-    </div>
-  )
+    const getAllServices=async():Promise<void>=>{
+        try{
+            const res=await categoryApiRequest.getAllCategoryByType(CategoryType.Service);
+            setServices(res.payload.data);
+            setIsLoading(false);
+        }
+        catch(error){
+            console.error(error);
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+      getAllServices();
+    }, [setServices])
+
+    return (
+        <>
+            {isLoading?(<div className="h-[85vh]"><LoadingUI></LoadingUI></div>):(
+              <div className='grid grid-cols-4 gap-4 w-full'>
+                {services && services?.map((service, index)=>(
+                    <CardGame key={index}
+                    totalSale={service.TotalSale}
+                    rating={service.Rating}
+                    name={service.Name}
+                    urlImage={service.PathUrl} 
+                    titleButton={"Chi tiết"} 
+                    urlButton={`/buy-account/buy-account-detail?title=Mua tài khoản`} 
+                    id={service.Id}>
+                    </CardGame>
+                ))}
+              </div>
+            )}
+        </>
+    )
 }
 
 export default Service

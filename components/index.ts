@@ -35,6 +35,7 @@ import UploadImageForImageDetailModalUI from "./Admin/Modal/ImageDetail/UploadIm
 import AccGameDetailModalUI from "./Admin/Modal/AccGameDetail/AccGameDetailModalUI";
 import SelectPropertyValueModalUI from "./Admin/Modal/SelectPropertyValueModalUI";
 import SelectPropertyModalUI from "./Admin/Modal/SelectPropertyModalUI";
+import UploadImageForAccGameDetailModalUI from "./Admin/Modal/AccGameDetail/UploadImageForAccGameDetailModalUI";
 
 export{
     Header,
@@ -73,5 +74,6 @@ export{
     UploadImageForImageDetailModalUI,
     AccGameDetailModalUI,
     SelectPropertyValueModalUI,
-    SelectPropertyModalUI
+    SelectPropertyModalUI,
+    UploadImageForAccGameDetailModalUI
 }

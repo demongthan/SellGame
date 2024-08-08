@@ -29,7 +29,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
 
     const [name, setName]=useState<string>("");
     const [propertiesJson,setPropertiesJson]=useState<string>("[]");
-    const [description, setDescription] = useState<string>("");
+    const [description, setDescription] = useState<string | undefined>("");
     const [active, setActive] = useState<boolean>(true)
 
 

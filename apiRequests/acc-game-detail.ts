@@ -13,6 +13,18 @@ export const accGameDetailApiRequest={
     createAccGameDetail:(body:CreateAccGameDetailDto)=>
         http.post<ApiReponse<boolean>>(`/AccGameDetail/CreateAccGameDetail`, false, body),
 
+    uploadImageForAccGameDetail:(input:{id:string | null, body: FormData})=>
+        http.put<ApiReponse<boolean>>(`/AccGameDetail/UpdateUrlAccGameDetail/${input.id}`, false, input.body),
+
+    updateAccGameDetail:(input:{id:string | null, body:UpdateAccGameDetailDto})=>
+        http.put<ApiReponse<boolean>>(`/AccGameDetail/UpdateAccGameDetail/${input.id}`,false, input.body),
+
+    getAccGameDetailById:(input:{id:string | null, fields: string})=>
+        http.get<ApiReponse<AccGameDetailDto>>(`/AccGameDetail/GetAccGameDetailById/${input.id}${input.fields}`, false),
+
+    deleteAccGameDetail:(id:string | null)=>
+        http.delete<ApiReponse<boolean>>(`/AccGameDetail/DeleteAccGameDetail/${id}`, false),
+
     getAllAccGamesDetail:(input:{idCategory:string | undefined, search:string, pageNumber:number, fields:string})=>
         http.get<ApiReponse<AccGameDetailSearchDto>>(
             `/AccGameDetail/GetAllAccGameDetail/${input.idCategory}?Active=true&Fields=${input.fields}&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`, false)

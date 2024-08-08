@@ -1,6 +1,6 @@
 "use client"
 
-import { AccGameDetailModalUI, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI, SelectUI } from '@/components'
+import { AccGameDetailModalUI, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
@@ -10,6 +10,7 @@ import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
+import { showToast } from '@/utils/showToast';
 
 const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);
@@ -19,11 +20,14 @@ const AccGameDetail = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [searchConditions, setSearchConditions]=useState<string[]>([]);
     const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
+    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
+    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
 
     const [active, setActive] = useState<boolean>(true);
     const [category, setCategory]=useState<any>({Name:"", Value:""});
     const [categorySearch, setCategorySearch]=useState<ItemSelect[]>([]);
     const [code, setCode]=useState<string>();
+    const [idAccGameDetail, setIdAccGameDetail]=useState<string>("");
     
 
     const columns = useMemo(() => columnsData, [columnsData]);
@@ -51,6 +55,17 @@ const AccGameDetail = () => {
 
     const openModal=()=>
         setIsOpenModel(!isOpenModel);
+
+    const openDeleteModal=()=>
+        setIsOpenDeleteModal(!isOpenDeleteModal);
+
+    const openModelCreate=()=>{
+        setIdAccGameDetail("");
+        openModal();
+    }
+
+    const openImageModel=()=>
+        setIsOpenImageModel(!isOpenImageModel);
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
@@ -91,6 +106,23 @@ const AccGameDetail = () => {
 
         try{
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:pageNumber, 
+                fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                setTableData(res.payload.data.accGameDetails);
+                setMetaData(res.payload.data.metaData);
+                setIsLoading(false);
+            })
+        }
+        catch(error){
+            console.log(error);
+            setIsLoading(false);
+        }
+    }
+
+    const refreshAllAccGameDetail=async (): Promise<void> => {
+        setIsLoading(true);
+
+        try{
+            await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:metaData.currentPage, 
                 fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
@@ -163,14 +195,44 @@ const AccGameDetail = () => {
         }
     }
 
+    const deleteAccGameDetail=async ():Promise<void> => {
+        setIsLoading(true);
+    
+        try{
+            await accGameDetailApiRequest.deleteAccGameDetail(idAccGameDetail).then((res)=>{
+                if(res.payload.data){
+                    showToast("success", <p>{res.payload.message.replace("{Item}", "ảnh")}</p>)
+                    openDeleteModal()
+                    refreshAllAccGameDetail();
+                }
+                else{
+                    showToast("error", <p>{res.payload.message}</p>)
+                }
+        
+                setIsLoading(true);
+            });
+        }
+        catch(error){
+            console.log(error);
+            showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
+            setIsLoading(false);
+        }
+    }
+
+
     useEffect(()=>{
         getAllAccGameDetailInit();
     }, [setTableData, setMetaData, setCategorySearch, setIsLoading])
 
     return (
         <>
-            {isOpenModel && (<AccGameDetailModalUI closeModal={openModal} idAccGameDetail={undefined} idCategory={category.Value} 
-            refreshAllAccGameDetailCreate={getAllAccGameDetail}></AccGameDetailModalUI>)}
+            {isOpenModel && (<AccGameDetailModalUI closeModal={openModal} idAccGameDetail={idAccGameDetail} idCategory={category.Value}
+            refreshAllAccGameDetailCreate={getAllAccGameDetail} refreshAllAccGameDetailUpdate={refreshAllAccGameDetail}></AccGameDetailModalUI>)}
+
+            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'tài khoản game'} eventDeleteItem={deleteAccGameDetail}></DeleteModalUI>)}
+
+            {isOpenImageModel && (<UploadImageForAccGameDetailModalUI closeModel={openImageModel} idAccGameDetail={idAccGameDetail} 
+            refreshAllAccGameDetailUpdate={refreshAllAccGameDetail}></UploadImageForAccGameDetailModalUI>)}
 
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
@@ -192,7 +254,7 @@ const AccGameDetail = () => {
                 {isLoading?(<div className='mt-8 h-[58vh]'><LoadingUI></LoadingUI></div>):(
                     <>
                         <div className='mt-8 flex justify-end'>
-                            <ButtonAddItemUI titleButton={'Tạo'} eventButtonClicked={openModal} ></ButtonAddItemUI>
+                            <ButtonAddItemUI titleButton={'Tạo'} eventButtonClicked={openModelCreate} ></ButtonAddItemUI>
                         </div>
 
                         <div className="mt-8 w-full h-[50vh] overflow-auto">
@@ -281,13 +343,16 @@ const AccGameDetail = () => {
                                                             <div className='flex flex-row w-[7rem] gap-3'>
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();                                       
-                                                                   
+                                                                    setIdAccGameDetail(cell.value);
+                                                                    openImageModel();
                                                                 }}>
                                                                     <ArrowUpTrayIcon className='h-[25px] w-[25px] text-blue-600'></ArrowUpTrayIcon>
                                                                 </Button>
 
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();
+                                                                    setIdAccGameDetail(cell.value);
+                                                                    openModal();
                                                                     
                                                                 }}>
                                                                     <PencilSquareIcon className='h-[25px] w-[25px] text-green-500'></PencilSquareIcon>
@@ -295,7 +360,8 @@ const AccGameDetail = () => {
 
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();
-                                                                    
+                                                                    setIdAccGameDetail(cell.value);
+                                                                    openDeleteModal();
                                                                 }}>
                                                                     <TrashIcon className='h-[25px] w-[25px] text-red-600'></TrashIcon>
                                                                 </Button>

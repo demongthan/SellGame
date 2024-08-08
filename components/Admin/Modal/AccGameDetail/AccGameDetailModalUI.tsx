@@ -6,16 +6,17 @@ import { showToast } from '@/utils/showToast';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 
 interface Props{
     closeModal:()=>void,
-    idAccGameDetail:string | undefined,
+    idAccGameDetail:string | null,
     idCategory:string,
-    refreshAllAccGameDetailCreate:()=>Promise<void>
+    refreshAllAccGameDetailCreate:()=>Promise<void>,
+    refreshAllAccGameDetailUpdate:()=>Promise<void>
 }
 
-const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshAllAccGameDetailCreate}:Props) => {
+const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshAllAccGameDetailCreate, refreshAllAccGameDetailUpdate}:Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
     const isCreate=isNullOrEmpty(idAccGameDetail);
@@ -37,6 +38,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
         try{
             const formData = new FormData(event.currentTarget)
             formData.append("IdCategory", idCategory);
+            formData.append("IsCreate", isCreate?"true":"false");
 
             const response = await fetch('/api/acc-game-detail', {
                 method: 'POST',
@@ -50,9 +52,21 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                     const result = await accGameDetailApiRequest.createAccGameDetail(data.data);
 
                     if(result.payload.data){
-                        showToast("success", <p>{result.payload.message}</p>);
+                        showToast("success", <p>{result.payload.message.replace("{Item}", "tài khoản game")}</p>);
 
                         refreshAllAccGameDetailCreate();
+                    }
+                    else{
+                        showToast("error", <p>{result.payload.message}</p>);
+                    }
+                }
+                else{
+                    const result = await accGameDetailApiRequest.updateAccGameDetail({id:idAccGameDetail,body:data.data});
+
+                    if(result.payload.data){
+                        showToast("success", <p>{result.payload.message.replace("{Item}", "tài khoản game")}</p>);
+
+                        refreshAllAccGameDetailUpdate();
                     }
                     else{
                         showToast("error", <p>{result.payload.message}</p>);
@@ -92,10 +106,13 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                         setPrice(0);
                     else
                         setPrice(e.target.value);
+
+                    setIsChangeData(true);
                 }
                 break;
             case "active":
                 setActive(e.target.isChecked);
+                setIsChangeData(true);
                 break;
             case "deposit":
                 if (/^\d*\.?\d*$/.test(e.target.value)) {
@@ -103,21 +120,52 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                         setDeposit(0);
                     else
                         setDeposit(e.target.value);
+
+                    setIsChangeData(true);
                 }
                 break;
             case "discount":
                 if (/^\d*\.?\d*$/.test(e.target.value)) {
-                    if(e.target.value>99)
+                    console.log(Number(e.target.value)>99)
+                    if(Number(e.target.value)>99)
                         setDiscount(99);
-                    if(isNullOrEmpty(e.target.value))
+                    else if(isNullOrEmpty(e.target.value))
                         setDiscount(0);
                     else
                         setDiscount(e.target.value);
+
+                    setIsChangeData(true);
                 }
             default:
                 break;
         }
     }
+
+    const getAccGameDetailInit=async (): Promise<void> => {
+        try{
+            await accGameDetailApiRequest.getAccGameDetailById({id:idAccGameDetail, fields:"?fields=Price%2CDiscount%2CDeposit%2CActive%2CProperties"}).then((res)=>{
+                setActive(res.payload.data.Active);
+                setPrice(res.payload.data.Price);
+                setDiscount(res.payload.data.Discount);
+                setDeposit(res.payload.data.Deposit);
+                setProperties(res.payload.data.Properties?res.payload.data.Properties:"[]");
+                setIsLoading(false);
+            })
+        }
+        catch(error){
+            console.log(error);
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if(isCreate){
+            setIsLoading(false);
+        }
+        else{
+            getAccGameDetailInit();
+        }
+    },[setProperties, setPrice, setDiscount, setDeposit, setActive])
     
     return (
         <>
@@ -179,7 +227,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
 
                                 <div className="col-span-2">
                                     <div className='flex flex-row gap-1'>
-                                        <InputUI value={properties} name='Properties' label={"Thuộc tính :"} classDiv={"w-[90%]"} classInput={"w-full"} isDisabled={true}></InputUI>
+                                        <InputUI value={properties} name='Properties' label={"Thuộc tính :"} classDiv={"w-[90%]"} classInput={"w-full"} isReadOnly={true}></InputUI>
 
                                         <Button className={"w-[10%] flex justify-center items-center pt-6"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                             event.preventDefault();

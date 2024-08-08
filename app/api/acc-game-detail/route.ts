@@ -40,17 +40,32 @@ export const POST=async (request: any)=> {
         )
     }
     else{
-        const dataReturn: CreateAccGameDetailDto={
-            IdCategory:data.get("IdCategory"),
-            Price: Number(data.get("Price").toString()),
-            Discount: Number(data.get("Discount").toString()),
-            Deposit: Number(data.get("Deposit").toString()),
-            Active: data.get("Active")=="on"?true:false,
-            Properties: data.get("Properties")
+        if(data.get("IsCreate")=="true"){
+            const dataReturn: CreateAccGameDetailDto={
+                IdCategory:data.get("IdCategory"),
+                Price: Number(data.get("Price").toString()),
+                Discount: Number(data.get("Discount").toString()),
+                Deposit: Number(data.get("Deposit").toString()),
+                Active: data.get("Active")=="on"?true:false,
+                Properties: data.get("Properties")
+            }
+    
+            return NextResponse.json(
+                {isSuccess:res.success, data:dataReturn}
+            )
         }
-
-        return NextResponse.json(
-            {isSuccess:res.success, data:dataReturn}
-        )
+        else{
+            const dataReturn: UpdateAccGameDetailDto={
+                Price: Number(data.get("Price").toString()),
+                Discount: Number(data.get("Discount").toString()),
+                Deposit: Number(data.get("Deposit").toString()),
+                Active: data.get("Active")=="on"?true:false,
+                Properties: data.get("Properties")
+            }
+    
+            return NextResponse.json(
+                {isSuccess:res.success, data:dataReturn}
+            )
+        }
     }
 }

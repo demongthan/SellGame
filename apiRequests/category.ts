@@ -3,6 +3,7 @@ import http from "./http";
 import { CategoryDto } from "./DataDomain/Category/CategoryDto";
 import { CategorySearchDto } from "./DataDomain/Category/CategorySearchDto";
 import { CreateCategoryDto } from "./DataDomain/Category/CreateCategoryDto";
+import { CategoryType } from "@/utils/types/CategoryType";
 
 export const categoryApiRequest = {
     createCategory:(body:CreateCategoryDto)=>
@@ -11,8 +12,8 @@ export const categoryApiRequest = {
     updateCategory:(input:{id:string, body:UpdateCategoryDto})=>
         http.put<ApiReponse<boolean>>(`/Category/UpdateCategory/${input.id}`, false, input.body),
 
-    getGame:(type:number)=>
-        http.get<ApiReponse<CategoryDto[]>>(`/Category/GetAllCategory?Fields=Id%2C%20Name%2C%20TotalSale%2C%20Rating%2C%20PathUrl&CategoryType=${type}&Active=true`, false),
+    getAllCategoryByType:(type:CategoryType)=>
+        http.get<ApiReponse<CategoryDto[]>>(`/Category/GetAllCategoryByType/${type}?Fields=Id%2C%20Name%2C%20TotalSale%2C%20Rating%2C%20PathUrl`, false),
 
     getCategoryById:(input:{id:string | null, fields: string})=>
         http.get<ApiReponse<CategoryDto>>(`/Category/GetCategoryById/${input.id}${input.fields}`, false),

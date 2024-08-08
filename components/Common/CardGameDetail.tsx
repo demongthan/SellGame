@@ -22,7 +22,7 @@ const CardGameDetail = ({urlImage,
 }:Props) => {
   return (
     <div className='p-2'>
-        <div className='relative flex flex-col w-full h-full border rounded-md divide-solid border-red-600 p-0.5 items-center justify-center gap-3 pb-3 hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+        <div className='relative flex flex-col w-full h-full max-h-[25rem] border rounded-md divide-solid border-red-600 p-0.5 items-center justify-center gap-3 pb-3 hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
             <div className='h-[40%] w-full'>
                 <Image src={urlImage} 
                 alt="" width={0} height={0} className='rounded-t-md' sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
