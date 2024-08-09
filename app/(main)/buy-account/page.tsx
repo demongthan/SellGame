@@ -35,12 +35,13 @@ const BuyAccount = () => {
                 {games && games?.map((game, index)=>(
                     <CardGame key={index}
                     totalSale={game.TotalSale}
+                    total={game.Total}
                     rating={game.Rating}
                     name={game.Name}
-                    urlImage={game.PathUrl} 
-                    titleButton={"Xem tất cả"} 
-                    urlButton={`/buy-account/buy-account-detail?title=Mua tài khoản`} 
-                    id={game.Id}>
+                    urlImage={game.PathUrl}
+                    titleButton={"Xem tất cả"}
+                    urlButton={`/buy-account/buy-account-detail?title=Mua tài khoản`}
+                    id={game.Id} isGame={true}>
                     </CardGame>
                 ))}
               </div>

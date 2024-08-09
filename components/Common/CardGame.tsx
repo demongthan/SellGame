@@ -1,16 +1,19 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import RatingDisplay from './RatingDisplay';
 
 interface Props{
     isHot?:boolean,
-    totalSale:number,
+    totalSale?:number,
     rating:number,
     name:string,
     urlImage:string,
     titleButton:string,
     urlButton:string,
     id:string,
+    total?:number,
+    isGame:boolean
 }
 
 const CardGame = ({
@@ -21,6 +24,8 @@ const CardGame = ({
     rating,
     titleButton,
     urlButton,
+    total,
+    isGame,
     id}:Props) => {
 
     const lstRating:number[]=[1, 2, 3, 4, 5];
@@ -34,27 +39,29 @@ const CardGame = ({
             </div>
 
             <div className='h-[7%]'>
-                <h2 className='text-xl text-black'><strong>{name}</strong></h2>
+                <h2 className='text-base text-black'><strong>{name}</strong></h2>
             </div>
 
-            <div className='h-[7%]'>
-                <p className='font-semibold text-red-500'>Số tài khoản: {totalSale}</p>
-            </div>
+            {isGame?(
+                <>
+                    <div className='h-[7%]'>
+                        <p className='font-semibold text-sm text-green-500'>Số tài khoản: {totalSale}</p>
+                    </div>
 
-            <div className='h-[7%]'>
-                <p className='font-semibold text-red-500'>Đã bán: {totalSale}</p>
-            </div>
+                    <div className='h-[7%]'>
+                        <p className='font-semibold text-sm text-red-500'>Đã bán: {totalSale}</p>
+                    </div>
+                </>
+            ):(
+                <div className='h-[14%]'>
+                    <p className='font-semibold text-sm text-red-500'>Giao dịch: {totalSale}</p>
+                </div>
+            )}
 
-            <div className="flex items-center h-[7%]">
-                {lstRating.map((item, index)=>(
-                    <svg key={index} className={`w-4 h-4 ${item<=rating?"text-yellow-300":"text-gray-300"}  ms-1`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                    </svg>
-                ))}
-            </div>
+            <RatingDisplay rating={rating} className='w-[7%]'></RatingDisplay>
 
             <div className='h-[28%] flex justify-center items-center'>
-                <Link href={`${urlButton},${name}&id=,${id}`} className='border-2 divide-solid rounded-full border-red-400 text-red-400 font-normal text-base px-7 py-2 hover:border-s2cyan1 hover:text-s2cyan1'>
+                <Link href={`${urlButton},${name}&id=,${id}`} className='border-2 divide-solid rounded-full border-blue-400 text-blue-400 font-normal text-base px-7 py-2 hover:border-s2cyan1 hover:text-s2cyan1'>
                     {titleButton}
                 </Link>
             </div>

@@ -36,6 +36,7 @@ import AccGameDetailModalUI from "./Admin/Modal/AccGameDetail/AccGameDetailModal
 import SelectPropertyValueModalUI from "./Admin/Modal/SelectPropertyValueModalUI";
 import SelectPropertyModalUI from "./Admin/Modal/SelectPropertyModalUI";
 import UploadImageForAccGameDetailModalUI from "./Admin/Modal/AccGameDetail/UploadImageForAccGameDetailModalUI";
+import MethodCalculateDisplay from "./Admin/MethodCalculateDisplay";
 
 export{
     Header,
@@ -75,5 +76,6 @@ export{
     AccGameDetailModalUI,
     SelectPropertyValueModalUI,
     SelectPropertyModalUI,
-    UploadImageForAccGameDetailModalUI
+    UploadImageForAccGameDetailModalUI,
+    MethodCalculateDisplay
 }

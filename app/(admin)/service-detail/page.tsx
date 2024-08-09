@@ -1,31 +1,21 @@
 "use client"
 
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, ImageDetailModalUI, InputUI, LoadingUI, UploadImageForImageDetailModalUI } from '@/components'
-import { adminImageDetailTable } from '@/utils/constant/TitleTable/AdminImageDetailTable';
+import { ServiceDetailDto } from '@/apiRequests/DataDomain/ServiceDetail/ServiceDetailDto';
+import { serviceDetailApiRequest } from '@/apiRequests/service-detail';
+import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI, MethodCalculateDisplay, RatingDisplay } from '@/components'
+import { adminServiceDetailTable } from '@/utils/constant/TitleTable/AdminServiceDetailTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
-
-import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
-import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
-import Image from 'next/image'
 import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
+
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
-import { imageDetailApiRequest } from '@/apiRequests/image-detail';
-import { showToast } from '@/utils/showToast';
-import { ImageDetailDto } from '@/apiRequests/DataDomain/ImageDetail/ImageDetailDto';
+import Image from 'next/image'
+import React, { FormEvent, useEffect, useMemo, useState } from 'react'
+import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
 
-const ImageDetail = () => {
-    const ref = useRef<HTMLFormElement>(null);
-    const [columnsData]=useState<HeaderItem[]>(adminImageDetailTable);
-    const [tableData, setTableData]=useState<ImageDetailDto[]>([]);
-    const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true"]);
-    const [active, setActive] = useState<boolean>(true);
-    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
-    const [idImageDetail, setIdImageDetail] = useState<string>('');
-    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
-    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
+const ServiceDetail = () => {
+    const [columnsData]=useState<HeaderItem[]>(adminServiceDetailTable);
+    const [tableData, setTableData]=useState<ServiceDetailDto[]>([]);
 
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
@@ -50,17 +40,20 @@ const ImageDetail = () => {
     } = tableInstance;
     initialState.pageSize = 5;
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [idServiceDetail, setIdServiceDetail] = useState<string>('');
+    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
+    const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
+    const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true"]);
+
+    const [active, setActive] = useState<boolean>(true);
+    const [name, setName] = useState<string>("");
+
     const openModel=()=>
         setIsOpenModel(!isOpenModel);
 
-    const openDeleteModal=()=>
-        setIsOpenDeleteModal(!isOpenDeleteModal);
-
-    const openImageModel=()=>
-        setIsOpenImageModel(!isOpenImageModel);
-
     const openCreateModal=()=>{
-        setIdImageDetail('');
+        setIdServiceDetail('');
 
         openModel();
     }
@@ -70,142 +63,107 @@ const ImageDetail = () => {
         setIsLoading(true);
 
         try{
-            const formData:FormData = new FormData(event.currentTarget);
             let searches:string[]=[];
-
-            if(!isNullOrEmpty(formData.get("Active")?.toString())){
-                searches.push("Active=true");
-            }
-            else{
-                searches.push("Active=false");
-            }
+            
+            searches.push(active?"Active=true":"Active=false");
         
-            if(!isNullOrEmpty(formData.get("Code")?.toString())){
-                searches.push("Code="+formData.get("Code")?.toString());
+            if(!isNullOrEmpty(name)){
+                searches.push("Name="+name);
             }
         
             setSearchConditions(searches);
 
-            await imageDetailApiRequest.getAllImageDetail({search:searches.join('&'), pageNumber:1}).then((res)=>{
-                setTableData(res.payload.data.imageDetails);
-                
+            await serviceDetailApiRequest.getAllServiceDetail({search:searches.join("&"), pageNumber:1}).then((res)=>{
+                setTableData(res.payload.data.serviceDetails);
                 setMetaData(res.payload.data.metaData);
-        
                 setIsLoading(false);
             })
         }
         catch(error){
             console.log(error);
             setIsLoading(false);
-            showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
         }
     }
 
-    const getAllImageDetailInit=async ():Promise<void> => {
+    const handleChange = (name:string) => (e: any) => {
+        switch (name) {
+            case "active":
+                setActive(e.target.isChecked);
+                break;
+            case "name":
+                setName(e.target.value);
+                break;
+            default:
+                break;
+        }
+    }
+
+    const getAllServiceDetailTotal=async ():Promise<void>=>{
         setIsLoading(true);
         try{
-            ref.current?.reset();
+            setName("");
             setActive(true);
-            setSearchConditions(["Active=true"]);
-      
-            await imageDetailApiRequest.getAllImageDetail({search:'Active=true', pageNumber:1}).then((res)=>{
-                setTableData(res.payload.data.imageDetails);
-                
+            setSearchConditions([]);
+
+            await serviceDetailApiRequest.getAllServiceDetail({search:"", pageNumber:1}).then((res)=>{
+                setTableData(res.payload.data.serviceDetails);
                 setMetaData(res.payload.data.metaData);
-        
                 setIsLoading(false);
             })
-        }catch(error){
+        }
+        catch(error){
             console.log(error);
+            setIsLoading(false);
+        }
+    }
+
+    const getAllServiceDetailByPageNumber=async (pageNumber:number):Promise<void>=>{
+        setIsLoading(true);
+        try{
+            await serviceDetailApiRequest.getAllServiceDetail({search:searchConditions.join("&"), pageNumber:pageNumber}).then((res)=>{
+                setTableData(res.payload.data.serviceDetails);
+                setMetaData(res.payload.data.metaData);
+                setIsLoading(false);
+            })
+        }
+        catch(error){
+            console.log(error);
+            setIsLoading(false);
+        }
+    }
+
+    const getAllServiceDetailInit=async ():Promise<void>=>{
+        try{
+            await serviceDetailApiRequest.getAllServiceDetail({search:"", pageNumber:1}).then((res)=>{
+                setTableData(res.payload.data.serviceDetails);
+                setMetaData(res.payload.data.metaData);
+                setIsLoading(false);
+            })
+        }
+        catch(error){
+            console.log(error);
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() =>{
+        getAllServiceDetailInit();
+    },[setTableData, setMetaData, setIsLoading])
     
-            setIsLoading(false);
-        }
-    }
-
-    const refreshAllImageDetail=async (): Promise<void> =>{
-        setIsLoading(true);
-
-        try{
-            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:1}).then((res)=>{
-                setTableData(res.payload.data.imageDetails); 
-                setMetaData(res.payload.data.metaData);
-                setIsLoading(false);
-            })
-        }
-        catch(error){
-            console.log(error);
-            setIsLoading(false);
-        }
-    }
-
-    const getAllImageDetailByPageNumber=async (pageNumber:number):Promise<void> => {
-        setIsLoading(true);
-        
-        try{
-            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:pageNumber}).then((res)=>{
-                setTableData(res.payload.data.imageDetails); 
-                setMetaData(res.payload.data.metaData);
-                setIsLoading(false);
-            })
-        }
-        catch(error){
-            console.log(error);
-            setIsLoading(false);
-        }
-    }
-
-    const handleChange = ()=> {
-        setActive(!active);
-    }
-
-    const deleteImageDetail=async ():Promise<void> => {
-        setIsLoading(true);
-    
-        try{
-            await imageDetailApiRequest.deleteImageDetail(idImageDetail).then((res)=>{
-                if(res.payload.data){
-                    showToast("success", <p>{res.payload.message.replace("{Item}", "ảnh")}</p>)
-                    openDeleteModal()
-                    refreshAllImageDetail();
-                }
-                else{
-                    showToast("error", <p>{res.payload.message}</p>)
-                }
-        
-                setIsLoading(true);
-            });
-        }
-        catch(error){
-            console.log(error);
-            showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
-            setIsLoading(false);
-        }
-    }
-
-    useEffect(()=>{
-        getAllImageDetailInit();
-    }, [setTableData])
-
     return (
         <>
-            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'danh mục'} eventDeleteItem={deleteImageDetail}></DeleteModalUI>)}
-
-            {isOpenImageModel && (<UploadImageForImageDetailModalUI closeModel={openImageModel} idImageDetail={idImageDetail} refreshAllImageDetailUpdate={refreshAllImageDetail}></UploadImageForImageDetailModalUI>)}
-
-            {isOpenModel && (<ImageDetailModalUI closeModal={openModel} idImageDetail={idImageDetail} 
-            refreshAllCategoryCreate={getAllImageDetailInit} refreshAllCategoryUpdate={refreshAllImageDetail}></ImageDetailModalUI>)}
-
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
-                    <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
+                    <form className='flex flex-col gap-5' onSubmit={onSubmit}>
                         <div className='flex flex-row w-full gap-10'>
-                            <InputUI name='Code' isBlockLabel={false} label={"Mã số :"} classDiv={"w-[30%]"} classInput={"w-[80%]"} classLabel={"w-[20%]"}></InputUI>
+                            <InputUI value={name} name='Code' isBlockLabel={false} label={"Mã số :"} classDiv={"w-[30%]"} 
+                            classInput={"w-[80%]"} classLabel={"w-[20%]"} onChangeEvent={handleChange("name")}></InputUI>
 
                             <CheckboxUI name='Active' isChecked={active} label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}
-                            onChangeEvent={handleChange}></CheckboxUI>
+                            onChangeEvent={handleChange("active")}></CheckboxUI>
                         </div>
 
-                        <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllImageDetailInit}></ButtonSearchUI>
+                        <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllServiceDetailTotal}></ButtonSearchUI>
                     </form>
                 </header>
 
@@ -244,17 +202,37 @@ const ImageDetail = () => {
                                                 {row.cells.map((cell:any, index:any) => {
                                                     let data;
 
-                                                    if (cell.column.Header === "CODE") {
+                                                    if (cell.column.Header === "NAME") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 pr-4 w-[12rem]">
+                                                            <p className="text-sm text-navy-700 pr-4 w-[20rem]">
                                                                 {cell.value}
                                                             </p>
                                                         );
-                                                    }else if (cell.column.Header === "DESCRIPTION") {
+                                                    }else if (cell.column.Header === "TRANSACTION") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 w-[15rem] pr-4">
+                                                            <p className="text-sm text-navy-700 w-[10rem] pr-4">
                                                                 {cell.value}
                                                             </p>
+                                                        );
+                                                    }else if (cell.column.Header === "METHOD") {
+                                                        data = (
+                                                            <MethodCalculateDisplay methodCalculate={cell.value}></MethodCalculateDisplay>
+                                                        );
+                                                    }else if (cell.column.Header === "UNITPRICE") {
+                                                        data = (
+                                                            <p className="text-sm text-navy-700 w-[10rem] pr-4">
+                                                                {cell.value}
+                                                            </p>
+                                                        );
+                                                    }else if (cell.column.Header === "UNIT") {
+                                                        data = (
+                                                            <p className="text-sm text-navy-700 w-[6rem] pr-4">
+                                                                {cell.value}
+                                                            </p>
+                                                        );
+                                                    }else if (cell.column.Header === "RATING") {
+                                                        data = (
+                                                          <RatingDisplay rating={cell.value} className={"w-[8rem]"}></RatingDisplay>
                                                         );
                                                     }else if (cell.column.Header === "ACTIVE") {
                                                         data = (
@@ -288,24 +266,21 @@ const ImageDetail = () => {
                                                             <div className='flex flex-row w-[7rem] gap-3'>
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();                                       
-                                                                    setIdImageDetail(cell.value);
-                                                                    openImageModel();
+                                                                    
                                                                 }}>
                                                                     <ArrowUpTrayIcon className='h-[25px] w-[25px] text-blue-600'></ArrowUpTrayIcon>
                                                                 </Button>
 
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();
-                                                                    setIdImageDetail(cell.value);
-                                                                    openModel();
+                                                                    
                                                                 }}>
                                                                     <PencilSquareIcon className='h-[25px] w-[25px] text-green-500'></PencilSquareIcon>
                                                                 </Button>
 
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();
-                                                                    setIdImageDetail(cell.value);
-                                                                    openDeleteModal();
+                                                                    
                                                                 }}>
                                                                     <TrashIcon className='h-[25px] w-[25px] text-red-600'></TrashIcon>
                                                                 </Button>
@@ -337,7 +312,7 @@ const ImageDetail = () => {
                         totalPages={metaData.totalPages}
                         hasPrevious={metaData.hasPrevious}
                         hasNext={metaData.hasNext} 
-                        EventClickSwitchPage={getAllImageDetailByPageNumber}>                    
+                        EventClickSwitchPage={getAllServiceDetailByPageNumber}>                    
                     </DefaultPagination>
                 </footer>
             </Card>
@@ -345,4 +320,4 @@ const ImageDetail = () => {
     )
 }
 
-export default ImageDetail
+export default ServiceDetail

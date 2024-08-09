@@ -2,20 +2,20 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { categoryApiRequest } from '@/apiRequests/category';
 import { CategoryType } from '@/utils/types/CategoryType';
 import LoadingUI from '@/components/Common/LoadingUI';
 import CardGame from '@/components/Common/CardGame';
 import TitleService from '@/components/Common/TitleService';
-import { CategoryDto } from '@/apiRequests/DataDomain/Category/CategoryDto';
+import { ServiceDetailDto } from '@/apiRequests/DataDomain/ServiceDetail/ServiceDetailDto';
+import { serviceDetailApiRequest } from '@/apiRequests/service-detail';
 
 const GameService = () => {
-    const [services, setServices]=useState<CategoryDto[] |null>(null);
+    const [services, setServices]=useState<ServiceDetailDto[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const getCategoryServices=async():Promise<void>=>{
         try{
-            const res=await categoryApiRequest.getAllCategoryByType(CategoryType.Service);
+            const res=await serviceDetailApiRequest.getAllServiceDetailActive();
             setServices(res.payload.data);
             setIsLoading(false);
         }
@@ -37,12 +37,16 @@ const GameService = () => {
 
             {isLoading?(<div className='h-[30vh]'><LoadingUI></LoadingUI></div>):(
               <div className='grid grid-cols-4 gap-4 w-full'>
-                {services && services?.map((game, index)=>(
+                {services && services?.map((service, index)=>(
                   <CardGame key={index} isHot={false}
-                  totalSale={game.TotalSale}
-                  rating={game.Rating}
-                  name={game.Name}
-                  urlImage={game.PathUrl} titleButton={'xem tất cả'} urlButton={''} id={''}></CardGame>
+                    totalSale={service.Transaction}
+                    rating={service.Rating}
+                    name={service.Name}
+                    urlImage={service.PathUrl?service.PathUrl:""} 
+                    titleButton={'Xem tất cả'} 
+                    urlButton={''} 
+                    id={''} 
+                    isGame={false}></CardGame>
                 ))}
               </div>
             )}
