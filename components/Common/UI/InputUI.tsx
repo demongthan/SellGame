@@ -18,6 +18,7 @@ interface Props{
     isDisabled?:boolean,
     unit?:string,
     classUint?:string,
+    classDivUnit?:string,
     isReadOnly?:boolean
 }
 
@@ -37,18 +38,19 @@ const InputUI = ({value=undefined,
   unit,
   classUint,
   isReadOnly=false,
+  classDivUnit
   }:Props) => {
     return (
       <div className={classDiv}>
           {label && (<label htmlFor={name} className={`${isBlockLabel?"block":"inline-block"} text-base text-black font-semibold leading-6 pb-2 ${classLabel}`}>{label}</label>)}
 
-          <div className={`${unit?"flex flex-row gap-1 w-full":classInput} ${isBlockLabel?"block":"inline-block"}`}>
+          <div className={`${unit?` ${isBlockLabel?"flex flex-row gap-1":"inline-block"} ${classDivUnit}`:`${isBlockLabel?"block":"inline-block"} ${classInput}`}`}>
               <Input type={type} name={name} maxLength={max} value={value} onChange={onChangeEvent} disabled={isDisabled} readOnly={isReadOnly}
-              className={`border border-s2gray2 rounded-lg text-gray-900 text-sm transition-input py-2.5 pl-3 pr-10 ${unit?classInput:"w-full"}
-              ease-in-out delay-150 focus:outline-none focus:border-s2cyan1`} placeholder={placeholder}>
+                className={`border border-s2gray2 rounded-lg text-gray-900 text-sm transition-input py-2.5 px-3 ${unit?classInput:"w-full"}
+                ease-in-out delay-150 focus:outline-none focus:border-s2cyan1`} placeholder={placeholder}>
               </Input>
 
-            {unit && (<p className={`flex justify-center items-center ${classUint}`}>{unit}</p>)}
+            {unit && (<p className={`${isBlockLabel?"flex":"inline-block pl-3"} justify-center items-center ${classUint}`}>{unit}</p>)}
           </div>
 
           <div className='pt-2'>

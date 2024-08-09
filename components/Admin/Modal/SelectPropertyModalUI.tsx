@@ -1,6 +1,7 @@
 "use client"
 
 import { ButtonAddItemUI, InputUI, LoadingUI, SelectPropertyValueModalUI } from '@/components'
+import { PropertiesItemJson } from '@/utils/types/PropertiesJson';
 import { Button } from '@headlessui/react';
 import { MinusCircleIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useState } from 'react'

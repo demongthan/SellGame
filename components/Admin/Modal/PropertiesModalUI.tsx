@@ -6,6 +6,7 @@ import { Button } from '@headlessui/react';
 import { MinusCircleIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { use, useState } from 'react'
 import PropertyValueModalUI from './PropertyValueModalUI';
+import { PropertiesJson, ValueKey } from '@/utils/types/PropertiesJson';
 
 interface Props{
     closeModal:()=>void,
@@ -23,6 +24,7 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
         let property:PropertiesJson={
             Key:"",
             Name:"",
+            Only:true,
             Value:[]
         }
 

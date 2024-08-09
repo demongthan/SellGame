@@ -1,4 +1,4 @@
-interface ItemSelect{
+export interface ItemSelect{
     Name:string,
     Value:string
 }

@@ -2,7 +2,7 @@
 
 import { ServiceDetailDto } from '@/apiRequests/DataDomain/ServiceDetail/ServiceDetailDto';
 import { serviceDetailApiRequest } from '@/apiRequests/service-detail';
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI, MethodCalculateDisplay, RatingDisplay } from '@/components'
+import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI, MethodCalculateDisplay, RatingDisplay, ServiceDetailModalUI } from '@/components'
 import { adminServiceDetailTable } from '@/utils/constant/TitleTable/AdminServiceDetailTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
@@ -152,6 +152,14 @@ const ServiceDetail = () => {
     
     return (
         <>
+            <ServiceDetailModalUI closeModal={function (): void {
+                throw new Error('Function not implemented.');
+            } } idServiceDetail={''} refreshAllServiceDetailCreate={function (): Promise<void> {
+                throw new Error('Function not implemented.');
+            } } refreshAllServiceDetailUpdate={function (): Promise<void> {
+                throw new Error('Function not implemented.');
+            } }></ServiceDetailModalUI>
+
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
                     <form className='flex flex-col gap-5' onSubmit={onSubmit}>

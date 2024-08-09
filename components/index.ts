@@ -37,6 +37,9 @@ import SelectPropertyValueModalUI from "./Admin/Modal/SelectPropertyValueModalUI
 import SelectPropertyModalUI from "./Admin/Modal/SelectPropertyModalUI";
 import UploadImageForAccGameDetailModalUI from "./Admin/Modal/AccGameDetail/UploadImageForAccGameDetailModalUI";
 import MethodCalculateDisplay from "./Admin/MethodCalculateDisplay";
+import ServiceDetailModalUI from "./Admin/Modal/ServiceDetail/ServiceDetailModalUI";
+import PropertyServiceDetailModalUI from "./Admin/Modal/ServiceDetail/PropertyServiceDetailModalUI";
+import SelectCoefficientModalUI from "./Admin/Modal/ServiceDetail/SelectCoefficientModalUI";
 
 export{
     Header,
@@ -77,5 +80,8 @@ export{
     SelectPropertyValueModalUI,
     SelectPropertyModalUI,
     UploadImageForAccGameDetailModalUI,
-    MethodCalculateDisplay
+    MethodCalculateDisplay,
+    ServiceDetailModalUI,
+    PropertyServiceDetailModalUI,
+    SelectCoefficientModalUI
 }

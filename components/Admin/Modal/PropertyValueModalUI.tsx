@@ -1,6 +1,7 @@
 "use client"
 
 import { ButtonAddItemUI, InputUI } from '@/components';
+import { ValueKey } from '@/utils/types/PropertiesJson';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { MinusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
