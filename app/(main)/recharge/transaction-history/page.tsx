@@ -2,6 +2,8 @@
 
 import { ButtonSearchUI, FromToDateUI, SelectUI, TableShowData, TitleRecharge } from '@/components';
 import { titleTableRecharge_TransactionHistory } from '@/utils/constant/TitleTableRecharge';
+import { transactionStatus } from '@/utils/constant/TransactionStatus';
+import { transactionType } from '@/utils/constant/TransactionType';
 import React from 'react'
 
 const TransactionHistory = () => {
@@ -14,14 +16,16 @@ const TransactionHistory = () => {
                 classDiv={"w-[62%]"} classDateTime={"w-full"}></FromToDateUI>
 
                 <div className='flex flex-row gap gap-5 w-full'>
-                    <SelectUI value={undefined} isBlockLabel={true} label={"Giao dịch"}
+                    <SelectUI data={transactionType} isBlockLabel={true} label={"Giao dịch"}
                     classDiv={"w-[30%]"} classSelect={"w-full"}></SelectUI>
 
-                    <SelectUI value={undefined} isBlockLabel={true} label={"Trạng thái"}
+                    <SelectUI data={transactionStatus} isBlockLabel={true} label={"Trạng thái"}
                     classDiv={"w-[30%]"} classSelect={"w-full"}></SelectUI>
 
                     <ButtonSearchUI isSearch={true} isAll={true}
-                    classDiv={"w-[25%] h-[2.3rem] relative top-[2.2rem]"}></ButtonSearchUI>
+                    classDiv={"w-[25%] h-[2.3rem] relative top-[2.2rem]"} eventButtonAllClick={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }></ButtonSearchUI>
                 </div>
             </div>
 

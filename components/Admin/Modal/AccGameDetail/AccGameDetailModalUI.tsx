@@ -17,7 +17,7 @@ interface Props{
 }
 
 const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshAllAccGameDetailCreate, refreshAllAccGameDetailUpdate}:Props) => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
     const isCreate=isNullOrEmpty(idAccGameDetail);
     const [errArr, setErrArr]=useState<ErrorValidate[]>();
