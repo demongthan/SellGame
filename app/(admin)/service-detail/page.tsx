@@ -2,9 +2,10 @@
 
 import { ServiceDetailDto } from '@/apiRequests/DataDomain/ServiceDetail/ServiceDetailDto';
 import { serviceDetailApiRequest } from '@/apiRequests/service-detail';
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, InputUI, LoadingUI, MethodCalculateDisplay, RatingDisplay, ServiceDetailModalUI } from '@/components'
+import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, MethodCalculateDisplay, RatingDisplay, ServiceDetailModalUI, UploadImageForServiceDetailModalUI } from '@/components'
 import { adminServiceDetailTable } from '@/utils/constant/TitleTable/AdminServiceDetailTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
+import { showToast } from '@/utils/showToast';
 import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
 
 import { Button } from '@headlessui/react';
@@ -40,11 +41,13 @@ const ServiceDetail = () => {
     } = tableInstance;
     initialState.pageSize = 5;
 
+    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [idServiceDetail, setIdServiceDetail] = useState<string>('');
     const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
     const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
     const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true"]);
+    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
 
     const [active, setActive] = useState<boolean>(true);
     const [name, setName] = useState<string>("");
@@ -54,9 +57,14 @@ const ServiceDetail = () => {
 
     const openCreateModal=()=>{
         setIdServiceDetail('');
-
         openModel();
     }
+
+    const openImageModel=()=>
+        setIsOpenImageModel(!isOpenImageModel);
+
+    const openDeleteModal=()=>
+        setIsOpenDeleteModal(!isOpenDeleteModal);
     
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
@@ -146,19 +154,59 @@ const ServiceDetail = () => {
         }
     }
 
+    const refreshAllServiceDetail=async ():Promise<void>=>{
+        setIsLoading(true);
+        try{
+            await serviceDetailApiRequest.getAllServiceDetail({search:searchConditions.join("&"), pageNumber:metaData.currentPage}).then((res)=>{
+                setTableData(res.payload.data.serviceDetails);
+                setMetaData(res.payload.data.metaData);
+                setIsLoading(false);
+            })
+        }
+        catch(error){
+            console.log(error);
+            setIsLoading(false);
+        }
+    }
+
+    const deleteServiceDetail=async ():Promise<void>=>{
+        setIsLoading(true);
+
+        try{
+            await serviceDetailApiRequest.deleteServiceDetail(idServiceDetail).then((res)=>{
+                if(res.payload.data){
+                    showToast("success", <p>{res.payload.message.replace("{Item}", "ảnh")}</p>)
+                    openDeleteModal()
+                    refreshAllServiceDetail();
+                }
+                else{
+                    showToast("error", <p>{res.payload.message}</p>)
+                }
+        
+                setIsLoading(true);
+            });
+        }
+        catch(error){
+            console.log(error);
+            showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
+            setIsLoading(false);
+        }
+    }
+
     useEffect(() =>{
         getAllServiceDetailInit();
     },[setTableData, setMetaData, setIsLoading])
     
     return (
         <>
-            <ServiceDetailModalUI closeModal={function (): void {
-                throw new Error('Function not implemented.');
-            } } idServiceDetail={''} refreshAllServiceDetailCreate={function (): Promise<void> {
-                throw new Error('Function not implemented.');
-            } } refreshAllServiceDetailUpdate={function (): Promise<void> {
-                throw new Error('Function not implemented.');
-            } }></ServiceDetailModalUI>
+            {isOpenModel && (<ServiceDetailModalUI closeModal={openCreateModal} idServiceDetail={idServiceDetail} 
+            refreshAllServiceDetailCreate={getAllServiceDetailTotal} 
+            refreshAllServiceDetailUpdate={refreshAllServiceDetail}></ServiceDetailModalUI>)}
+
+            {isOpenImageModel && (<UploadImageForServiceDetailModalUI closeModel={openImageModel} idServiceDetail={idServiceDetail} 
+            refreshAllServiceDetailUpdate={refreshAllServiceDetail}></UploadImageForServiceDetailModalUI>)}
+
+            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'dịch vụ game'} eventDeleteItem={deleteServiceDetail}></DeleteModalUI>)}
 
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
@@ -274,21 +322,25 @@ const ServiceDetail = () => {
                                                             <div className='flex flex-row w-[7rem] gap-3'>
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();                                       
-                                                                    
+                                                                    setIdServiceDetail(cell.value);
+                                                                    openImageModel();
                                                                 }}>
                                                                     <ArrowUpTrayIcon className='h-[25px] w-[25px] text-blue-600'></ArrowUpTrayIcon>
                                                                 </Button>
 
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();
-                                                                    
+                                                                    console.log(cell.value);
+                                                                    setIdServiceDetail(cell.value);
+                                                                    openModel();
                                                                 }}>
                                                                     <PencilSquareIcon className='h-[25px] w-[25px] text-green-500'></PencilSquareIcon>
                                                                 </Button>
 
                                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                                     event.preventDefault();
-                                                                    
+                                                                    setIdServiceDetail(cell.value);
+                                                                    openDeleteModal();
                                                                 }}>
                                                                     <TrashIcon className='h-[25px] w-[25px] text-red-600'></TrashIcon>
                                                                 </Button>

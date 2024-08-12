@@ -1,5 +1,6 @@
 interface AccountInformationDto{
     Id: string,
+    Code:string,
     DisplayName: string,
     Phone:string,
     Email:string,

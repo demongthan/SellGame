@@ -1,5 +1,6 @@
 "use client"
 
+import { ValueKey } from '@/utils/types/PropertiesJson';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import React, { ChangeEventHandler, Fragment, useState } from 'react'

@@ -4,6 +4,7 @@ import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 import { ButtonSearchUI, CardGameDetail, DefaultPagination, InputUI, LoadingUI, SelectUI } from '@/components'
 import { orderSearch } from '@/utils/constant/OrderSearch';
 import { priceSearch } from '@/utils/constant/PriceSearch';
+import { PropertiesItemJson, PropertiesJson } from '@/utils/types/PropertiesJson';
 import { isNullOrEmpty } from '@/utils/utils';
 
 import { useSearchParams } from 'next/navigation';

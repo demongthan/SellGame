@@ -13,3 +13,7 @@ export const displayDateTime=(date:Date):string=>{
 
   return moment.utc(date.toLocaleString()).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY HH:mm:ss');
 }
+
+export const generateThreeDigitNumber=(): number =>{
+  return Math.floor(Math.random() * 900) + 100;
+}

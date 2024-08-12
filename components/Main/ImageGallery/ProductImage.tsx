@@ -33,8 +33,7 @@ export const ProductImage=({ gallery, thumbsSwiper }:Props)=> {
                                 <Image
                                 src={item}
                                 alt={`Product gallery ${index}`}
-                                width={450}
-                                height={450}/>
+                                width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}/>
                             </Link>
                     </SwiperSlide>
                     ))}

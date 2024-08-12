@@ -15,7 +15,7 @@ const GameCategory = () => {
 
     const getCategoryGames=async():Promise<void>=>{
         try{
-          const res=await categoryApiRequest.getAllCategoryByType(CategoryType.Game);
+          const res=await categoryApiRequest.getAllCategoryByActive("?Fields=Id%2C%20Name%2C%20TotalSale%2C%20Rating%2C%20PathUrl");
           setGames(res.payload.data);
           setIsLoading(false);
         }

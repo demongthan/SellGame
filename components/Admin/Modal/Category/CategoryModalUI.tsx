@@ -3,7 +3,6 @@
 import { ButtonUpdateItemUI, CheckboxUI, LoadingUI, SelectUI } from '@/components'
 import ButtonAddItemUI from '@/components/Common/UI/Button/ButtonAddItemUI'
 import InputUI from '@/components/Common/UI/InputUI'
-import { categoryTypeSearch } from '@/utils/constant/CategoryTypeSearch'
 import { Button } from '@headlessui/react'
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import React, { FormEvent, useEffect, useState } from 'react'
@@ -188,11 +187,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                                     errArr={errArr?.filter((error)=>error.for==="name")} ></InputUI>
                                 </div>
 
-                                {isCreate && (<div className="col-span-2 sm:col-span-1">
-                                    <SelectUI label={"Loại :"} name={"CategoryType"} data={categoryTypeSearch}></SelectUI>
-                                </div>)}
-
-                                {isCreate && (<div className="col-span-2 sm:col-span-1">
+                                {isCreate && (<div className="col-span-2">
                                     <InputUI name='Code' label={"Mã số :"} classDiv={"w-full"} classInput={"w-full"}
                                     errArr={errArr?.filter((error)=>error.for==="code")} ></InputUI>
                                 </div>)}
@@ -211,7 +206,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
 
                                 <div className="col-span-2">
                                     <div className='flex flex-row gap-1'>
-                                        <InputUI value={propertiesJson} name='Properties' label={"Danh mục :"} classDiv={"w-[90%]"} classInput={"w-full"} isDisabled={true}></InputUI>
+                                        <InputUI value={propertiesJson} name='Properties' label={"Danh mục :"} classDiv={"w-[90%]"} classInput={"w-full"} isReadOnly={true}></InputUI>
 
                                         <Button className={"w-[10%] flex justify-center items-center pt-6"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                             event.preventDefault();

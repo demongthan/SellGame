@@ -14,7 +14,7 @@ const BuyAccount = () => {
 
     const getCategoryGames=async():Promise<void>=>{
         try{
-            const res=await categoryApiRequest.getAllCategoryByType(CategoryType.Game);
+            const res=await categoryApiRequest.getAllCategoryByActive("?Fields=Id%2C%20Name%2C%20TotalSale%2C%20Rating%2C%20PathUrl");
             setGames(res.payload.data);
             setIsLoading(false);
         }
@@ -38,7 +38,7 @@ const BuyAccount = () => {
                     total={game.Total}
                     rating={game.Rating}
                     name={game.Name}
-                    urlImage={game.PathUrl}
+                    urlImage={game.PathUrl?game.PathUrl:""}
                     titleButton={"Xem tất cả"}
                     urlButton={`/buy-account/buy-account-detail?title=Mua tài khoản`}
                     id={game.Id} isGame={true}>

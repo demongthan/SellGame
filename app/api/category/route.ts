@@ -1,5 +1,4 @@
 import { CreateCategoryDto } from "@/apiRequests/DataDomain/Category/CreateCategoryDto";
-import { categoryTypeSearch } from "@/utils/constant/CategoryTypeSearch";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -47,7 +46,6 @@ export const POST=async (request: any)=> {
                 Code: data.get("Code"),
                 Description: data.get("Description"),
                 Active: data.get("Active")=="on"?true:false,
-                Type:categoryTypeSearch.find(_=>_.Name==data.get("CategoryType"))?.Value,
                 Properties:data.get("Properties")
             }
     

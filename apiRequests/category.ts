@@ -12,8 +12,8 @@ export const categoryApiRequest = {
     updateCategory:(input:{id:string, body:UpdateCategoryDto})=>
         http.put<ApiReponse<boolean>>(`/Category/UpdateCategory/${input.id}`, false, input.body),
 
-    getAllCategoryByType:(type:CategoryType)=>
-        http.get<ApiReponse<CategoryDto[]>>(`/Category/GetAllCategoryByType/${type}?Fields=Id%2C%20Name%2C%20TotalSale%2C%20Rating%2C%20PathUrl`, false),
+    getAllCategoryByActive:(fields:string)=>
+        http.get<ApiReponse<CategoryDto[]>>(`/Category/GetAllCategoryByActive${fields}`, false),
 
     getCategoryById:(input:{id:string | null, fields: string})=>
         http.get<ApiReponse<CategoryDto>>(`/Category/GetCategoryById/${input.id}${input.fields}`, false),
@@ -24,6 +24,6 @@ export const categoryApiRequest = {
     deleteCategory:(id:string | null)=>
         http.delete<ApiReponse<boolean>>(`/Category/DeleteCategory/${id}`, false),
 
-    getAllCategory:(input:{search:string, pageNumber:number})=>
-        http.get<ApiReponse<CategorySearchDto>>(`/Category/GetAllCategory?Fields=Id%2CCode%2CName%2CType%2CDescription%2CTotal%2CTotalSale%2CRating%2CActive%2CPathUrl%2CCreatedDateUtc%2CUpdatedDateUtc&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`, false)
+    getAllCategory:(input:{search:string, fields:string, pageNumber:number})=>
+        http.get<ApiReponse<CategorySearchDto>>(`/Category/GetAllCategory${input.fields}&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`, false)
 }

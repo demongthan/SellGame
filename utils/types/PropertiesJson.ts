@@ -26,3 +26,11 @@ export interface ServiceDetailProperties{
     TitleCoefficient?:ValueKey[],
     SelectCoefficient?:ValueKey[],
 }
+
+export interface ServiceDetailPrice{
+    Price?:number,
+    Coefficient?:number,
+    SelectPrice?:ItemSelect,
+    SelectCoefficient?:ValueKey,
+    TitleCoefficient?:ValueKey,
+}

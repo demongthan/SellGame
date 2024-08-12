@@ -7,11 +7,6 @@ export const adminCategoryTable:HeaderItem[]=[
         accessor:"Name"
     },
     {
-        Header:"TYPE",
-        TitleHeader:"Loại",
-        accessor:"Type"
-    },
-    {
         Header:"CODE",
         TitleHeader:"Mã số",
         accessor:"Code"

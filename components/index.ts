@@ -40,6 +40,9 @@ import MethodCalculateDisplay from "./Admin/MethodCalculateDisplay";
 import ServiceDetailModalUI from "./Admin/Modal/ServiceDetail/ServiceDetailModalUI";
 import PropertyServiceDetailModalUI from "./Admin/Modal/ServiceDetail/PropertyServiceDetailModalUI";
 import SelectCoefficientModalUI from "./Admin/Modal/ServiceDetail/SelectCoefficientModalUI";
+import SelectPriceModalUI from "./Admin/Modal/ServiceDetail/SelectPriceModalUI";
+import UploadImageForServiceDetailModalUI from "./Admin/Modal/ServiceDetail/UploadImageForServiceDetailModalUI";
+import CardGame from "./Common/CardGame";
 
 export{
     Header,
@@ -83,5 +86,8 @@ export{
     MethodCalculateDisplay,
     ServiceDetailModalUI,
     PropertyServiceDetailModalUI,
-    SelectCoefficientModalUI
+    SelectCoefficientModalUI,
+    SelectPriceModalUI,
+    UploadImageForServiceDetailModalUI,
+    CardGame
 }

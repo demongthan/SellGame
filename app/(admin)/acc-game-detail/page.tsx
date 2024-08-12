@@ -11,6 +11,7 @@ import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/2
 import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 import { showToast } from '@/utils/showToast';
+import { ItemSelect } from '@/utils/types/SelectItem';
 
 const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);

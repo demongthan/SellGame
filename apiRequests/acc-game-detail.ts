@@ -1,5 +1,6 @@
 import envConfig from "@/config";
 import http from "./http";
+import { PayAccGameInitDto } from "./DataDomain/AccGameDetail/PayAccGameInitDto";
 
 export const accGameDetailApiRequest={
     getAllAccGameDetailForAdminInit:()=>
@@ -24,6 +25,9 @@ export const accGameDetailApiRequest={
 
     deleteAccGameDetail:(id:string | null)=>
         http.delete<ApiReponse<boolean>>(`/AccGameDetail/DeleteAccGameDetail/${id}`, false),
+
+    getPayAccGameInit:(input:{id:string | undefined, fields: string})=>
+        http.get<ApiReponse<PayAccGameInitDto>>(`/AccGameDetail/GetPayAccGameInit/${input.id}${input.fields}`, false),
 
     getAllAccGamesDetail:(input:{idCategory:string | undefined, search:string, pageNumber:number, fields:string})=>
         http.get<ApiReponse<AccGameDetailSearchDto>>(

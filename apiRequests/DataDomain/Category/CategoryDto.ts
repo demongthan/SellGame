@@ -4,7 +4,6 @@ export interface CategoryDto{
     Id:string,
     Code:string,
     Name:string,
-    Type:CategoryType,
     Description?:string,
     Total:number,
     TotalSale:number,

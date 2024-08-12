@@ -29,8 +29,7 @@ export const CarouselThumbs=({ gallery, setThumbsSwiper }:Props)=> {
             <Image
               src={item}
               alt={`Product thumb gallery ${index}`}
-              width={80}
-              height={80}
+              width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}
             />
           </SwiperSlide>
         ))}

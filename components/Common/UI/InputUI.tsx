@@ -1,5 +1,5 @@
 import { Input } from '@headlessui/react'
-import React, { ChangeEventHandler } from 'react'
+import React, { ChangeEventHandler, FocusEventHandler } from 'react'
 import { number } from 'zod'
 
 interface Props{
@@ -15,6 +15,7 @@ interface Props{
     type?:string,
     max?:number,
     onChangeEvent?:ChangeEventHandler<HTMLInputElement> | undefined,
+    onBlurEvent?:FocusEventHandler<HTMLInputElement> | undefined
     isDisabled?:boolean,
     unit?:string,
     classUint?:string,
@@ -35,6 +36,7 @@ const InputUI = ({value=undefined,
   max,
   isDisabled=false,
   onChangeEvent,
+  onBlurEvent,
   unit,
   classUint,
   isReadOnly=false,
@@ -45,7 +47,7 @@ const InputUI = ({value=undefined,
           {label && (<label htmlFor={name} className={`${isBlockLabel?"block":"inline-block"} text-base text-black font-semibold leading-6 pb-2 ${classLabel}`}>{label}</label>)}
 
           <div className={`${unit?` ${isBlockLabel?"flex flex-row gap-1":"inline-block"} ${classDivUnit}`:`${isBlockLabel?"block":"inline-block"} ${classInput}`}`}>
-              <Input type={type} name={name} maxLength={max} value={value} onChange={onChangeEvent} disabled={isDisabled} readOnly={isReadOnly}
+              <Input type={type} name={name} maxLength={max} value={value} onBlur={onBlurEvent} onChange={onChangeEvent} disabled={isDisabled} readOnly={isReadOnly}
                 className={`border border-s2gray2 rounded-lg text-gray-900 text-sm transition-input py-2.5 px-3 ${unit?classInput:"w-full"}
                 ease-in-out delay-150 focus:outline-none focus:border-s2cyan1`} placeholder={placeholder}>
               </Input>

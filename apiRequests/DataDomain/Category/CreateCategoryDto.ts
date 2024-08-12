@@ -5,6 +5,5 @@ export interface CreateCategoryDto{
     Code:string,
     Description?: string,
     Active:boolean,
-    Type:CategoryType | undefined,
     Properties?:string
 }

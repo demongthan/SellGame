@@ -14,7 +14,7 @@ import { ButtonAddItemUI,
   RatingDisplay, SelectUI, 
   UploadImageModalUI 
 } from '@/components'
-import { categoryTypeSearch, CategoryTypeSearchValue } from '@/utils/constant/CategoryTypeSearch';
+
 import { adminCategoryTable } from '@/utils/constant/TitleTable/AdminCategoryTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { showToast } from '@/utils/showToast';
@@ -36,7 +36,10 @@ const Category = () => {
     const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
     const [idCategory, setIdCategory] = useState<string>('');
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
-    const ref = useRef<HTMLFormElement>(null);
+
+    const [name, setName]=useState<string>('');
+    const [code, setCode]=useState<string>('');
+    const [active, setActive] = useState<boolean>(true);
 
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
@@ -72,10 +75,12 @@ const Category = () => {
 
   const getAllCategory=async():Promise<void>=>{
     try{
-      ref.current?.reset();
       setSearchConditions([]);
+      setActive(true);
+      setCode("");
+      setName("");
 
-      await categoryApiRequest.getAllCategory({search:'', pageNumber:1}).then((res)=>{
+      await categoryApiRequest.getAllCategory({search:'', fields:"?Fields=Id%2CCode%2CName%2CDescription%2CTotal%2CTotalSale%2CRating%2CActive%2CPathUrl%2CCreatedDateUtc%2CUpdatedDateUtc", pageNumber:1}).then((res)=>{
         setTableData(res.payload.data.categories);
         
         setMetaData(res.payload.data.metaData);
@@ -85,7 +90,6 @@ const Category = () => {
     }
     catch(error){
       console.log(error);
-
       setIsLoading(false);
     }
   }
@@ -94,7 +98,7 @@ const Category = () => {
     setIsLoading(false);
 
     try{
-      await categoryApiRequest.getAllCategory({search:searchConditions.join('&'), pageNumber:pageNumber}).then((res)=>{
+      await categoryApiRequest.getAllCategory({search:searchConditions.join('&'), fields:"?Fields=Id%2CCode%2CName%2CDescription%2CTotal%2CTotalSale%2CRating%2CActive%2CPathUrl%2CCreatedDateUtc%2CUpdatedDateUtc", pageNumber:pageNumber}).then((res)=>{
         setTableData(res.payload.data.categories);
         
         setMetaData(res.payload.data.metaData);
@@ -111,7 +115,7 @@ const Category = () => {
 
   const refreshAllCategory=async ():Promise<void>=>{
     try{
-      await categoryApiRequest.getAllCategory({search:searchConditions.join('&'), pageNumber:metaData.currentPage}).then((res)=>{
+      await categoryApiRequest.getAllCategory({search:searchConditions.join('&'), fields:"?Fields=Id%2CCode%2CName%2CDescription%2CTotal%2CTotalSale%2CRating%2CActive%2CPathUrl%2CCreatedDateUtc%2CUpdatedDateUtc", pageNumber:metaData.currentPage}).then((res)=>{
         setTableData(res.payload.data.categories);
         
         setMetaData(res.payload.data.metaData);
@@ -134,12 +138,6 @@ const Category = () => {
       const formData = new FormData(event.currentTarget);
       let searches:string[]=[];
 
-      if(!isNullOrEmpty(formData.get("CategoryType")?.toString())){
-        const categoryType:CategoryTypeSearchValue | undefined=categoryTypeSearch.find(_=>_.Name==formData.get("CategoryType")?.toString());
-
-        searches.push("CategoryType="+categoryType?.Value);
-      }
-
       if(!isNullOrEmpty(formData.get("Name")?.toString())){
         searches.push("Name="+formData.get("Name")?.toString());
       }
@@ -151,13 +149,15 @@ const Category = () => {
         searches.push("Active=false");
       }
 
+      console.log(formData.get("Code"), isNullOrEmpty(formData.get("Code")?.toString()))
       if(!isNullOrEmpty(formData.get("Code")?.toString())){
         searches.push("Code="+formData.get("Code")?.toString());
       }
 
       setSearchConditions(searches);
+      console.log(searches.join('&'));
 
-      await categoryApiRequest.getAllCategory({search:searches.join('&'), pageNumber:1}).then((res)=>{
+      await categoryApiRequest.getAllCategory({search:searches.join('&'), fields:"?Fields=Id%2CCode%2CName%2CDescription%2CTotal%2CTotalSale%2CRating%2CActive%2CPathUrl%2CCreatedDateUtc%2CUpdatedDateUtc", pageNumber:1}).then((res)=>{
         setTableData(res.payload.data.categories);
         
         setMetaData(res.payload.data.metaData);
@@ -196,6 +196,26 @@ const Category = () => {
     }
   }
 
+  const handleChange = (name:string) => (e: any) => {
+    switch (name) {
+        case "name":
+            setName(e.target.value);
+            break;
+        case "code":
+            setCode(e.target.value);
+            break;
+        case "active":
+            setActive(e.target.isChecked);
+        default:
+            break;
+    }
+  }
+
+  const openModalCreate=()=>{
+    setIdCategory('');
+    openModel();
+  }
+
   useEffect(()=>{
     getAllCategory();
   }, [setTableData])
@@ -210,15 +230,16 @@ const Category = () => {
 
       <Card className={"w-full pb-10 p-4 h-full"}>
           <header className="relative">
-              <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
+              <form className='flex flex-col gap-5' onSubmit={onSubmit}>
                 <div className='flex flex-row w-full gap-10'>
-                  <SelectUI isBlockLabel={false} label={"Loại :"} name={"CategoryType"} data={categoryTypeSearch} classDiv={"w-[28%]"} classLabel={"w-[30%]"} classSelect={"w-[70%]"}></SelectUI>
+                  <InputUI value={name} name='Name' isBlockLabel={false} label={"Danh mục :"} 
+                  classDiv={"w-[28%]"} classInput={"w-[70%]"} classLabel={"w-[30%]"} onChangeEvent={handleChange("name")}></InputUI>
 
-                  <InputUI name='Name' isBlockLabel={false} label={"Danh mục :"} classDiv={"w-[28%]"} classInput={"w-[70%]"} classLabel={"w-[30%]"}></InputUI>
+                  <InputUI value={code} name='Code' isBlockLabel={false} onChangeEvent={handleChange("code")}
+                  label={"Mã số :"} classDiv={"w-[28%]"} classInput={"w-[70%]"} classLabel={"w-[30%]"}></InputUI>
 
-                  <InputUI name='Code' isBlockLabel={false} label={"Mã số :"} classDiv={"w-[28%]"} classInput={"w-[70%]"} classLabel={"w-[30%]"}></InputUI>
-
-                  <CheckboxUI name='Active' isChecked={true} isBlockLabel={false} label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}></CheckboxUI>
+                  <CheckboxUI name='Active' isChecked={active} isBlockLabel={false} onChangeEvent={handleChange("active")}
+                  label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}></CheckboxUI>
                 </div>
 
                 <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllCategory}></ButtonSearchUI>
@@ -228,7 +249,7 @@ const Category = () => {
           {isLoading?(<div className='mt-8 h-[58vh]'><LoadingUI></LoadingUI></div>):(
             <>
               <div className='mt-8 flex justify-end'>
-                <ButtonAddItemUI titleButton={'Thêm danh mục'} eventButtonClicked={openModel} ></ButtonAddItemUI>
+                <ButtonAddItemUI titleButton={'Thêm danh mục'} eventButtonClicked={openModalCreate} ></ButtonAddItemUI>
               </div>
               <div className="mt-8 w-full h-[50vh] overflow-auto">
                 <table {...getTableProps()} className="w-[107rem]">

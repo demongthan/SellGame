@@ -1,6 +1,6 @@
 "use client"
 
-import { accountInformationApiRequest } from '@/apiRequests/accountInformation';
+import { accountInformationApiRequest } from '@/apiRequests/account-information';
 import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
 import { ButtonV1UI, InputUI, LoadingUI, TitleRecharge } from '@/components'
 import { showToast } from '@/utils/showToast';

@@ -12,7 +12,7 @@ interface Props{
   className?:string
 }
 
-const ContentBannerSlide = ({autoSlide=false, autoSlideInterval=3000, className}:Props) => {
+const ContentBannerSlide = ({autoSlide=true, autoSlideInterval=3000, className}:Props) => {
     const [curr, setCurr] = useState<number>(0);
     const [imgUrls, setImgUrls] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);

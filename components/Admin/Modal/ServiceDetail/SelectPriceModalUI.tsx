@@ -1,7 +1,7 @@
 "use client"
 
 import { ButtonAddItemUI, InputUI } from '@/components';
-import { ValueKey } from '@/utils/types/PropertiesJson';
+import { ItemSelect } from '@/utils/types/SelectItem';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { MinusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
@@ -9,27 +9,25 @@ import React, { useState } from 'react'
 
 interface Props{
     closeModal:()=>void,
-    titleCoefficients:any,
-    selectCoefficients:any,
-    addPropertySelectCoefficient:(titles:ValueKey[], selects:ValueKey[])=>void
+    selectPrices:any,
+    addPropertySelectPrice:(selects:ItemSelect[])=>void
 }
 
-const SelectCoefficientModalUI = ({closeModal, titleCoefficients, selectCoefficients, addPropertySelectCoefficient}:Props) => {
-    const [titles, setTitles]=useState<ValueKey[]>(titleCoefficients);
-    const [selects, setSelects]=useState<ValueKey[]>(selectCoefficients);
+const SelectPriceModalUI = ({closeModal, selectPrices, addPropertySelectPrice}:Props) => {
+    const [selects, setSelects]=useState<ItemSelect[]>(selectPrices);
 
     const handleChange = (name:string, index:number) => (e: any) => {
         switch (name) {
             case "title":
-                titles[index].Name=e.target.value;
-                setTitles([...titles]);
+                selects[index].Name=e.target.value;
+                setSelects([...selects]);
                 break;
             case "select":
                 if (/^[0-9]*([.,][0-9]{0,2})?$/.test(e.target.value)) {
                     if(isNullOrEmpty(e.target.value))
-                        selects[index].Name="1.00";
+                        selects[index].Value="0";
                     else
-                        selects[index].Name=e.target.value;
+                        selects[index].Value=e.target.value;
                     
                     setSelects([...selects]);
                 }
@@ -39,20 +37,17 @@ const SelectCoefficientModalUI = ({closeModal, titleCoefficients, selectCoeffici
         }
     }
 
-    const addSelectCoefficient=()=>{
-        titles.push({Name:""});
-        setTitles([...titles])
-        selects.push({Name:""});
+    const addSelectPrice=()=>{
+        selects.push({Name:"", Value:"0"});
         setSelects([...selects]);
     }
 
-    const removeSelectCoefficient=(index:number)=>{
-        setTitles([...titles.slice(0, index), ...titles.slice(index+1)]);
+    const removeSelectPrice=(index:number)=>{
         setSelects([...selects.slice(0, index), ...selects.slice(index+1)]);
     }
 
-    const eventButtonClicked=()=>{
-        addPropertySelectCoefficient(titles, selects);
+    const eventClickedButton=()=>{
+        addPropertySelectPrice(selects);
         closeModal();
     }
 
@@ -63,7 +58,7 @@ const SelectCoefficientModalUI = ({closeModal, titleCoefficients, selectCoeffici
                 <div className="relative bg-white rounded-lg shadow">
                     <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            Hệ số
+                            Giá
                         </h3>
                         <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                         w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
@@ -84,27 +79,26 @@ const SelectCoefficientModalUI = ({closeModal, titleCoefficients, selectCoeffici
                                 </div>
 
                                 <div className="text-base text-black font-semibold leading-6 w-[46.5%]">
-                                    Hệ số
+                                    Giá
                                 </div>
                                 
                                 <div className='mt-1 flex justify-end w-[7%]'>
-                                    <ButtonAddItemUI eventButtonClicked={addSelectCoefficient}></ButtonAddItemUI>
+                                    <ButtonAddItemUI eventButtonClicked={addSelectPrice}></ButtonAddItemUI>
                                 </div>
                             </div>
 
                             <div className='h-36 overflow-y-auto w-full'>
-                                {titles && titles.map((title:ValueKey, index)=>(
+                                {selects && selects.map((select:ItemSelect, index)=>(
                                     <div className="flex flex-row gap-2 w-[98%]" key={index}>
-                                        <InputUI value={title.Name} name={`Title${index}`} classDiv={"w-[47.5%]"} classInput={"w-full"}
+                                        <InputUI value={select.Name} name={`Title${index}`} classDiv={"w-[47.5%]"} classInput={"w-full"}
                                         onChangeEvent={handleChange("title", index)}></InputUI>
 
-                                        <InputUI value={selects?selects[index].Name:""} name={`Coefficients${index}`} classDiv={"w-[47.5%]"} classInput={"w-full"}
-                                        onChangeEvent={handleChange("select", index)}></InputUI>
+                                        <InputUI value={select.Value} name={`Coefficients${index}`} classDiv={"w-[47.5%]"} classInput={"w-[80%]"}
+                                        onChangeEvent={handleChange("select", index)} unit={"VND"} classDivUnit='w-full' classUint='w-[20%] text-s2cyan1'></InputUI>
 
                                         <Button className={"-mt-2 w-[5%]"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                             event.preventDefault();
-                                            
-                                            removeSelectCoefficient(index);
+                                            removeSelectPrice(index);
                                         }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>
                                     </div>
                                 ))}
@@ -112,7 +106,7 @@ const SelectCoefficientModalUI = ({closeModal, titleCoefficients, selectCoeffici
                         </div>
 
                         <div className='mt-6'>
-                            <ButtonAddItemUI titleButton={'Thêm danh sách'} eventButtonClicked={eventButtonClicked}></ButtonAddItemUI>
+                            <ButtonAddItemUI titleButton={'Thêm danh sách'} eventButtonClicked={eventClickedButton}></ButtonAddItemUI>
                         </div>
                     </div>
                 </div>
@@ -121,4 +115,4 @@ const SelectCoefficientModalUI = ({closeModal, titleCoefficients, selectCoeffici
     )
 }
 
-export default SelectCoefficientModalUI
+export default SelectPriceModalUI

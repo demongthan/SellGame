@@ -1,7 +1,6 @@
 "use client"
 
-import { accountInformationApiRequest } from '@/apiRequests/accountInformation'
-import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider'
+import { accountInformationApiRequest } from '@/apiRequests/account-information'
 import { ButtonV1UI, InputUI, LoadingUI, TitleRecharge } from '@/components'
 import { showToast } from '@/utils/showToast'
 
@@ -18,7 +17,12 @@ const Accountnformation = () => {
         DisplayName:'',
         Balance:0,
         AcoinBalance:0,
-        PromotionalBalance:0
+        PromotionalBalance:0,
+        Phone:"",
+        Email:"",
+        Active:true,
+        CreatedDateUtc:new Date(),
+        Code:''
     })
 
     const getAccountInformationInit =async (): Promise<void>=>{
@@ -61,13 +65,21 @@ const Accountnformation = () => {
                     <tr className='info__row'>
                         <td className='info__row__title'>ID của ban:</td>
                         <td className='flex flex-row-reverse gap-3 info__row__data'>
-                            <p>{accountInformation.Id}</p>
+                            <p>{accountInformation.Code}</p>
                             <DocumentDuplicateIcon className='w-[1.3rem] h-[1.3rem]'></DocumentDuplicateIcon>
                         </td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Tên tài khoản:</td>
                         <td className='info__row__data'>{accountInformation.DisplayName}</td>
+                    </tr>
+                    <tr className='info__row'>
+                        <td className='info__row__title'>Phone:</td>
+                        <td className='info__row__data'>{accountInformation.Phone}</td>
+                    </tr>
+                    <tr className='info__row'>
+                        <td className='info__row__title'>Email:</td>
+                        <td className='info__row__data'>{accountInformation.Email}</td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Số dư tài khoản:</td>
