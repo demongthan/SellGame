@@ -1,4 +1,5 @@
 interface UserDisplay{
     displayName?:string,
-    id?:string
+    id?:string,
+    role?:string
 }

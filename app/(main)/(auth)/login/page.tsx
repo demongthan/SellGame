@@ -2,13 +2,15 @@
 
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
-import { jwtDecode, JwtPayload } from "jwt-decode";
 
 import { InputUI, ButtonV1UI, LoadingUI } from '@/components';
 import { authApiRequest } from '@/apiRequests/auth';
 import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
 import {ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { showToast } from '@/utils/showToast';
+import jwt from 'jsonwebtoken';
+import { DecodedToken } from '@/utils/types/DecodedToken';
+import { UserRole } from '@/utils/types/UserRole';
 
 const Login = () => {
     const router = useRouter();
@@ -41,7 +43,7 @@ const Login = () => {
                 const result = await authApiRequest.login(data.data);
 
                 if(result.payload.data){
-                    const jwtData:JwtPayload=jwtDecode(result.payload.data.Token);
+                    const jwtData:DecodedToken=jwt.decode(result.payload.data.Token, { complete: true });
     
                     const tokenCookie:TokenCookies={
                         accessToken: result.payload.data.Token,
@@ -53,17 +55,24 @@ const Login = () => {
                         method: 'POST',
                         body:JSON.stringify(tokenCookie)
                     })
-        
+                    
                     const userDisplay:UserDisplay={
-                        displayName:jwtData.sub
+                        displayName:jwtData.sub,
+                        id:jwtData.jti,
+                        role:jwtData.role
                     }
         
                     setUser(userDisplay);
-                    router.push('/');
+
+                    if(userDisplay.role==UserRole.Admin){
+                        router.push('/dashboard');
+                    }
+                    else{
+                        router.push('/');
+                    }
                 }
                 else{
                     setIsLoadingPopup(false);
-                    
                     setErrAction(result.payload.message);
                 }
                 

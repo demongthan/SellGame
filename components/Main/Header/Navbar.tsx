@@ -21,18 +21,6 @@ const Navbar = ({openNav}:Props) => {
     const router = useRouter();
 
     const [navSticky, setNavSticky]=useState(false);
-    const [urlImageLogo, seturlImageLogo] =useState<string>(""); 
-
-    const GetLogoUrl= async():Promise<void>=>{
-        try{
-            const res=await authApiRequest.getAllImageUrl("LOGO");
-
-            seturlImageLogo(res.payload.data[0].PathUrl);
-        }
-        catch(error){
-            console.error(error);
-        }
-    }
 
     useEffect(()=>{
       const handler=()=>{
@@ -46,10 +34,7 @@ const Navbar = ({openNav}:Props) => {
       };
   
       window.addEventListener('scroll', handler);
-
-
-      GetLogoUrl();
-    }, [seturlImageLogo]);
+    }, []);
   
     const stickyStyle=navSticky?'shadow-custom':'';
 
@@ -87,8 +72,10 @@ const Navbar = ({openNav}:Props) => {
     <div className={`fixed ${stickyStyle} bg-white w-[100%] z-[1000] transition-all duration-100`}>
         <div className='flex items-center h-[130px] justify-between w-[90%] sm:w-[70%] mx-auto'>
             <div className='w-[10%]'>
-                <Image src={urlImageLogo} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '50%' }}
-                alt="logo" className="md:cursor-pointer h-9" />
+                <Link href={"/"}>
+                    <Image src={"/img/logo.png"} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '50%' }}
+                    alt="logo" className="md:cursor-pointer h-9" />
+                </Link>
             </div>
 
             <ul className='md:flex hidden items-center space-x-10 h-[100%] w-[60%] justify-end'>

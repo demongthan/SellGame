@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from 'react'
 import { FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { jwtDecode, JwtPayload } from "jwt-decode";
+import jwt from 'jsonwebtoken';
 
+import { DecodedToken } from '@/utils/types/DecodedToken';
+import { UserRole } from '@/utils/types/UserRole';
 import { authApiRequest } from '@/apiRequests/auth';
 import { ButtonV1UI, InputUI, LoadingUI } from '@/components'
 import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
@@ -19,6 +21,7 @@ const Register = () => {
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
     const [errAction, setErrAction] = useState<string |null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [phone, setPhone]=useState<string>("");
 
     useEffect(()=>{
         setTimeout(() => {
@@ -45,7 +48,7 @@ const Register = () => {
                 const result = await authApiRequest.register(data.data);
 
                 if(result.payload.data){
-                    const jwtData:JwtPayload=jwtDecode(result.payload.data.Token);
+                    const jwtData:DecodedToken=jwt.decode(result.payload.data.Token, { complete: true });
 
                     const tokenCookie:TokenCookies={
                         accessToken: result.payload.data.Token,
@@ -59,16 +62,22 @@ const Register = () => {
                     })
 
                     const userDisplay:UserDisplay={
-                        displayName:data.data.UserName
+                        displayName:jwtData.sub,
+                        id:jwtData.Id,
+                        role:jwtData.role
                     }
 
                     setUser(userDisplay);
 
-                    router.push('/')
+                    if(userDisplay.role==UserRole.Admin){
+                        router.push('/dashboard');
+                    }
+                    else{
+                        router.push('/');
+                    }
                 }
                 else{
                     setIsLoadingPopup(false);
-
                     setErrAction(result.payload.message);
                 }
                 
@@ -90,6 +99,12 @@ const Register = () => {
         }
     }
 
+    const handleChange = (e: any) => {
+        if (/^\d*\.?\d*$/.test(e.target.value)) {
+            setPhone(e.target.value);
+        }
+    }
+
   return (
     <div className="flex flex-col h-[85vh] items-center justify-center px-6 mx-auto">
         {isLoading?(<LoadingUI></LoadingUI>):(
@@ -101,14 +116,14 @@ const Register = () => {
                         </div>
                     )}    
 
-                    <div className="p-6 space-y-4">
+                    <div className="px-6 py-3 space-y-2">
                         <h1 className="text-4xl font-bold text-center leading-tight tracking-tight text-gray-900">
                             Đăng kí
                         </h1>
 
-                        <form className="space-y-4" onSubmit={onSubmit}>
+                        <form className="space-y-1" onSubmit={onSubmit}>
                             <InputUI 
-                                name="userName"  
+                                name="UserName"  
                                 value={undefined} 
                                 errArr={errArr?.filter((error)=>error.for==="userName")} 
                                 isBlockLabel={true} 
@@ -119,7 +134,30 @@ const Register = () => {
                             </InputUI>
 
                             <InputUI 
-                                name="password" 
+                                name="Email"  
+                                value={undefined} 
+                                errArr={errArr?.filter((error)=>error.for==="email")} 
+                                isBlockLabel={true} 
+                                label={"Email"} 
+                                classDiv='w-full' 
+                                classInput='w-full'
+                                max={256}>
+                            </InputUI>
+
+                            <InputUI 
+                                name="Phone"  
+                                value={phone} 
+                                errArr={errArr?.filter((error)=>error.for==="phone")} 
+                                isBlockLabel={true} 
+                                label={"Điện thoại"} 
+                                classDiv='w-full' 
+                                classInput='w-full'
+                                onChangeEvent={handleChange}
+                                max={15}>
+                            </InputUI>
+
+                            <InputUI 
+                                name="Password" 
                                 value={undefined} 
                                 errArr={errArr?.filter((error)=>error.for==="password")}
                                 isBlockLabel={true} 
@@ -131,7 +169,7 @@ const Register = () => {
                             </InputUI>
 
                             <InputUI 
-                                name="confirmPassword" 
+                                name="ConfirmPassword" 
                                 value={undefined} 
                                 isBlockLabel={true} 
                                 errArr={errArr?.filter((error)=>error.for==="confirmPassword")} 
@@ -149,7 +187,9 @@ const Register = () => {
                                 {errAction}
                             </p>)}
                             
-                            <ButtonV1UI type='submit' className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
+                            <div className='pt-8'>
+                                <ButtonV1UI type='submit' className={"flex items-center justify-center w-full h-[2.5rem] bg-s2cyan1"} title='Đăng kí' isIconCard={false}></ButtonV1UI>
+                            </div>
 
                             <div className='flex justify-center items-center'>
                                 <p className='border w-[45%] inline-block'></p>

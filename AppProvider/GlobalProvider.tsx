@@ -1,6 +1,7 @@
 "use client"
 
-import { jwtDecode, JwtPayload } from "jwt-decode";
+import jwt from 'jsonwebtoken';
+import { DecodedToken } from '@/utils/types/DecodedToken';
 import { usePathname } from "next/navigation";
 import React, {createContext, useCallback, useContext, useEffect, useState} from "react";
 
@@ -48,12 +49,12 @@ const GlobalUpdateContext = createContext<{} | undefined>(undefined);
             await response.json().then(res=>{
                 let userDisplay:UserDisplay|null;
                 if(res.data){
-                    const jwtData:JwtPayload=jwtDecode(res.data);
+                    const jwtData:DecodedToken=jwt.decode(res.data, { complete: true });
                     
-                    console.log(jwtData);
                     userDisplay={
                         displayName:jwtData.sub,
                         id:jwtData.jti,
+                        role:jwtData.role
                     }
                 }
                 else{

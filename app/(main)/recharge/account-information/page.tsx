@@ -3,9 +3,10 @@
 import { accountInformationApiRequest } from '@/apiRequests/account-information'
 import { ButtonV1UI, InputUI, LoadingUI, TitleRecharge } from '@/components'
 import { showToast } from '@/utils/showToast'
+import { DecodedToken } from '@/utils/types/DecodedToken';
 
+import jwt from 'jsonwebtoken';
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
-import { jwtDecode, JwtPayload } from 'jwt-decode'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
@@ -35,7 +36,7 @@ const Accountnformation = () => {
             const data= await res.json();
 
             if(data.data){
-                const jwtData:JwtPayload=jwtDecode(data.data);
+                const jwtData:DecodedToken=jwt.decode(data.data, { complete: true });
 
                 const resApi=await accountInformationApiRequest.getAccountInformation(jwtData.jti);
 

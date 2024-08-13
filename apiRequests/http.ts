@@ -78,8 +78,6 @@ const request = async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string
       });
     }
 
-    console.log(baseUrl, fullUrl)
-
     const res = await fetch(fullUrl, {
       ...options,
       headers: {
