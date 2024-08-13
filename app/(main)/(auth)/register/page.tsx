@@ -48,7 +48,7 @@ const Register = () => {
                 const result = await authApiRequest.register(data.data);
 
                 if(result.payload.data){
-                    const jwtData:DecodedToken=jwt.decode(result.payload.data.Token, { complete: true });
+                    const jwtData=jwt.decode(result.payload.data.Token, { complete: true }) as DecodedToken;
 
                     const tokenCookie:TokenCookies={
                         accessToken: result.payload.data.Token,
@@ -182,7 +182,7 @@ const Register = () => {
 
                             <InputUI name="referralCode" value={undefined} isBlockLabel={true} label={"Mã giới thiệu"} classDiv='w-full' classInput='w-full'></InputUI>
 
-                            {errAction && (<p className='text-lg text-center text-red-500'>
+                            {errAction && (<p className='text-lg text-center text-red-500 font-semibold -mt-1'>
                                 <ExclamationTriangleIcon className='h-[1.5rem] w-[1.5rem] inline-block'></ExclamationTriangleIcon>
                                 {errAction}
                             </p>)}

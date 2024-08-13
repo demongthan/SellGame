@@ -1,3 +1,4 @@
+import { ImageDetailDto } from "./DataDomain/ImageDetail/ImageDetailDto";
 import http from "./http";
 
 export const authApiRequest = {

@@ -49,7 +49,7 @@ const GlobalUpdateContext = createContext<{} | undefined>(undefined);
             await response.json().then(res=>{
                 let userDisplay:UserDisplay|null;
                 if(res.data){
-                    const jwtData:DecodedToken=jwt.decode(res.data, { complete: true });
+                    const jwtData=jwt.decode(res.data, { complete: true }) as DecodedToken;
                     
                     userDisplay={
                         displayName:jwtData.sub,

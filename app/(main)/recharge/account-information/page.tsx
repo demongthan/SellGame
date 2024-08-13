@@ -36,7 +36,7 @@ const Accountnformation = () => {
             const data= await res.json();
 
             if(data.data){
-                const jwtData:DecodedToken=jwt.decode(data.data, { complete: true });
+                const jwtData=jwt.decode(data.data, { complete: true }) as DecodedToken;
 
                 const resApi=await accountInformationApiRequest.getAccountInformation(jwtData.jti);
 

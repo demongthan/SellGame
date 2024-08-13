@@ -68,5 +68,5 @@ export const GET=(request: any)=>{
         }
     }
 
-    return NextResponse.json({status:200, data:returnData})
+    return NextResponse.json({status:200, data:returnData, data1:cookieStore.get("next-auth.session-token")})
 }
