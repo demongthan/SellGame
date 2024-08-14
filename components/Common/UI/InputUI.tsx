@@ -59,7 +59,7 @@ const InputUI = ({value=undefined,
             {errArr?.map((err, index)=>(
               <div key={index} className='w-full'>
                 {!isBlockLabel && (<div className={`${classLabel} inline-block`}></div>)}
-                <div className={`${isBlockLabel?"":"inline-block"} text-red-600 text-xs font-light`}>{err.message}</div>
+                <div className={`${isBlockLabel?"":"inline-block"} text-red-600 text-xs font-semibold`}>{err.message}</div>
               </div>
             ))}
           </div>

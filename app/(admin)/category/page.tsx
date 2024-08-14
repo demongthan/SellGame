@@ -149,13 +149,11 @@ const Category = () => {
         searches.push("Active=false");
       }
 
-      console.log(formData.get("Code"), isNullOrEmpty(formData.get("Code")?.toString()))
       if(!isNullOrEmpty(formData.get("Code")?.toString())){
         searches.push("Code="+formData.get("Code")?.toString());
       }
 
       setSearchConditions(searches);
-      console.log(searches.join('&'));
 
       await categoryApiRequest.getAllCategory({search:searches.join('&'), fields:"?Fields=Id%2CCode%2CName%2CDescription%2CTotal%2CTotalSale%2CRating%2CActive%2CPathUrl%2CCreatedDateUtc%2CUpdatedDateUtc", pageNumber:1}).then((res)=>{
         setTableData(res.payload.data.categories);

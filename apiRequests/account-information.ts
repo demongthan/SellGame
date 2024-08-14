@@ -10,5 +10,5 @@ export const accountInformationApiRequest = {
         http.put<ApiReponse<boolean>>(`/Account/ChangePassword/${input.id}`, true, input.body),
 
     getAllAccountInformation:(input:{search:string, pageNumber:number})=>
-        http.get<ApiReponse<AccountInformationSearchDto>>(`/Account/GetAllAccountInformation?PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}`, false)
+        http.get<ApiReponse<AccountInformationSearchDto>>(`/Account/GetAllAccountInformation?PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`, false)
 }

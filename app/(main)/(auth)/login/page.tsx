@@ -3,6 +3,7 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
+import Link from 'next/link'
 
 import { InputUI, ButtonV1UI, LoadingUI } from '@/components';
 import { authApiRequest } from '@/apiRequests/auth';
@@ -90,6 +91,7 @@ const Login = () => {
         }
         catch(error){
             setErrAction("Lỗi Server. Vui lòng liên hệ Quản trị viên.");
+            console.log(error);
             setIsLoadingPopup(false);
         }
 
@@ -228,7 +230,7 @@ const Login = () => {
                                     </div>
                                 </div>
 
-                                <a href="#" className="text-sm font-medium text-primary-600 hover:underline">Quên mật khẩu?</a>
+                                <Link href="/login/forget-password" className="text-sm font-medium text-s2blue1 hover:underline">Quên mật khẩu?</Link>
                             </div>
 
                             {errAction && (<p className='text-lg text-center text-red-500'>
