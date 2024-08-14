@@ -1,9 +1,17 @@
+import { register } from "module";
 import { ImageDetailDto } from "./DataDomain/ImageDetail/ImageDetailDto";
 import http from "./http";
+import { GoogleSignInDto } from "./DataDomain/Auth/GoogleSignInDto";
 
 export const authApiRequest = {
     register: (body: RegisterDto) => 
         http.post<ApiReponse<LoginModelDto>>('/Authentication/register', false, body),
+
+    registerGoogle:(body:GoogleSignInDto)=>
+        http.post<ApiReponse<LoginModelDto>>('/Authentication/GoogleSignUp', false, body),
+
+    loginGoogle:(body:GoogleSignInDto)=>
+        http.post<ApiReponse<LoginModelDto>>('/Authentication/GoogleSignIn', false, body),
 
     login: (body: AccountSignInDto) =>
         http.post<ApiReponse<LoginModelDto>>('/Authentication/login', false, body),

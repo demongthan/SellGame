@@ -1,3 +1,6 @@
+import { isNullOrEmpty } from './../../../../utils/utils';
+import { GoogleSignInDto } from "@/apiRequests/DataDomain/Auth/GoogleSignInDto";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from 'zod'
 
@@ -55,6 +58,23 @@ export const POST=async (request: any)=> {
 
         return NextResponse.json(
             {isSuccess:res.success, data:dataReturn}
+        )
+    }
+}
+
+export const GET=async (request:any)=>{
+    const cookieStore = cookies();
+
+    if(isNullOrEmpty(cookieStore.get("IdTokenSocial")?.value)){
+        return NextResponse.json(
+            {isSuccess:false, data:""}
+        )
+    }
+    else{
+        const returnData:GoogleSignInDto={IdToken:cookieStore.get("IdTokenSocial")?.value};
+        cookieStore.delete("IdTokenSocial");
+        return NextResponse.json(
+            {isSuccess:true, data:returnData}
         )
     }
 }

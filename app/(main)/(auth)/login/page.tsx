@@ -58,7 +58,6 @@ const Login = () => {
                         body:JSON.stringify(tokenCookie)
                     })
                     
-                    console.log(jwtData)
                     const userDisplay:UserDisplay={
                         displayName:jwtData.sub,
                         id:jwtData.jti,
@@ -78,7 +77,6 @@ const Login = () => {
                     setIsLoadingPopup(false);
                     setErrAction(result.payload.message);
                 }
-                
             }
             else{
                 const errorArr: ErrorValidate[] =data.data.map(({...item})=>({
@@ -120,13 +118,52 @@ const Login = () => {
                 method: 'GET'
             })
     
-            await res.json().then(data => {
-                setUserName(data.data.userName);
-                setPassword(data.data.password);
-                setRememberAccount(data.data.remember=="on");
+            const data=await res.json();
+            setUserName(data.data.userName);
+            setPassword(data.data.password);
+            setRememberAccount(data.data.remember=="on");
+
+            if(data.isSuccess){
+                const result = await authApiRequest.loginGoogle(data.dataLogin);
+
+                if(result.payload.data){
+                    const jwtData=jwt.decode(result.payload.data.Token, { complete: true })?.payload as DecodedToken;
     
-                setIsLoading(false);
-            })
+                    const tokenCookie:TokenCookies={
+                        accessToken: result.payload.data.Token,
+                        expiresAt: jwtData.exp,
+                        refreshToken:result.payload.data.RefreshToken
+                    }
+        
+                    await fetch('/api/auth',{
+                        method: 'POST',
+                        body:JSON.stringify(tokenCookie)
+                    })
+                    
+                    const userDisplay:UserDisplay={
+                        displayName:jwtData.sub,
+                        id:jwtData.jti,
+                        role:jwtData.role
+                    }
+        
+                    setUser(userDisplay);
+
+                    if(userDisplay.role==UserRole.Admin){
+                        router.push('/dashboard');
+                    }
+                    else{
+                        router.push('/');
+                    }
+                }
+                else{
+                    setErrAction(result.payload.message);
+                }
+            }
+            else{
+                setErrArr([]);
+            }
+
+            setIsLoading(false);
         }
         catch(error){
             showToast("error", <p>Lỗi hệ thống. Vui lòng liên hệ Quản trị viên</p>)
@@ -218,6 +255,7 @@ const Login = () => {
                                 <Button className={"hover:cursor-pointer"} 
                                 onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                     event.preventDefault();
+                                    setIsLoading(true);
                                     signIn("google");
                                 }}>
                                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0 0 48 48">

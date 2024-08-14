@@ -1,3 +1,5 @@
+import { GoogleSignInDto } from "@/apiRequests/DataDomain/Auth/GoogleSignInDto";
+import { isNullOrEmpty } from "@/utils/utils";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from 'zod'
@@ -56,7 +58,7 @@ export const GET=(request: any)=>{
     const cookieStore = cookies();
     let returnData:{userName:any, password:any, remember:any}={userName:"", password:"", remember:"off"};
 
-    if(cookieStore.get("Remember")){
+    if(!isNullOrEmpty(cookieStore.get("Remember")?.value)){
         const isRemember:any=cookieStore.get("Remember")?.value;
 
         if(isRemember=="on"){
@@ -68,5 +70,16 @@ export const GET=(request: any)=>{
         }
     }
 
-    return NextResponse.json({status:200, data:returnData, data1:cookieStore.get("next-auth.session-token")})
+    let isSuccess:boolean;
+    let dataReturnLogin:GoogleSignInDto={IdToken:""};
+    if(isNullOrEmpty(cookieStore.get("IdTokenSocial")?.value)){
+        isSuccess=false;
+    }
+    else{
+        isSuccess=true;
+        dataReturnLogin={IdToken:cookieStore.get("IdTokenSocial")?.value}
+        cookieStore.delete("IdTokenSocial");
+    }
+
+    return NextResponse.json({status:200, data:returnData, isSuccess:isSuccess, dataLogin:dataReturnLogin})
 }

@@ -115,9 +115,9 @@ const Navbar = ({openNav}:Props) => {
                 </div>
 
                 {!isLogin && (
-                    <Link href={isAuthenticated?"/recharge/account-information":"/login"} className='flex flex-row py-1.5 px-4 border border-black rounded-2xl cursor-pointer'>
+                    <Link href={isAuthenticated?"/recharge/account-information":"/login"} className='flex flex-row py-1.5 px-4 max-w-40 border border-black rounded-2xl cursor-pointer'>
                         <div><UserIcon className='text-black w-[1.5rem] h-[1.5rem]'></UserIcon></div>
-                        <div className="pl-1 text-base">{isAuthenticated?userDisplay?.displayName:"Đăng nhập"}</div>
+                        <div className="pl-1 text-base overflow-hidden whitespace-nowrap text-ellipsis w-[5.5rem]">{isAuthenticated?userDisplay?.displayName:"Đăng nhập"}</div>
                     </Link>
                 )}
 

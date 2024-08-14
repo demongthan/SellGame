@@ -17,7 +17,7 @@ export const authOptions:any = {
   },
   callbacks: {
     async jwt({ account }:{account:any}) {
-        cookies().set("Token", account.id_token);
+      cookies().set("IdTokenSocial", account.id_token);
     },
 }
 };
