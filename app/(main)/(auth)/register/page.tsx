@@ -50,6 +50,7 @@ const Register = () => {
                         body:JSON.stringify(tokenCookie)
                     })
 
+                    console.log(jwtData)
                     const userDisplay:UserDisplay={
                         displayName:jwtData.sub,
                         id:jwtData.Id,
@@ -70,9 +71,9 @@ const Register = () => {
                 }
             }
             else{
-                setErrArr([])
+                setErrArr([]);
+                setIsLoading(false);
             }
-            setIsLoading(false);
         }
         catch(error){
             console.log(error);
@@ -104,7 +105,7 @@ const Register = () => {
                 const result = await authApiRequest.register(data.data);
 
                 if(result.payload.data){
-                    const jwtData=jwt.decode(result.payload.data.Token, { complete: true }) as DecodedToken;
+                    const jwtData=jwt.decode(result.payload.data.Token, { complete: true })?.payload as DecodedToken;
 
                     const tokenCookie:TokenCookies={
                         accessToken: result.payload.data.Token,

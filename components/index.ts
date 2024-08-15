@@ -43,6 +43,7 @@ import SelectCoefficientModalUI from "./Admin/Modal/ServiceDetail/SelectCoeffici
 import SelectPriceModalUI from "./Admin/Modal/ServiceDetail/SelectPriceModalUI";
 import UploadImageForServiceDetailModalUI from "./Admin/Modal/ServiceDetail/UploadImageForServiceDetailModalUI";
 import CardGame from "./Common/CardGame";
+import ButtonV2UI from "./Common/UI/Button/ButtonV2UI";
 
 export{
     Header,
@@ -89,5 +90,6 @@ export{
     SelectCoefficientModalUI,
     SelectPriceModalUI,
     UploadImageForServiceDetailModalUI,
-    CardGame
+    CardGame,
+    ButtonV2UI
 }

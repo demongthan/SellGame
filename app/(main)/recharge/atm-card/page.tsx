@@ -1,41 +1,76 @@
-import { TableShowData, TitleRecharge } from '@/components'
-import React from 'react'
-import Image from 'next/image'
+"use client"
+
+import { ButtonV2UI, InputUI, TitleRecharge } from '@/components'
+import React, { useState } from 'react'
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
-import { titleTableRecharge_ATMCard } from '@/utils/constant/TitleTableRecharge'
+import { isNullOrEmpty } from '@/utils/utils';
 
 const ATMCard = () => {
+    const valueMoney:number[]=[10000,20000,50000,100000,200000,500000,1000000,2000000];
+    const [money, setMoney]=useState<number>(10000)
+
+    const eventButtonMoneyClicked=(value:number)=>(event: React.MouseEvent<HTMLButtonElement>)=>{
+        event.preventDefault();
+
+        setMoney(value);
+    }
+
+    const handleChange=(e:any) => {
+        if (/^\d*\.?\d*$/.test(e.target.value.replace(",", ""))) {
+            setMoney(e.target.value.replace(",", ""));
+        }
+    }
+
+    const handleBlur=(e:any) => {
+        if(isNullOrEmpty(e.target.value)){
+            setMoney(10000)
+        }
+    }
+
   return (
     <div className='flex flex-col gap-10'>
         <TitleRecharge title={'Nạp tiền từ ATM'}></TitleRecharge>
 
-        <div className='flex flex-col items-center justify-center gap-5 bg-s2cyan2 p-5'>
-            <table className='table-fixed border border-solid border-s2gray6 text-left w-full'>
+        <div className='flex flex-col items-center justify-center gap-20 bg-s2cyan2 p-5 h-[70vh]'>
+            <table className='table-fixed border border-solid border-s2gray6 text-left w-1/2'>
                 <tbody>
                     <tr>
-                        <th colSpan={2} className='border-r border-b p-2'>Tên tài khoản: Hoàng Thị Nguyệt</th>
-                        <th className='border-b p-2'>Chi nhánh</th>
+                        <th className='border-r border-b p-2'>Số tiền thanh toán</th>
+                        <th className='border-b p-2'>Số tiền thực nhận</th>
                     </tr>
                     <tr>
-                        <th className='border-r p-2'>ACB</th>
-                        <th className='border-r p-2'>40786177</th>
-                        <th className='p-2'>Giang Văn Minh</th>
+                        <th className='border-r p-2'>{money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</th>
+                        <th className='p-2'>{money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</th>
                     </tr>
                 </tbody>
             </table>
 
-            <div className='h-1/5 w-[25%]'> 
-                <Image src={'https://cdn3.upanh.info/upload/server-sw3/images/image(19).png'} alt={''} 
-                width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
+            <div className='flex flex-col w-1/2 gap-6'>
+                <div>
+                    <InputUI value={money.toLocaleString('en')} isBlockLabel={true} label={"Nhập số tiền cần mua"}
+                    classDiv={"w-full"} classInput={"w-[90%] text-right font-semibold"} onChangeEvent={handleChange} onBlurEvent={handleBlur}
+                    unit='VND' classUint='w-[10%] text-s2cyan1' classDivUnit='w-full'></InputUI>
+
+                    <span className='text-xs'>Số tiền thanh toán ít nhất
+                        <strong> {(10000).toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</strong>
+                    </span>
+                </div>
+
+                <div className='grid grid-cols-4 gap-4'>
+                    {valueMoney.map((value, index)=>(
+                        <ButtonV2UI key={index} title={value.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}
+                        eventClickButton={eventButtonMoneyClicked(value)}
+                        ></ButtonV2UI>
+                    ))}
+                </div>
             </div>
 
             <div className='w-4/5 text-center'>
-                <strong className='block text-s2slate3 pb-3'>Nếu sau 5 phút không được cộng tiền vui lòng liên hệ fanpage: Chăm Sóc Khách Hàng hoặc Hotline 0395.342.442 để được xử lý.</strong>
+                <strong className='block text-s2slate3 pb-3'>Nếu sau 5 phút không được cộng tiền vui lòng liên hệ fanpage: 
+                    Chăm Sóc Khách Hàng hoặc Hotline 0395.342.442 để được xử lý.</strong>
                 <strong className='flex flex-row justify-center text-s2red2 gap-3'>NAP NVN 2958807 <DocumentDuplicateIcon className='w-[1.3rem] h-[1.3rem] text-s2slate3'></DocumentDuplicateIcon></strong>
             </div>
         </div>
-
-        <TableShowData thItems={titleTableRecharge_ATMCard} trItems={[]}></TableShowData>
     </div>
   )
 }

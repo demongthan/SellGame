@@ -59,6 +59,7 @@ const Login = () => {
                         body:JSON.stringify(tokenCookie)
                     })
                     
+                    console.log(jwtData)
                     const userDisplay:UserDisplay={
                         displayName:jwtData.sub,
                         id:jwtData.jti,
@@ -163,9 +164,8 @@ const Login = () => {
             }
             else{
                 setErrArr([]);
+                setIsLoading(false);
             }
-
-            setIsLoading(false);
         }
         catch(error){
             showToast("error", <p>Lỗi hệ thống. Vui lòng liên hệ Quản trị viên</p>)
