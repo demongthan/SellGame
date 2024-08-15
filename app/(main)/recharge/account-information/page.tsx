@@ -9,40 +9,19 @@ import jwt from 'jsonwebtoken';
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
 
 const Accountnformation = () => {
     const [isLoading, setIsLoading]=useState<boolean>(true);
+    const { userDisplay } = useGlobalState() as GlobalContextProps;
 
-    const [accountInformation, setAccountInformation]=useState<AccountInformationDto>({
-        Id:'',
-        DisplayName:'',
-        Balance:0,
-        AcoinBalance:0,
-        PromotionalBalance:0,
-        Phone:"",
-        Email:"",
-        Active:true,
-        CreatedDateUtc:new Date(),
-        Code:''
-    })
+    const [accountInformation, setAccountInformation]=useState<AccountInformationDto | undefined>(undefined)
 
     const getAccountInformationInit =async (): Promise<void>=>{
-        setIsLoading(true);
         try{
-            const res=await fetch('/api/auth',{
-                method: 'GET'
-            })
-
-            const data= await res.json();
-
-            if(data.data){
-                const jwtData=jwt.decode(data.data, { complete: true }) as DecodedToken;
-
-                const resApi=await accountInformationApiRequest.getAccountInformation(jwtData.jti);
-
-                setAccountInformation(resApi.payload.data);
-            }
-
+            const resApi=await accountInformationApiRequest.
+            getAccountInformation({id:userDisplay?.id, fields:"?fileds=DisplayName%2CCode%2CPhone%2CEmail%2CBalance%2CAcoinBalance%2CPromotionalBalance"});
+            setAccountInformation(resApi.payload.data);
             setIsLoading(false);
         }
         catch{
@@ -66,33 +45,33 @@ const Accountnformation = () => {
                     <tr className='info__row'>
                         <td className='info__row__title'>ID của ban:</td>
                         <td className='flex flex-row-reverse gap-3 info__row__data'>
-                            <p>{accountInformation.Code}</p>
+                            <p>{accountInformation?.Code}</p>
                             <DocumentDuplicateIcon className='w-[1.3rem] h-[1.3rem]'></DocumentDuplicateIcon>
                         </td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Tên tài khoản:</td>
-                        <td className='info__row__data'>{accountInformation.DisplayName}</td>
+                        <td className='info__row__data'>{accountInformation?.DisplayName}</td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Phone:</td>
-                        <td className='info__row__data'>{accountInformation.Phone}</td>
+                        <td className='info__row__data'>{accountInformation?.Phone}</td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Email:</td>
-                        <td className='info__row__data'>{accountInformation.Email}</td>
+                        <td className='info__row__data'>{accountInformation?.Email}</td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Số dư tài khoản:</td>
-                        <td className='info__row__data text-s2red2'>{accountInformation.Balance}</td>
+                        <td className='info__row__data text-s2red2'>{accountInformation?.Balance}</td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Số dư Acoin:</td>
-                        <td className='info__row__data text-s2red2'>{accountInformation.AcoinBalance}</td>
+                        <td className='info__row__data text-s2red2'>{accountInformation?.AcoinBalance}</td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Số tiền dư khuyến mãi:</td>
-                        <td className='info__row__data text-s2red2'>{accountInformation.PromotionalBalance}</td>
+                        <td className='info__row__data text-s2red2'>{accountInformation?.PromotionalBalance}</td>
                     </tr>
                     <tr className='info__row'>
                         <td className='info__row__title'>Mật khẩu:</td>

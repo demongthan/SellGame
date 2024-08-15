@@ -4,20 +4,21 @@ import { ButtonV2UI, InputUI, TitleRecharge } from '@/components'
 import React, { useState } from 'react'
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
 import { isNullOrEmpty } from '@/utils/utils';
+import { useRouter } from 'next/navigation';
 
 const ATMCard = () => {
     const valueMoney:number[]=[10000,20000,50000,100000,200000,500000,1000000,2000000];
     const [money, setMoney]=useState<number>(10000)
+    const router = useRouter();
 
     const eventButtonMoneyClicked=(value:number)=>(event: React.MouseEvent<HTMLButtonElement>)=>{
         event.preventDefault();
-
         setMoney(value);
     }
 
     const handleChange=(e:any) => {
-        if (/^\d*\.?\d*$/.test(e.target.value.replace(",", ""))) {
-            setMoney(e.target.value.replace(",", ""));
+        if (/^\d*\.?\d*$/.test(e.target.value.replaceAll(",", ""))) {
+            setMoney(Number(e.target.value.replaceAll(",", "")));
         }
     }
 
@@ -27,11 +28,42 @@ const ATMCard = () => {
         }
     }
 
+    const processPayment=async (): Promise<void> => {
+        console.log("11111")
+        try{
+            const response = await fetch('/api/recharge/atm-card', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: money, 
+                    orderInfo: 'Thanh toán đơn hàng #123',
+                }),
+            });
+
+            const data = await response.json();
+            if (data.redirectUrl) {
+                router.push(data.redirectUrl);
+            }
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
+
+    const eventButtonPaymentClicked=(event: React.MouseEvent<HTMLButtonElement>)=>{
+        event.preventDefault();
+
+        console.log("111")
+        processPayment();
+    }
+
   return (
     <div className='flex flex-col gap-10'>
         <TitleRecharge title={'Nạp tiền từ ATM'}></TitleRecharge>
 
-        <div className='flex flex-col items-center justify-center gap-20 bg-s2cyan2 p-5 h-[70vh]'>
+        <div className='flex flex-col items-center justify-center gap-10 p-5 h-[70vh]'>
             <table className='table-fixed border border-solid border-s2gray6 text-left w-1/2'>
                 <tbody>
                     <tr>
@@ -60,9 +92,12 @@ const ATMCard = () => {
                     {valueMoney.map((value, index)=>(
                         <ButtonV2UI key={index} title={value.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}
                         eventClickButton={eventButtonMoneyClicked(value)}
+                        className='bg-s2yellow1'
                         ></ButtonV2UI>
                     ))}
                 </div>
+
+                <ButtonV2UI title='Thanh toán' eventClickButton={eventButtonPaymentClicked}></ButtonV2UI>
             </div>
 
             <div className='w-4/5 text-center'>

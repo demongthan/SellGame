@@ -3,8 +3,8 @@ import { ChangePasswordDto } from "./DataDomain/Account/ChangePasswordDto"
 import envConfig from "@/config"
 
 export const accountInformationApiRequest = {
-    getAccountInformation:(id?:string)=>
-        http.get<ApiReponse<AccountInformationDto>>(`/Account/GetAccountInformation/${id}`, true),
+    getAccountInformation:(input:{id?:string, fields:string})=>
+        http.get<ApiReponse<AccountInformationDto>>(`/Account/GetAccountInformation/${input.id}${input.fields}`, true),
 
     changePassword:(input:{id?:string, body:ChangePasswordDto})=>
         http.put<ApiReponse<boolean>>(`/Account/ChangePassword/${input.id}`, true, input.body),
