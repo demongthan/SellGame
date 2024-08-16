@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 
-const privatePaths = ['/recharge/account-information']
+const privatePaths = ['/recharge/account-information', '/recharge/auto-recharge']
 const authPaths = ['/login', '/register']
 
 export const middleware=(request: NextRequest)=> {

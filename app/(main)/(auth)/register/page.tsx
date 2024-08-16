@@ -10,7 +10,6 @@ import { UserRole } from '@/utils/types/UserRole';
 import { authApiRequest } from '@/apiRequests/auth';
 import { ButtonV1UI, InputUI, LoadingUI } from '@/components'
 import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
-import { showToast } from '@/utils/showToast';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { Button } from '@headlessui/react';
 import { signIn } from 'next-auth/react';
@@ -53,7 +52,7 @@ const Register = () => {
                     console.log(jwtData)
                     const userDisplay:UserDisplay={
                         displayName:jwtData.sub,
-                        id:jwtData.Id,
+                        id:jwtData.jti,
                         role:jwtData.role
                     }
 

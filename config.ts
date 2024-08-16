@@ -9,7 +9,9 @@ const configSchema = z.object({
   NEXT_PUBLIC_VNP_TMNCODE:z.string(),
   NEXT_PUBLIC_VNP_HASHSECRET:z.string(),
   NEXT_PUBLIC_VNP_URL:z.string(),
-  NEXT_PUBLIC_VNP_RETURNURL:z.string()
+  NEXT_PUBLIC_VNP_RETURNURL:z.string(),
+  NEXT_PUBLIC_PARTNER_ID_CHANGE:z.string(),
+NEXT_PUBLIC_PARTNER_KEY_CHANGE:z.string(),
 })
 
 const configProject = configSchema.safeParse({
@@ -22,6 +24,8 @@ const configProject = configSchema.safeParse({
   NEXT_PUBLIC_VNP_HASHSECRET: process.env.NEXT_PUBLIC_VNP_HASHSECRET,
   NEXT_PUBLIC_VNP_URL: process.env.NEXT_PUBLIC_VNP_URL,
   NEXT_PUBLIC_VNP_RETURNURL: process.env.NEXT_PUBLIC_VNP_RETURNURL,
+  NEXT_PUBLIC_PARTNER_ID_CHANGE: process.env.NEXT_PUBLIC_PARTNER_ID_CHANGE,
+  NEXT_PUBLIC_PARTNER_KEY_CHANGE: process.env.NEXT_PUBLIC_PARTNER_KEY_CHANGE,
 })
 
 if (!configProject.success) {
