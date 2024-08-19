@@ -4,12 +4,20 @@ import { TitleRecharge } from '@/components'
 import LoadingUI from '@/components/Common/LoadingUI';
 import { Button } from '@headlessui/react';
 import { DocumentDuplicateIcon, XMarkIcon } from '@heroicons/react/20/solid';
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import Image from 'next/image'
 import ButtonV2UI from '@/components/Common/UI/Button/ButtonV2UI';
+import { useSearchParams } from 'next/navigation';
+import moment from 'moment';
+import { generateRandomUppercaseString } from '@/utils/utils';
 
 const ATMPayment = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const params = useSearchParams();
+    const amount:any= params.get("amount");
+    const date = moment(new Date()).format('YYYYMMDDHHmmss');
+    const code =`ATMR${generateRandomUppercaseString(5)}${date}`;
+
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
@@ -31,13 +39,13 @@ const ATMPayment = () => {
 
                     <div className='border-b border-gray-200 pb-2'>
                         <span className='block font-semibold text-gray-500'>Tên tài khoản</span>
-                        <span className='font-bold'>NGUYỄN VĂN NAM</span>
+                        <span className='font-bold'>NGUYEN VAN NAM</span>
                     </div>
 
                     <div className='border-b border-gray-200 pb-2'>
                         <span className='font-semibold text-gray-500'>Số tài khoản</span>
                         <div className='flex flex-row gap-2'>
-                            <span className='font-bold w-4/5'>1111</span>
+                            <span className='font-bold w-4/5'>0399161228</span>
                             <Button className={`rounded-md w-1/5 px-3 py-1 -mt-2 border border-transparent font-semibold text-white bg-s2cyan1 hover:bg-blue-600 focus:outline-none 
                                 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm`}>Sao chép</Button>
                         </div>
@@ -46,7 +54,7 @@ const ATMPayment = () => {
                     <div className='border-b border-gray-200 pb-2'>
                         <span className='font-semibold text-gray-500'>Số tiền</span>
                         <div className='flex flex-row gap-2'>
-                            <span className='font-bold w-4/5'>{(12000).toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</span>
+                            <span className='font-bold w-4/5'>{Number(amount).toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</span>
                             <Button className={`rounded-md w-1/5 px-3 py-1 -mt-2 border border-transparent font-semibold text-white bg-s2cyan1 hover:bg-blue-600 focus:outline-none 
                                 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm`}>Sao chép</Button>
                         </div>
@@ -55,7 +63,7 @@ const ATMPayment = () => {
                     <div className='border-b border-gray-200 pb-2'>
                         <span className='font-semibold text-gray-500'>Nội dung</span>
                         <div className='flex flex-row'>
-                            <span className='font-bold w-4/5'>Thanh toán</span>
+                            <span className='font-bold w-4/5'>{code}</span>
                             <Button className={`rounded-md w-1/5 px-3 py-1 -mt-2 border border-transparent font-semibold text-white bg-s2cyan1 hover:bg-blue-600 focus:outline-none 
                                 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm`}>Sao chép</Button>
                         </div>
@@ -74,7 +82,7 @@ const ATMPayment = () => {
                 </div>
 
                 <div className='w-1/2 h-4/5 -mt-12'>
-                    <Image alt='' src={'https://img.vietqr.io/image/vietinbank-113366668888-compact.jpg?amount=790000&addInfo=dong%20gop%20quy%20vac%20xin&accountName=Quy%20Vac%20Xin%20Covid'} 
+                    <Image alt='' src={`https://img.vietqr.io/image/MB-0399161228-compact.jpg?amount=5000&addInfo=${code}&accountName=${"NGUYEN VAN NAM"}`} 
                     width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
                 </div>
             </form>

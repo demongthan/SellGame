@@ -28,27 +28,9 @@ const ATMCard = () => {
         }
     }
 
-    const processPayment=async (): Promise<void> => {
-        try{
-            const response = await fetch('/api/recharge/atm-card', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    amount: money, 
-                    orderInfo: 'Thanh toán đơn hàng #123',
-                }),
-            });
-
-            const data = await response.json();
-            if (data.redirectUrl) {
-                router.push(data.redirectUrl);
-            }
-        }
-        catch(error){
-            console.error(error);
-        }
+    const eventButtonNavigationATMClicked=(event: React.MouseEvent<HTMLButtonElement>)=>{
+        event.preventDefault();
+        router.push(`/recharge/atm-card/atm-payment?amount=${money}`);
     }
 
   return (
@@ -91,7 +73,7 @@ const ATMCard = () => {
                     </div>
                     
                     <div className='flex flex-row gap-2 w-full'>
-                        <ButtonV2UI className='w-1/2' title='ATM' eventClickButton={()=>{}}></ButtonV2UI>
+                        <ButtonV2UI className='w-1/2' title='ATM' eventClickButton={eventButtonNavigationATMClicked}></ButtonV2UI>
                         <ButtonV2UI className='w-1/2' title='MOMO' eventClickButton={()=>{}}></ButtonV2UI>
                     </div>
                 </div>
