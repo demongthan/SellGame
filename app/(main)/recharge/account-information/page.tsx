@@ -13,19 +13,52 @@ import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider
 
 const Accountnformation = () => {
     const [isLoading, setIsLoading]=useState<boolean>(true);
-    const { userDisplay } = useGlobalState() as GlobalContextProps;
+    const { userDisplay, setUser } = useGlobalState() as GlobalContextProps;
 
     const [accountInformation, setAccountInformation]=useState<AccountInformationDto | undefined>(undefined)
 
     const getAccountInformationInit =async (): Promise<void>=>{
         try{
-            const resApi=await accountInformationApiRequest.
-            getAccountInformation({id:userDisplay?.id, fields:"?fileds=DisplayName%2CCode%2CPhone%2CEmail%2CBalance%2CAcoinBalance%2CPromotionalBalance"});
-            setAccountInformation(resApi.payload.data);
+            let user:UserDisplay|null;
+
+            if(!userDisplay){
+                const response=await fetch('/api/auth',{
+                    method: 'GET'
+                })
+    
+                const res= await response.json();
+    
+                if(res.data){
+                    const jwtData=jwt.decode(res.data, { complete: true })?.payload as DecodedToken;
+                    
+                    user={
+                        displayName:jwtData.sub,
+                        id:jwtData.jti,
+                        role:jwtData.role,
+                        token:res.data
+                    }
+                }
+                else{
+                    user=null;
+                }
+
+                setUser(user);
+            }
+            else{
+                user=userDisplay;
+            }
+
+            if(user){
+                const resApi=await accountInformationApiRequest.
+                getAccountInformation({id:user?.id, fields:"?fileds=DisplayName%2CCode%2CPhone%2CEmail%2CBalance%2CAcoinBalance%2CPromotionalBalance", token:user.token});
+                setAccountInformation(resApi.payload.data);
+            }
+
             setIsLoading(false);
         }
-        catch{
-            showToast("error", <p>Lỗi hệ thống. Vui lòng liên hệ Quản trị viên</p>)
+        catch(error){
+            showToast("error", <p>Lỗi hệ thống. Vui lòng liên hệ Quản trị viên</p>);
+            console.log(error);
             setIsLoading(false);
         }
     }

@@ -50,7 +50,7 @@ export const menuRechargeTransaction:MenuRecharge={
             link:"/recharge/recharge-history"
         },
         {
-            title:"Nạp tiền từ ATM",
+            title:"Nạp tiền từ ATM/MOMO",
             link:"/recharge/atm-card"
         },
         {

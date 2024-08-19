@@ -44,7 +44,7 @@ export class EntityError extends HttpError {
     }
 }
 
-const request = async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string, isAuth:boolean, options?: CustomOptions | undefined) => {
+const request = async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string, token?:string, options?: CustomOptions | undefined) => {
     let body: FormData | string | undefined = undefined;
 
     if (options?.body instanceof FormData) {
@@ -68,14 +68,8 @@ const request = async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string
 
     const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
 
-    if(isAuth){
-      const response=await fetch('/api/auth',{
-          method: 'GET'
-      })
-
-      await response.json().then(response=>{
-        baseHeaders.Authorization = `Bearer ${response.data}`;
-      });
+    if(token){
+        baseHeaders.Authorization = `Bearer ${token}`;
     }
 
     const res = await fetch(fullUrl, {
@@ -99,20 +93,21 @@ const request = async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string
 }
 
 const http = {
-    get<Response>(url: string, isAuth:boolean, options?: Omit<CustomOptions, 'body'> | undefined) {
-      return request<Response>('GET', url, isAuth, options)
+    get<Response>(url: string, token?:string, options?: Omit<CustomOptions, 'body'> | undefined) {
+      return request<Response>('GET', url, token, options)
     },
     
-    post<Response>(url: string, isAuth:boolean, body: any,options?: Omit<CustomOptions, 'body'> | undefined) {
-      return request<Response>('POST', url, isAuth, { ...options, body })
+    post<Response>(url: string, body: any, token?:string, options?: Omit<CustomOptions, 'body'> | undefined) {
+      return request<Response>('POST', url, token, { ...options, body })
     },
 
-    put<Response>(url: string, isAuth:boolean, body: any,options?: Omit<CustomOptions, 'body'> | undefined) {
-      return request<Response>('PUT', url, isAuth, { ...options, body })
+    put<Response>(url: string, body: any, token?:string, 
+      options?: Omit<CustomOptions, 'body'> | undefined) {
+      return request<Response>('PUT', url, token, { ...options, body })
     },
 
-    delete<Response>(url: string, isAuth:boolean, options?: Omit<CustomOptions, 'body'> | undefined) {
-      return request<Response>('DELETE', url, isAuth, { ...options })
+    delete<Response>(url: string, token?:string, options?: Omit<CustomOptions, 'body'> | undefined) {
+      return request<Response>('DELETE', url, token, { ...options })
     }
   }
 

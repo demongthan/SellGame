@@ -11,6 +11,8 @@ import { generateThreeDigitNumber, isNullOrEmpty } from '@/utils/utils'
 import { Button, Input } from '@headlessui/react'
 import { ArrowPathIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import React, { FormEvent, useEffect, useState } from 'react'
+import { DecodedToken } from '@/utils/types/DecodedToken';
+import jwt from 'jsonwebtoken';
 
 const AutoRecharge = () => {
   const [cardType, setCardType] = useState<ItemSelect>(cardTypeSelect[0]);
@@ -22,9 +24,35 @@ const AutoRecharge = () => {
   const [errAction, setErrAction] = useState<string |null>(null);
 
   const [errArr, setErrArr]=useState<ErrorValidate[]>();
-  const {userDisplay}=useGlobalState() as GlobalContextProps;
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const { userDisplay, setUser } = useGlobalState() as GlobalContextProps;
+
+  const getInitUser=async():Promise<void>=>{
+    const response=await fetch('/api/auth',{
+        method: 'GET'
+    })
+
+    const res= await response.json();
+    let user:UserDisplay|null;
+
+    if(res.data){
+        const jwtData=jwt.decode(res.data, { complete: true })?.payload as DecodedToken;
+        
+        user={
+            displayName:jwtData.sub,
+            id:jwtData.jti,
+            role:jwtData.role,
+            token:res.data
+        }
+    }
+    else{
+        user=null;
+    }
+
+    setUser(user);
+    setIsLoading(false);
+  }
 
   const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
     event.preventDefault();
@@ -44,7 +72,7 @@ const AutoRecharge = () => {
       setIsLoading(false);
 
       if(data.isSuccess){
-        const result = await transactionHistoryCardApiRequest.createTransactionHistoryCard({idUser:userDisplay?.id, body:data.data});
+        const result = await transactionHistoryCardApiRequest.createTransactionHistoryCard({idUser:userDisplay?.id, body:data.data, token:userDisplay?.token});
 
         if(result.payload.data){
           showToast("success", <p>{result.payload.message}</p>);
@@ -83,9 +111,15 @@ const AutoRecharge = () => {
   }
 
   useEffect(()=>{
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 250);
+    if(userDisplay){
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 250);
+    }
+    else{
+      getInitUser();
+    }
+    
   }, [setIsLoading])
 
   const handleChange = (name:string) => (e: any) => {

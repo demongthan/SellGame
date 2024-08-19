@@ -43,6 +43,7 @@ const Login = () => {
             const data = await response.json();
     
             if(data.isSuccess){
+                console.log(data.data)
                 const result = await authApiRequest.login(data.data);
 
                 if(result.payload.data){
@@ -63,7 +64,8 @@ const Login = () => {
                     const userDisplay:UserDisplay={
                         displayName:jwtData.sub,
                         id:jwtData.jti,
-                        role:jwtData.role
+                        role:jwtData.role,
+                        token:result.payload.data.Token
                     }
         
                     setUser(userDisplay);

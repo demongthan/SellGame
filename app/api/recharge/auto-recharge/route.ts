@@ -117,7 +117,7 @@ export const POST=async (request: any)=> {
                     Code: tsr_Params["request_id"],
                     Status:Number(response.data.status)==RechargeCardStatus.SUCCESS?TransactionStatus.Success:TransactionStatus.Process,
                     DeclaredValue:tsr_Params["amount"],
-                    Amount:response.data.amount,
+                    Amount:Number(tsr_Params["amount"])*0.7,
                     Telco:tsr_Params["telco"],
                     CodeCard: tsr_Params["code"],
                     SerialNumber:tsr_Params["serial"],

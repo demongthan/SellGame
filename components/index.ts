@@ -91,5 +91,5 @@ export{
     SelectPriceModalUI,
     UploadImageForServiceDetailModalUI,
     CardGame,
-    ButtonV2UI
+    ButtonV2UI,
 }

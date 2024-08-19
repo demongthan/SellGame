@@ -6,23 +6,23 @@ import { ForgetPasswordDto } from "./DataDomain/Auth/ForgetPasswordDto";
 
 export const authApiRequest = {
     register: (body: RegisterDto) => 
-        http.post<ApiReponse<LoginModelDto>>('/Authentication/register', false, body),
+        http.post<ApiReponse<LoginModelDto>>('/Authentication/register', body),
 
     registerGoogle:(body:GoogleSignInDto)=>
-        http.post<ApiReponse<LoginModelDto>>('/Authentication/GoogleSignUp', false, body),
+        http.post<ApiReponse<LoginModelDto>>('/Authentication/GoogleSignUp', body),
 
     loginGoogle:(body:GoogleSignInDto)=>
-        http.post<ApiReponse<LoginModelDto>>('/Authentication/GoogleSignIn', false, body),
+        http.post<ApiReponse<LoginModelDto>>('/Authentication/GoogleSignIn', body),
 
     login: (body: AccountSignInDto) =>
-        http.post<ApiReponse<LoginModelDto>>('/Authentication/login', false, body),
+        http.post<ApiReponse<LoginModelDto>>('/Authentication/login', body),
 
     forgetPassword:(body:ForgetPasswordDto)=>
-    http.put<ApiReponse<boolean>>("/Authentication/ForgetPassword", false, body),
+    http.put<ApiReponse<boolean>>("/Authentication/ForgetPassword", body),
 
     logout:(userName:string |undefined)=>
-        http.put<ApiReponse<string>>(`/Authentication/revoke/${userName}`,false, {}),
+        http.put<ApiReponse<string>>(`/Authentication/revoke/${userName}`, {}),
 
     getAllImageUrl:(code:string) =>
-        http.get<ApiReponse<ImageDetailDto[]>>(`/ImageDetail/GetAllByCode/${code}?fileds=PathUrl`, false),
+        http.get<ApiReponse<ImageDetailDto[]>>(`/ImageDetail/GetAllByCode/${code}?fileds=PathUrl`),
 }
