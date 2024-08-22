@@ -2,48 +2,62 @@ import moment from "moment";
 import { NextResponse } from "next/server";
 import crypto from 'crypto';
 import envConfig from "@/config";
-import { headers } from 'next/headers'
+import { generateRandomUppercaseString } from "@/utils/utils";
+import axios from "axios";
 
 export const POST=async (request: any)=> {
-    const { amount, orderInfo } = await request.json();
+    const { amount} = await request.json();
 
-    const date = new Date();
-    const createDate = moment(date).format('YYYYMMDDHHmmss');
+    const date = moment(new Date()).format('YYYYMMDDHHmmss');
 
-    const vnp_TmnCode:any= envConfig.NEXT_PUBLIC_VNP_TMNCODE;
-    const vnp_HashSecret:any = envConfig.NEXT_PUBLIC_VNP_HASHSECRET;
-    const vnp_Url:any = envConfig.NEXT_PUBLIC_VNP_URL;
-    const vnp_ReturnUrl:any = envConfig.NEXT_PUBLIC_VNP_RETURNURL;
+    const partnerCode:any = envConfig.NEXT_PUBLIC_MOMO_PARTNER_CODE;
+    const accessKey:any = envConfig.NEXT_PUBLIC_MOMO_ACCESS_KEY;
+    const secretKey:any = envConfig.NEXT_PUBLIC_MOMO_SECRET_KEY;
+    const endpoint:any = envConfig.NEXT_PUBLIC_MOMO_ENDPOINT;
 
-    const ipAddr = headers().get('x-forwarded-for')||
-        request.connection.remoteAddress ||
-        request.socket.remoteAddress ||
-        request.connection.socket.remoteAddress;
+    const orderId:string = `MR${generateRandomUppercaseString(5)}${date}`;
+    const requestId:string = `MR${generateRandomUppercaseString(5)}${date}`;
+    const orderInfo:string = 'Thanh toán đơn hàng';
+    const returnUrl:string = envConfig.NEXT_PUBLIC_MOMO_RETURN_URL;
+    const ipnUrl:string = envConfig.NEXT_PUBLIC_MOMO_IPN_URL;
 
-    const vnp_Params: any = {
-        vnp_Version: '2.1.0',
-        vnp_Command: 'pay',
-        vnp_TmnCode: vnp_TmnCode,
-        vnp_Locale: 'vn',
-        vnp_CurrCode: 'VND',
-        vnp_TxnRef: `TXN${Date.now()}`,
-        vnp_OrderInfo: orderInfo,
-        vnp_OrderType:'other',
-        vnp_Amount: amount * 100, // số tiền theo đơn vị VNĐ*100
-        vnp_ReturnUrl: vnp_ReturnUrl,
-        vnp_IpAddr: ipAddr,
-        vnp_CreateDate: createDate,
+    const rawSignature:string = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${returnUrl}&requestId=${requestId}&requestType=payWithMethod`;
+
+    const signature = crypto.createHmac('sha256', secretKey)
+            .update(rawSignature)
+            .digest('hex');
+
+    const requestBody:any = {
+        partnerCode: partnerCode,
+        partnerName : "Test",
+        storeId : "MomoTestStore",
+        requestId: requestId,
+        amount: amount,
+        orderId: orderId,
+        orderInfo: orderInfo,
+        redirectUrl: returnUrl,
+        ipnUrl: ipnUrl,
+        lang: 'vi',
+        requestType: 'payWithMethod',
+        autoCapture: true,
+        extraData: '',
+        orderGroupId: '',
+        signature: signature,
     };
-    
-    const signData = Object.keys(vnp_Params)
-      .sort()
-      .map((key) => `${key}=${vnp_Params[key]}`)
-      .join('&');
-    const hmac = crypto.createHmac('sha512', vnp_HashSecret);
-    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
-  
-    vnp_Params.vnp_SecureHash = signed;
-    const vnp_UrlWithParams = `${vnp_Url}?${new URLSearchParams(vnp_Params).toString()}`;
-    
-    return NextResponse.json({ redirectUrl: vnp_UrlWithParams });
+
+    try {
+        const { data } = await axios.post(endpoint, JSON.stringify(requestBody),{
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(JSON.stringify(requestBody))
+        }});
+
+        return NextResponse.json(
+            {isSuccess:true, payUrl: data.payUrl}
+        )
+    } catch (error:any) {
+        return NextResponse.json(
+            {error: error.message}
+        )
+    }
 }

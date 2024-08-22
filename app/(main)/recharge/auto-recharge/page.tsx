@@ -69,8 +69,6 @@ const AutoRecharge = () => {
 
       const data = await response.json();
 
-      setIsLoading(false);
-
       if(data.isSuccess){
         const result = await transactionHistoryCardApiRequest.createTransactionHistoryCard({idUser:userDisplay?.id, body:data.data, token:userDisplay?.token});
 

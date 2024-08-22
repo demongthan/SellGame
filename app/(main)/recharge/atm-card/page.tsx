@@ -8,30 +8,54 @@ import { useRouter } from 'next/navigation';
 
 const ATMCard = () => {
     const valueMoney:number[]=[10000,20000,50000,100000,200000,500000,1000000,2000000];
-    const [money, setMoney]=useState<number>(10000)
+    const [amount, setAmount]=useState<number>(10000)
     const router = useRouter();
 
     const eventButtonMoneyClicked=(value:number)=>(event: React.MouseEvent<HTMLButtonElement>)=>{
         event.preventDefault();
-        setMoney(value);
+        setAmount(value);
     }
 
     const handleChange=(e:any) => {
         if (/^\d*\.?\d*$/.test(e.target.value.replaceAll(",", ""))) {
-            setMoney(Number(e.target.value.replaceAll(",", "")));
+            setAmount(Number(e.target.value.replaceAll(",", "")));
         }
     }
 
     const handleBlur=(e:any) => {
         if(isNullOrEmpty(e.target.value)){
-            setMoney(10000)
+            setAmount(10000)
         }
     }
 
     const eventButtonNavigationATMClicked=(event: React.MouseEvent<HTMLButtonElement>)=>{
         event.preventDefault();
-        router.push(`/recharge/atm-card/atm-payment?amount=${money}`);
+        router.push(`/recharge/atm-card/atm-payment?amount=${amount}`);
     }
+
+    const processMOMOPayment=async (): Promise<void>=>{
+        try{
+            const res = await fetch('/api/recharge/atm-card', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({amount:amount}),
+            });
+
+            const data = await res.json();
+            
+            console.log(data.payUrl);
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+
+    const eventButtonMOMOClicked=(event: React.MouseEvent<HTMLButtonElement>)=>{
+        event.preventDefault();
+        processMOMOPayment();
+    } 
 
   return (
     <>
@@ -46,15 +70,15 @@ const ATMCard = () => {
                             <th className='border-b p-2'>Số tiền thực nhận</th>
                         </tr>
                         <tr>
-                            <th className='border-r p-2'>{money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</th>
-                            <th className='p-2'>{money.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</th>
+                            <th className='border-r p-2'>{amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</th>
+                            <th className='p-2'>{amount.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</th>
                         </tr>
                     </tbody>
                 </table>
 
                 <div className='flex flex-col w-1/2 gap-6'>
                     <div>
-                        <InputUI value={money.toLocaleString('en')} isBlockLabel={true} label={"Nhập số tiền cần mua"}
+                        <InputUI value={amount.toLocaleString('en')} isBlockLabel={true} label={"Nhập số tiền cần mua"}
                         classDiv={"w-full"} classInput={"w-[90%] text-right font-semibold"} onChangeEvent={handleChange} onBlurEvent={handleBlur}
                         unit='VND' classUint='w-[10%] text-s2cyan1' classDivUnit='w-full'></InputUI>
 
@@ -74,7 +98,7 @@ const ATMCard = () => {
                     
                     <div className='flex flex-row gap-2 w-full'>
                         <ButtonV2UI className='w-1/2' title='ATM' eventClickButton={eventButtonNavigationATMClicked}></ButtonV2UI>
-                        <ButtonV2UI className='w-1/2' title='MOMO' eventClickButton={()=>{}}></ButtonV2UI>
+                        <ButtonV2UI className='w-1/2' title='MOMO' eventClickButton={eventButtonMOMOClicked}></ButtonV2UI>
                     </div>
                 </div>
 

@@ -7,27 +7,77 @@ import { DocumentDuplicateIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { FormEvent, useEffect, useState } from 'react'
 import Image from 'next/image'
 import ButtonV2UI from '@/components/Common/UI/Button/ButtonV2UI';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import moment from 'moment';
 import { generateRandomUppercaseString } from '@/utils/utils';
+import { showToast } from '@/utils/showToast';
+import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
+import { transactionHistoryBakingApiRequest } from '@/apiRequests/transaction-history-banking';
+import { TransactionStatus } from '@/utils/constant/Transaction/TransactionStatus';
 
 const ATMPayment = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const router = useRouter();
     const params = useSearchParams();
     const amount:any= params.get("amount");
-    const date = moment(new Date()).format('YYYYMMDDHHmmss');
+    const date = moment(new Date()).format('YYYYMMDDHHmm');
     const code =`ATMR${generateRandomUppercaseString(5)}${date}`;
+    const linkQRCode = `https://img.vietqr.io/image/MB-0399161228-compact.jpg?amount=${amount}&addInfo=${code}&accountName=${"NGUYEN VAN NAM"}`
+    
+    const { userDisplay, setUser } = useGlobalState() as GlobalContextProps;
 
+    const processPayment=async (): Promise<void> => {
+        try{
+            const dataRequest:any={
+                amount:amount, 
+                code:code, 
+                bankCodeName:"MBBank", 
+                bankSubAccId:"0399161228"
+            }
 
-    const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
+            const response = await fetch('/api/recharge/atm-card/atm-payment', {
+                method: 'POST',
+                body: JSON.stringify(dataRequest),
+            })
+
+            const data = await response.json();
+
+            if(data.isSuccess){
+                const result = await transactionHistoryBakingApiRequest.createTransactionHistoryBanking({idUser:userDisplay?.id, body:data.data, token:userDisplay?.token});
+
+                if(result.payload.data){
+                    if(data.data.Status==TransactionStatus.Success){
+                        router.push('/recharge/atm-card/payment-result?status=success');
+                    }
+                    else{
+                        router.push('/recharge/atm-card/payment-result?status=fail');
+                    }
+                }
+                else{
+                    showToast("error", <p>{result.payload.message}</p>);
+                }
+            }
+            else{
+                showToast("error", <p>{data.message}</p>);
+            }
+        }
+        catch(err){
+            console.log(err);
+            showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
+        }
+    }
+
+    const eventButtonConfirmClicked=(event: React.MouseEvent<HTMLButtonElement>)=>{
         event.preventDefault();
+        
+        processPayment();
     }
 
     return (
         <div className='flex flex-col gap-10 h-[50vh]'>
             <TitleRecharge title={'Nạp tiền từ ATM/MOMO'}></TitleRecharge>
 
-            <form className="flex flex-row w-full gap-10 font-base" onSubmit={onSubmit}>
+            <form className="flex flex-row w-full gap-10 font-base">
                 <div className='flex flex-col gap-3 w-1/2'>
                     <div className='flex flex-row border-b border-gray-200 pb-2'>
                         <Image alt='' src={"https://api.vietqr.io/img/MB.png"} width={0} height={0} sizes="100vw" style={{ width: '30%', height: '100%' }}></Image>
@@ -71,7 +121,7 @@ const ATMPayment = () => {
 
                     <div className='mt-3 flex flex-row gap-5'>
                         <ButtonV2UI title={'Hủy bỏ'}></ButtonV2UI>
-                        <ButtonV2UI title={'Xác nhận'}></ButtonV2UI>
+                        <ButtonV2UI title={'Xác nhận'} eventClickButton={eventButtonConfirmClicked}></ButtonV2UI>
                     </div>
 
                     <div className='text-center pt-5'>
@@ -82,7 +132,7 @@ const ATMPayment = () => {
                 </div>
 
                 <div className='w-1/2 h-4/5 -mt-12'>
-                    <Image alt='' src={`https://img.vietqr.io/image/MB-0399161228-compact.jpg?amount=5000&addInfo=${code}&accountName=${"NGUYEN VAN NAM"}`} 
+                    <Image alt='' src={linkQRCode} 
                     width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
                 </div>
             </form>
