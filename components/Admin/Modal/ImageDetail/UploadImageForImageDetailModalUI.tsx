@@ -4,17 +4,20 @@ import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+
 import { LoadingUI } from '@/components';
 import { showToast } from '@/utils/showToast';
 import { imageDetailApiRequest } from '@/apiRequests/image-detail';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
 
 interface Props{
     closeModel:()=>void,
     idImageDetail:string,
     refreshAllImageDetailUpdate:()=>Promise<void>,
+    adminDisplay:AdminDisplay | null
 }
 
-const UploadImageForImageDetailModalUI = ({closeModel, idImageDetail, refreshAllImageDetailUpdate}:Props) => {
+const UploadImageForImageDetailModalUI = ({closeModel, idImageDetail, refreshAllImageDetailUpdate, adminDisplay}:Props) => {
     const [file, setFile] = useState<any>(null);
     const [srcFile, setSrcFile]=useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -28,7 +31,7 @@ const UploadImageForImageDetailModalUI = ({closeModel, idImageDetail, refreshAll
 
   const getUrlFileInit=async ():Promise<void>=>{
     try{
-        await imageDetailApiRequest.getImageDetailById({id:idImageDetail,fields: "PathUrl"}).then((res)=>{
+        await imageDetailApiRequest.getImageDetailById({id:idImageDetail,fields: "PathUrl", token:adminDisplay?.token}).then((res)=>{
             setSrcFile(res.payload.data.PathUrl);
             setIsLoading(false);
         })
@@ -45,7 +48,7 @@ const UploadImageForImageDetailModalUI = ({closeModel, idImageDetail, refreshAll
         const formData:FormData = new FormData();
         formData.append("file", file);
 
-        await imageDetailApiRequest.uploadImageForImageDetail({id:idImageDetail,body:formData}).then((res)=>{
+        await imageDetailApiRequest.uploadImageForImageDetail({id:idImageDetail,body:formData, token:adminDisplay?.token}).then((res)=>{
             if(res.payload.data){
                 showToast("success", <p>{res.payload.message}</p>)
                 refreshAllImageDetailUpdate();

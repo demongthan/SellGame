@@ -1,6 +1,6 @@
 "use client"
 
-import { navItems } from '@/utils/constant/Menu'
+import { navItems } from '@/utils/constant/Menu/Menu'
 import { BellIcon, ChevronDownIcon, UserIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import React, { useState } from 'react'

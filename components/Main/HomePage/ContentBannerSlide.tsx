@@ -19,22 +19,26 @@ const ContentBannerSlide = ({autoSlide=true, autoSlideInterval=3000, className}:
 
     const prev = ():void =>
         setCurr((curr) => (curr === 0 ? imgUrls.length - 1 : curr - 1))
-    const next = ():void =>
-    setCurr((curr) => (curr === imgUrls.length - 1 ? 0 : curr + 1))
+    const next = ():void =>{
+        console.log(curr == imgUrls.length - 1, curr, imgUrls.length)
+        setCurr((curr) => (curr == Number(imgUrls.length - 1) ? 0 : curr + 1))
+    }
 
     const getImageUrls= async():Promise<void>=>{
         try{
-            const res=await authApiRequest.getAllImageUrl("CONTENTBANNERSLIDE");
+            const res=await authApiRequest.getAllImageUrl("CONTENT-BANNER-SLIDE").then((res)=>{
+                const urls:string[]=res.payload.data.map(url => url.PathUrl);
+                setImgUrls(urls);
 
-            const urls:string[]=res.payload.data.map(url => url.PathUrl);
+                setInterval(()=>{
+                    setCurr((curr) => (curr == Number(urls.length - 1) ? 0 : curr + 1))
+                }, autoSlideInterval)
 
-            setImgUrls(urls);
-
-            setIsLoading(false);
+                setIsLoading(false);
+            })
         }
         catch(error){
             console.error(error);
-
             setIsLoading(false);
         }
     }
@@ -42,12 +46,6 @@ const ContentBannerSlide = ({autoSlide=true, autoSlideInterval=3000, className}:
 
     useEffect(() => {
         getImageUrls();
-
-        if (!autoSlide) return
-
-        const slideInterval = setInterval(next, autoSlideInterval)
-        
-        return () => clearInterval(slideInterval)
     }, [setImgUrls])
 
     if(isLoading){

@@ -2,10 +2,12 @@
 
 import { categoryApiRequest } from '@/apiRequests/category';
 import { ButtonAddItemUI, LoadingUI, SelectUI } from '@/components';
+import { PropertiesItemJson } from '@/utils/types/PropertiesJson';
+import { ItemSelect } from '@/utils/types/SelectItem';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface Props{
     closeModel:()=>void,

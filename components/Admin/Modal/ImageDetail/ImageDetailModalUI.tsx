@@ -3,7 +3,9 @@
 import { imageDetailApiRequest } from '@/apiRequests/image-detail';
 import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI } from '@/components';
 import { showToast } from '@/utils/showToast';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
 import { isNullOrEmpty } from '@/utils/utils';
+
 import { Button } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import React, { FormEvent, useEffect, useState } from 'react'
@@ -13,11 +15,13 @@ interface Props{
     idImageDetail:string,
     refreshAllCategoryCreate:()=>Promise<void>,
     refreshAllCategoryUpdate:()=>Promise<void>,
+    adminDisplay:AdminDisplay | null
 }
 
-const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate, refreshAllCategoryUpdate}:Props) => {
+const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate, refreshAllCategoryUpdate, adminDisplay}:Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
+
     const [isChangeData, setIsChangeData] = useState<boolean>(false);
     const isCreate=isNullOrEmpty(idImageDetail);
     const [errArr, setErrArr]=useState<ErrorValidate[]>();
@@ -43,11 +47,10 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
                 const data = await response.json();
 
                 if(data.isSuccess){
-                    const result = await imageDetailApiRequest.createImageDetail(data.data);
+                    const result = await imageDetailApiRequest.createImageDetail({body:data.data, token:adminDisplay?.token});
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
-
                         refreshAllCategoryCreate()
                     }
                     else{
@@ -67,16 +70,16 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
                 }
             }
             else{
+                console.log(active);
                 const updateImageDetailDto:UpdateImageDetailDto={
                     Description:description,
                     Active:active
                 }
 
-                const result = await imageDetailApiRequest.updateImageDetail({id:idImageDetail, body:updateImageDetailDto});
+                const result = await imageDetailApiRequest.updateImageDetail({id:idImageDetail, body:updateImageDetailDto, token:adminDisplay?.token});
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
-
                         refreshAllCategoryUpdate();
                     }
                     else{
@@ -88,9 +91,7 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
         }
         catch(error){
             console.log(error);
-
             showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
-
             setIsLoadingPopup(false);
         }
     }
@@ -102,7 +103,7 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
                 setIsChangeData(true);
                 break;
             case "active":
-                setActive(e.target.isChecked);
+                setActive(!active);
                 setIsChangeData(true);
             default:
                 break;
@@ -111,7 +112,7 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
 
     const getImageDetailInit=async (): Promise<void> => {
         try{
-            await imageDetailApiRequest.getImageDetailById({id:idImageDetail, fields:"Description%2CActive"}).then((res)=>{
+            await imageDetailApiRequest.getImageDetailById({id:idImageDetail, fields:"Description%2CActive", token:adminDisplay?.token}).then((res)=>{
                 setActive(res.payload.data.Active);
                 setDescription(res.payload.data.Description);
                 setIsLoading(false);
@@ -119,7 +120,6 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
         }
         catch(error){
             console.log(error);
-
             setIsLoading(false);
         }
     }

@@ -1,12 +1,12 @@
 "use client"
 
-import { ButtonAddItemUI, InputUI } from '@/components';
+import { ButtonAddItemUI, CheckboxUI, InputUI } from '@/components';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { MinusCircleIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
-import React, { use, useState } from 'react'
-import PropertyValueModalUI from './PropertyValueModalUI';
+import React, {useState } from 'react'
 import { PropertiesJson, ValueKey } from '@/utils/types/PropertiesJson';
+import PropertyValueModalUI from './PropertyValueModalUI';
 
 interface Props{
     closeModal:()=>void,
@@ -38,28 +38,32 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
     const openModal=()=>
         setIsOpenPropertyValueModal(!isOpenPropertyValueModal);
 
-    const onChangePropertyKey=(index:number)=> (e: any)=>{
-
-        properties[index].Key=e.target.value;
-
-        setProperties([...properties]);
-    }
-
-    const onChangePropertyName=(index:number)=> (e: any)=>{
-        properties[index].Name=e.target.value;
-
-        setProperties([...properties]);
+    const handleChange=(name:string, index:number)=> (e: any)=>{
+        switch (name) {
+            case "name":
+                properties[index].Name=e.target.value;
+                setProperties([...properties]);
+                break;
+            case "only":
+                properties[index].Only=!properties[index].Only;
+                setProperties([...properties]);
+                break;
+            case "key":
+                properties[index].Key=e.target.value;
+                setProperties([...properties]);
+                break;
+            default:
+                break;
+        }
     }
 
     const setPropertyValue=(index:number, propertyValues:ValueKey[])=>{
         properties[index].Value=propertyValues;
-
         setProperties([...properties]);
     }
 
     const eventButtonAddItem=()=>{
         setPropertiesJson(JSON.stringify(properties))
-
         closeModal();
     }
 
@@ -89,28 +93,33 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
                     
                     <form className="p-4 md:p-5">
                         <div className="flex flex-col gap-4 mb-4">
-                            <div className="flex flex-row gap-1 text-base text-black font-semibold leading-6 border-b border-gray-200 pb-2 w-[98%]">
-                                <p className='w-[30%]'>Key</p>
-                                <p className='w-[30%]'>Tên</p>
-                                <p className='w-[30%]'>Giá trị</p>
+                            <div className="flex flex-row gap-1 text-base text-black font-semibold leading-6 border-b border-gray-200 pb-2 w-[97%]">
+                                <p className='w-[23%]'>Key</p>
+                                <p className='w-[29%]'>Tên</p>
+                                <p className='w-[17%]'>Chọn một</p>
+                                <p className='w-[23%]'>Giá trị</p>
 
-                                <div className='mt-1 flex justify-end w-[10%]'>
+                                <div className='mt-1 flex justify-end w-[8%]'>
                                     <ButtonAddItemUI eventButtonClicked={addProperty}></ButtonAddItemUI>
                                 </div>
                             </div>
 
                             <div className='h-48 overflow-y-auto w-full'>
                                 {properties && properties.map((property:PropertiesJson, index)=>(
-                                    <div className="flex flex-row gap-1 w-[98%]" key={index}>
-                                        <InputUI value={property.Key} name={`Key${index}`} classDiv={"w-[30%]"} classInput={"w-full"}
-                                        onChangeEvent={onChangePropertyKey(index)}></InputUI>
+                                    <div className="flex flex-row gap-1 w-[97%]" key={index}>
+                                        <InputUI value={property.Key} name={`Key${index}`} classDiv={"w-[23%]"} classInput={"w-full"}
+                                        onChangeEvent={handleChange("key", index)}></InputUI>
 
-                                        <InputUI value={property.Name} name={`Name${index}`} classDiv={"w-[30%]"} classInput={"w-full"}
-                                        onChangeEvent={onChangePropertyName(index)}></InputUI>
+                                        <InputUI value={property.Name} name={`Name${index}`} classDiv={"w-[29%]"} classInput={"w-full"}
+                                        onChangeEvent={handleChange("name", index)}></InputUI>
+                                        
+                                        <div className='flex justify-center items-center w-[17%]'>
+                                            <CheckboxUI isChecked={property.Only} onChangeEvent={handleChange("only", index)} className='defaultCheckboxInline'></CheckboxUI>
+                                        </div>
 
-                                        <InputUI value={JSON.stringify(property.Value)} name={`Value${index}`} classDiv={"w-[30%]"} classInput={"w-full"} isDisabled={true}></InputUI>
+                                        <InputUI value={JSON.stringify(property.Value)} name={`Value${index}`} classDiv={"w-[23%]"} classInput={"w-full"} isDisabled={true}></InputUI>
 
-                                        <div className='flex flex-row w-[10%] gap-1 -mt-2'>
+                                        <div className='flex flex-row w-[8%] gap-1 -mt-2'>
                                             <Button disabled={isNullOrEmpty(property.Key)} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                 event.preventDefault();
 

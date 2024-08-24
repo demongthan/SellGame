@@ -2,7 +2,7 @@
 
 import React from 'react'
 import CardMenuRecharge from '../../Common/CardMenuRecharge'
-import { menuRechargeAccount, menuRechargeTransaction } from '@/utils/constant/MenuAccount'
+import { menuRechargeAccount, menuRechargeTransaction } from '@/utils/constant/Menu/MenuAccount'
 import { usePathname } from 'next/navigation'
 
 const MenuRecharge = () => {

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import parse from 'html-react-parser';
 import { Squares2X2Icon } from "@heroicons/react/20/solid";
 
-import {menuAdmin, MenuItemAdmin} from "@/utils/constant/MenuAdmin";
+import {menuAdmin, MenuItemAdmin} from "@/utils/constant/Menu/MenuAdmin";
 
 interface Props{
   onClickRoute?: (e: MouseEvent<HTMLElement>) => any | any

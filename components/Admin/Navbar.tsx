@@ -1,7 +1,7 @@
 "use client"
 
 import { AdminContextProps, useAdminState } from '@/AppProvider/AdminProvider';
-import { menuAdmin } from '@/utils/constant/MenuAdmin';
+import { menuAdmin } from '@/utils/constant/Menu/MenuAdmin';
 import { Bars4Icon, BellIcon, InformationCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

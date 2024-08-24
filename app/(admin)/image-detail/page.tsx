@@ -3,6 +3,12 @@
 import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, ImageDetailModalUI, InputUI, LoadingUI, UploadImageForImageDetailModalUI } from '@/components'
 import { adminImageDetailTable } from '@/utils/constant/TitleTable/AdminImageDetailTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
+import { imageDetailApiRequest } from '@/apiRequests/image-detail';
+import { showToast } from '@/utils/showToast';
+import { ImageDetailDto } from '@/apiRequests/DataDomain/ImageDetail/ImageDetailDto';
+import { AdminContextProps, useAdminState } from '@/AppProvider/AdminProvider';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { DecodedToken } from '@/utils/types/DecodedToken';
 
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
@@ -10,23 +16,12 @@ import Image from 'next/image'
 import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
-import { imageDetailApiRequest } from '@/apiRequests/image-detail';
-import { showToast } from '@/utils/showToast';
-import { ImageDetailDto } from '@/apiRequests/DataDomain/ImageDetail/ImageDetailDto';
+import jwt from 'jsonwebtoken';
 
 const ImageDetail = () => {
-    const ref = useRef<HTMLFormElement>(null);
     const [columnsData]=useState<HeaderItem[]>(adminImageDetailTable);
     const [tableData, setTableData]=useState<ImageDetailDto[]>([]);
     const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true"]);
-    const [active, setActive] = useState<boolean>(true);
-    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
-    const [idImageDetail, setIdImageDetail] = useState<string>('');
-    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
-    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
-
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
 
@@ -50,6 +45,19 @@ const ImageDetail = () => {
     } = tableInstance;
     initialState.pageSize = 5;
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
+    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
+    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
+
+    const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true"]);
+    const [idImageDetail, setIdImageDetail] = useState<string>('');
+
+    const [active, setActive] = useState<boolean>(true);
+    const [code, setCode]=useState<string>("");
+
+    const {adminDisplay, setAdmin}=useAdminState() as AdminContextProps;
+
     const openModel=()=>
         setIsOpenModel(!isOpenModel);
 
@@ -61,7 +69,6 @@ const ImageDetail = () => {
 
     const openCreateModal=()=>{
         setIdImageDetail('');
-
         openModel();
     }
     
@@ -70,27 +77,19 @@ const ImageDetail = () => {
         setIsLoading(true);
 
         try{
-            const formData:FormData = new FormData(event.currentTarget);
             let searches:string[]=[];
 
-            if(!isNullOrEmpty(formData.get("Active")?.toString())){
-                searches.push("Active=true");
-            }
-            else{
-                searches.push("Active=false");
-            }
+            searches.push(active?"Active=true":"Active=false");
         
-            if(!isNullOrEmpty(formData.get("Code")?.toString())){
-                searches.push("Code="+formData.get("Code")?.toString());
+            if(!isNullOrEmpty(code)){
+                searches.push("Code="+code);
             }
         
             setSearchConditions(searches);
 
-            await imageDetailApiRequest.getAllImageDetail({search:searches.join('&'), pageNumber:1}).then((res)=>{
+            await imageDetailApiRequest.getAllImageDetail({search:searches.join('&'), pageNumber:1, token:adminDisplay?.token}).then((res)=>{
                 setTableData(res.payload.data.imageDetails);
-                
                 setMetaData(res.payload.data.metaData);
-        
                 setIsLoading(false);
             })
         }
@@ -102,22 +101,44 @@ const ImageDetail = () => {
     }
 
     const getAllImageDetailInit=async ():Promise<void> => {
-        setIsLoading(true);
         try{
-            ref.current?.reset();
-            setActive(true);
-            setSearchConditions(["Active=true"]);
-      
-            await imageDetailApiRequest.getAllImageDetail({search:'Active=true', pageNumber:1}).then((res)=>{
-                setTableData(res.payload.data.imageDetails);
-                
-                setMetaData(res.payload.data.metaData);
-        
-                setIsLoading(false);
-            })
+            let admin:AdminDisplay|null;
+
+            if(!adminDisplay){
+                const response=await fetch('/api/auth/admin',{
+                    method: 'GET'
+                })
+    
+                const res= await response.json();
+    
+                if(res.data){
+                    const jwtData=jwt.decode(res.data, { complete: true })?.payload as DecodedToken;
+                    
+                    admin={
+                        displayName:jwtData.sub,
+                        token:res.data
+                    }
+                }
+                else{
+                    admin=null;
+                }
+
+                setAdmin(admin);
+            }
+            else{
+                admin=adminDisplay;
+            }
+
+            if(admin){
+                const resApi=await imageDetailApiRequest.getAllImageDetail({search:'Active=true', pageNumber:1, token:admin.token});
+
+                setTableData(resApi.payload.data.imageDetails);
+                setMetaData(resApi.payload.data.metaData);
+            }
+
+            setIsLoading(false);
         }catch(error){
             console.log(error);
-    
             setIsLoading(false);
         }
     }
@@ -126,7 +147,7 @@ const ImageDetail = () => {
         setIsLoading(true);
 
         try{
-            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:1}).then((res)=>{
+            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:1, token:adminDisplay?.token}).then((res)=>{
                 setTableData(res.payload.data.imageDetails); 
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -142,7 +163,7 @@ const ImageDetail = () => {
         setIsLoading(true);
         
         try{
-            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:pageNumber}).then((res)=>{
+            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:pageNumber, token:adminDisplay?.token}).then((res)=>{
                 setTableData(res.payload.data.imageDetails); 
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -154,15 +175,43 @@ const ImageDetail = () => {
         }
     }
 
-    const handleChange = ()=> {
-        setActive(!active);
+    const getAllImageDetailInitTotal=async():Promise<void>=>{
+        setIsLoading(true);
+
+        try{
+            setCode("");
+            setActive(true);
+            setSearchConditions([]);
+
+            await imageDetailApiRequest.getAllImageDetail({search:'', pageNumber:1, token:adminDisplay?.token}).then((res)=>{
+                setTableData(res.payload.data.imageDetails); 
+                setMetaData(res.payload.data.metaData);
+                setIsLoading(false);
+            })
+        }
+        catch(error){
+            console.log(error);
+            setIsLoading(false);
+        }
+    }
+
+    const handleChange = (name:string) => (e: any)=> {
+        switch (name) {
+            case "code":
+                setCode(e.target.value);
+                break;
+            case "active":
+                setActive(!active);
+            default:
+                break;
+        }
     }
 
     const deleteImageDetail=async ():Promise<void> => {
         setIsLoading(true);
     
         try{
-            await imageDetailApiRequest.deleteImageDetail(idImageDetail).then((res)=>{
+            await imageDetailApiRequest.deleteImageDetail({id:idImageDetail, token:adminDisplay?.token}).then((res)=>{
                 if(res.payload.data){
                     showToast("success", <p>{res.payload.message.replace("{Item}", "ảnh")}</p>)
                     openDeleteModal()
@@ -190,22 +239,24 @@ const ImageDetail = () => {
         <>
             {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'danh mục'} eventDeleteItem={deleteImageDetail}></DeleteModalUI>)}
 
-            {isOpenImageModel && (<UploadImageForImageDetailModalUI closeModel={openImageModel} idImageDetail={idImageDetail} refreshAllImageDetailUpdate={refreshAllImageDetail}></UploadImageForImageDetailModalUI>)}
+            {isOpenImageModel && (<UploadImageForImageDetailModalUI closeModel={openImageModel} idImageDetail={idImageDetail}
+            refreshAllImageDetailUpdate={refreshAllImageDetail} adminDisplay={adminDisplay}></UploadImageForImageDetailModalUI>)}
 
-            {isOpenModel && (<ImageDetailModalUI closeModal={openModel} idImageDetail={idImageDetail} 
-            refreshAllCategoryCreate={getAllImageDetailInit} refreshAllCategoryUpdate={refreshAllImageDetail}></ImageDetailModalUI>)}
+            {isOpenModel && (<ImageDetailModalUI closeModal={openModel} idImageDetail={idImageDetail}
+            refreshAllCategoryCreate={getAllImageDetailInit} refreshAllCategoryUpdate={refreshAllImageDetail} adminDisplay={adminDisplay}></ImageDetailModalUI>)}
 
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
-                    <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
+                    <form className='flex flex-col gap-5' onSubmit={onSubmit}>
                         <div className='flex flex-row w-full gap-10'>
-                            <InputUI name='Code' isBlockLabel={false} label={"Mã số :"} classDiv={"w-[30%]"} classInput={"w-[80%]"} classLabel={"w-[20%]"}></InputUI>
+                            <InputUI value={code} name='Code' isBlockLabel={false} label={"Mã số :"} classDiv={"w-[30%]"} classInput={"w-[80%]"} classLabel={"w-[20%]"}
+                            onChangeEvent={handleChange("code")}></InputUI>
 
                             <CheckboxUI name='Active' isChecked={active} label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}
-                            onChangeEvent={handleChange}></CheckboxUI>
+                            onChangeEvent={handleChange("active")}></CheckboxUI>
                         </div>
 
-                        <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllImageDetailInit}></ButtonSearchUI>
+                        <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllImageDetailInitTotal}></ButtonSearchUI>
                     </form>
                 </header>
 
@@ -226,7 +277,7 @@ const ImageDetail = () => {
                                                     key={index}
                                                     className="border-b border-gray-200 pr-4 pb-[10px] text-start"
                                                 >
-                                                    <div className="flex w-full justify-between pr-4 text-base tracking-wide text-gray-600">
+                                                    <div className="flex w-full justify-between pr-4 text-sm tracking-wide text-gray-600">
                                                         {column.render("TitleHeader")}
                                                     </div>
                                                 </th>

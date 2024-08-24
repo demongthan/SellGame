@@ -1,5 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server'
 import { cookies } from 'next/headers'
+import { UserRole } from '@/utils/types/UserRole';
 
 export const POST=async (request: NextRequest)=> {
     const body = await request.json();
@@ -7,6 +8,7 @@ export const POST=async (request: NextRequest)=> {
     const accessToken = body.accessToken as string;
     const refreshToken = body.refreshToken as string;
     const expiresAt=body.expiresAt as number;
+    const role=body.role as string;
 
     if (!accessToken) {
       return NextResponse.json(
@@ -15,8 +17,14 @@ export const POST=async (request: NextRequest)=> {
     }
     
     const expiresDate = new Date(expiresAt*1000);
-    cookies().set('AccessToken', accessToken, { httpOnly:true, expires: expiresDate});
-    cookies().set('RefreshToken', refreshToken, { httpOnly:true, expires: expiresDate})
+    if(role==UserRole.User){
+      cookies().set('AccessToken', accessToken, { httpOnly:true, expires: expiresDate});
+      cookies().set('RefreshToken', refreshToken, { httpOnly:true, expires: expiresDate})
+    }
+    else{
+      cookies().set('AdminAccessToken', accessToken, { httpOnly:true, expires: expiresDate});
+      cookies().set('AdminRefreshToken', refreshToken, { httpOnly:true, expires: expiresDate})
+    }
 
     return NextResponse.json({status:200});
 }

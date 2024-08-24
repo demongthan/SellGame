@@ -7,14 +7,16 @@ import Image from 'next/image'
 import { LoadingUI } from '@/components';
 import { categoryApiRequest } from '@/apiRequests/category';
 import { showToast } from '@/utils/showToast';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
 
 interface Props{
     closeModel:()=>void,
     idCategory:string,
     refreshAllCategoryUpdate:()=>Promise<void>,
+    adminDisplay:AdminDisplay | null
 }
 
-const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:Props) => {
+const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate, adminDisplay}:Props) => {
     const [file, setFile] = useState<any>(null);
     const [srcFile, setSrcFile]=useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -30,7 +32,7 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:P
 
   const getUrlFileInit=async ():Promise<void>=>{
     try{
-        await categoryApiRequest.getCategoryById({id:idCategory,fields: "?fields=PathUrl"}).then((res)=>{
+        await categoryApiRequest.getCategoryById({id:idCategory,fields: "?fields=PathUrl", token:adminDisplay?.token}).then((res)=>{
             setSrcFile(res.payload.data.PathUrl);
 
             setIsLoading(false);
@@ -49,7 +51,7 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate}:P
         const formData:FormData = new FormData();
         formData.append("file", file);
 
-        await categoryApiRequest.uploadImageCategory({id:idCategory,body:formData}).then((res)=>{
+        await categoryApiRequest.uploadImageCategory({id:idCategory,body:formData, token:adminDisplay?.token}).then((res)=>{
             if(res.payload.data){
                 showToast("success", <p>{res.payload.message}</p>)
 

@@ -32,13 +32,11 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
 
     const onChangePropertyValue=(index:number)=> (e: any)=>{
         propertyValues[index].Name=e.target.value;
-
         setPropertyValues([...propertyValues]);
     }
 
     const eventButtonAddItem=()=>{
         addProperty(indexProperty, propertyValues.filter(_=>!isNullOrEmpty(_.Name)));
-
         closeModel();
     }
 
@@ -49,7 +47,7 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
             <div className="relative bg-white rounded-lg shadow">
                 <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        Thuộc tính
+                        Giá trị
                     </h3>
                     <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                     w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
@@ -91,7 +89,7 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
                     </div>
 
                     <div className='mt-6'>
-                        <ButtonAddItemUI isDisabled={propertyValues.length==0} titleButton={'Thêm danh sách'} eventButtonClicked={ eventButtonAddItem}></ButtonAddItemUI>
+                        <ButtonAddItemUI isDisabled={propertyValues.length==0} titleButton={'Thêm giá trị'} eventButtonClicked={ eventButtonAddItem}></ButtonAddItemUI>
                     </div>
                 </div>
             </div>

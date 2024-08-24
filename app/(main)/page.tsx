@@ -10,7 +10,7 @@ export default function Home() {
             <ContentBannerSlide className={"w-full h-full"}></ContentBannerSlide>
           </div>
 
-          <div className="w-full h-[20rem]">
+          <div className="w-full h-[22rem]">
             <OutstandingService></OutstandingService>
           </div>
 

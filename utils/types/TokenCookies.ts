@@ -1,5 +1,6 @@
-interface TokenCookies{
+export interface TokenCookies{
     accessToken: string, 
     expiresAt: number |undefined,
-    refreshToken: string
+    refreshToken: string,
+    role:string | undefined
 }

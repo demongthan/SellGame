@@ -3,34 +3,40 @@
 import { ButtonUpdateItemUI, CheckboxUI, LoadingUI, SelectUI } from '@/components'
 import ButtonAddItemUI from '@/components/Common/UI/Button/ButtonAddItemUI'
 import InputUI from '@/components/Common/UI/InputUI'
-import { Button } from '@headlessui/react'
-import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
-import React, { FormEvent, useEffect, useState } from 'react'
-import PropertiesModalUI from '../PropertiesModalUI'
+import PropertiesModalUI from './PropertiesModalUI'
 import { categoryApiRequest } from '@/apiRequests/category'
 import { showToast } from '@/utils/showToast'
 import { isNullOrEmpty } from '@/utils/utils'
+import { AdminDisplay } from '@/utils/types/AdminDisplay'
+
+import { Button } from '@headlessui/react'
+import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import React, { FormEvent, useEffect, useState } from 'react'
 
 interface Props{
     refreshAllCategoryCreate:()=>Promise<void>,
     refreshAllCategoryUpdate:()=>Promise<void>,
     closeModel:()=>void,
-    idCategory:string
+    idCategory:string,
+    adminDisplay:AdminDisplay | null
 }
 
-const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCategoryUpdate, idCategory}:Props) => {
+const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCategoryUpdate, idCategory, adminDisplay}:Props) => {
     const [isOpenPropertiesModal, setIsOpenPropertiesModal]=useState<boolean>(false);
-    const [errArr, setErrArr]=useState<ErrorValidate[]>();
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
-    const isCreate=isNullOrEmpty(idCategory);
     const [isChangeData, setIsChangeData] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    const [errArr, setErrArr]=useState<ErrorValidate[]>();
+    const isCreate=isNullOrEmpty(idCategory);
 
     const [name, setName]=useState<string>("");
     const [propertiesJson,setPropertiesJson]=useState<string>("[]");
     const [description, setDescription] = useState<string | undefined>("");
-    const [active, setActive] = useState<boolean>(true)
+    const [active, setActive] = useState<boolean>(true);
 
+    const openModel=()=>
+        setIsOpenPropertiesModal(!isOpenPropertiesModal);
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
@@ -50,11 +56,10 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
     
             if(data.isSuccess){
                 if(isCreate){
-                    const result = await categoryApiRequest.createCategory(data.data);
+                    const result = await categoryApiRequest.createCategory({body:data.data, token:adminDisplay?.token});
 
                     if(result.payload.data){
-                        showToast("success", <p>{result.payload.message}</p>);
-
+                        showToast("success", <p>{result.payload.message.replace("{Item}", "danh mục game")}</p>);
                         refreshAllCategoryCreate()
                     }
                     else{
@@ -62,11 +67,10 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                     }
                 }
                 else{
-                    const result = await categoryApiRequest.updateCategory({body:data.data, id:idCategory});
+                    const result = await categoryApiRequest.updateCategory({body:data.data, id:idCategory, token:adminDisplay?.token});
 
                     if(result.payload.data){
-                        showToast("success", <p>{result.payload.message}</p>);
-
+                        showToast("success", <p>{result.payload.message.replace("{Item}", "danh mục game")}</p>);
                         refreshAllCategoryUpdate();
                     }
                     else{
@@ -79,10 +83,8 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                     for:item.for,
                     message: item.message
                 }))
-        
                 setErrArr(errorArr);
             }
-
             setIsLoadingPopup(false);
         }
         catch(error){
@@ -92,19 +94,13 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
         }
     }
 
-    const openModel=()=>
-        setIsOpenPropertiesModal(!isOpenPropertiesModal);
-
     const getCategoryInit=async ():Promise<void>=>{
         try{
-            await categoryApiRequest.getCategoryById({id:idCategory,fields: "?fields=Name%2CDescription%2CActive%2CProperties"}).then((res)=>{
+            await categoryApiRequest.getCategoryById({id:idCategory,fields: "?fields=Name%2CDescription%2CActive%2CProperties", token:adminDisplay?.token}).then((res)=>{
                 if(res.payload.data){
                     setActive(res.payload.data.Active)
-
                     setPropertiesJson(res.payload.data.Properties?res.payload.data.Properties:"[]")
-
                     setDescription(res.payload.data.Description)
-
                     setName(res.payload.data.Name);
                 }
 
@@ -113,9 +109,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
         }
         catch(error){
             console.log(error);
-
             showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
-
             setIsLoading(false);
         }
     }
@@ -164,7 +158,6 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                             <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                             w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                 event.preventDefault();
-                                
                                 closeModel();
                             }}>
                                 <XMarkIcon className="w-6 h-6"></XMarkIcon>
@@ -186,11 +179,6 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                                     onChangeEvent={handleChange("name")}
                                     errArr={errArr?.filter((error)=>error.for==="name")} ></InputUI>
                                 </div>
-
-                                {isCreate && (<div className="col-span-2">
-                                    <InputUI name='Code' label={"Mã số :"} classDiv={"w-full"} classInput={"w-full"}
-                                    errArr={errArr?.filter((error)=>error.for==="code")} ></InputUI>
-                                </div>)}
 
                                 <div className="col-span-2">
                                     <InputUI name='Description' label={"Mô tả :"} classDiv={"w-full"} classInput={"w-full"}
