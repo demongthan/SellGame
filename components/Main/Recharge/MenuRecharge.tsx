@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import CardMenuRecharge from '../../Common/CardMenuRecharge'
+import CardMenuRecharge from '../CardMenuRecharge'
 import { menuRechargeAccount, menuRechargeTransaction } from '@/utils/constant/Menu/MenuAccount'
 import { usePathname } from 'next/navigation'
 

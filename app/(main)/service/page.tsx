@@ -3,7 +3,7 @@
 import { ServiceDetailDto } from '@/apiRequests/DataDomain/ServiceDetail/ServiceDetailDto';
 import { serviceDetailApiRequest } from '@/apiRequests/service-detail';
 import { LoadingUI } from '@/components'
-import CardGame from '@/components/Common/CardGame'
+import CardGame from '@/components/Main/CardGame'
 import React, { useEffect, useState } from 'react'
 
 const Service = () => {

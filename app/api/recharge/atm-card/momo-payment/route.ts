@@ -10,15 +10,15 @@ export const POST=async (request: any)=> {
     const { amount, code, bankCodeName, bankSubAccId, bankName } = await request.json();
 
     try{
-        const response = await axios.get(`${envConfig.NEXT_PUBLIC_WEB2M_ATM_URL}/${envConfig.NEXT_PUBLIC_WEB2M_ATM_PASSWORD}/${envConfig.NEXT_PUBLIC_WEB2M_ATM_ACCOUNT_NUMBER}/${envConfig.NEXT_PUBLIC_WEB2M_ATM_TOKEN}`, {
+        const response = await axios.get(`${envConfig.NEXT_PUBLIC_WEB2M_MOMO_URL}/${envConfig.NEXT_PUBLIC_WEB2M_MOMO_TOKEN}`, {
             headers: {
                 'Content-Type': 'application/json',
             },
         });
 
         if(response.status==200){
-            const records:any=response.data.data;
-            const index:number=response.data.data.findIndex((_:any)=>_.creditAmount==amount && _.addDescription.includes(code));
+            const records:any=response.data.momoMsg.tranList;
+            const index:number=response.data.momoMsg.tranList.findIndex((_:any)=>_.amount==amount && _.comment.includes(code));
 
             if(index>-1){
                 const record:any=records[index];
@@ -31,11 +31,11 @@ export const POST=async (request: any)=> {
                     BankCodeName: bankCodeName,
                     BankName:bankName,
                     BankSubAccId: bankSubAccId,
-                    WhenTransaction: convertStringToDate(record.transactionDate),
-                    TransactionID:record.refNo,
-                    FromBankCodeName:record.benAccountName,
-                    FromBankName:record.bankName,
-                    FromBankSubAccId:record.benAccountNo
+                    WhenTransaction: new Date(),
+                    TransactionID:record.ID,
+                    FromBankCodeName:record.partnerCode,
+                    FromBankName:record.partnerName,
+                    FromBankSubAccId:record.partnerId
                 }
                 return NextResponse.json(
                     {isSuccess:true, data:dataReturn, data1:records[index], index, data2:records}

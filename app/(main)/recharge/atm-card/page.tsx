@@ -33,29 +33,10 @@ const ATMCard = () => {
         router.push(`/recharge/atm-card/atm-payment?amount=${amount}`);
     }
 
-    const processMOMOPayment=async (): Promise<void>=>{
-        try{
-            const res = await fetch('/api/recharge/atm-card', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({amount:amount}),
-            });
-
-            const data = await res.json();
-            
-            console.log(data.payUrl);
-        }
-        catch(error){
-            console.log(error);
-        }
-    }
-
     const eventButtonMOMOClicked=(event: React.MouseEvent<HTMLButtonElement>)=>{
         event.preventDefault();
-        processMOMOPayment();
-    } 
+        router.push(`/recharge/atm-card/momo-payment?amount=${amount}`);
+    }
 
   return (
     <>

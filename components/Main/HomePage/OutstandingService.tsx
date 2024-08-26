@@ -6,8 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { authApiRequest } from '@/apiRequests/auth'
 import LoadingUI from '@/components/Common/LoadingUI'
-import TitleService from '@/components/Common/TitleService'
 import { menuOutstandingService } from '@/utils/constant/Menu/MenuOutstandingService'
+import TitleService from '../TitleService'
 
 const OutstandingService = () => {
     const [urlImgs, setUrlImgs] = useState<string[]>([]);

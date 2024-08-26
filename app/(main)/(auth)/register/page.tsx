@@ -113,7 +113,7 @@ const Register = () => {
 
                     const userDisplay:UserDisplay={
                         displayName:jwtData.sub,
-                        id:jwtData.Id,
+                        id:jwtData.jti,
                         role:jwtData.role,
                         token:result.payload.data.Token
                     }

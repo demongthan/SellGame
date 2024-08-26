@@ -3,11 +3,10 @@
 import React, { useEffect, useState } from 'react'
 
 import { categoryApiRequest } from '@/apiRequests/category'
-import { CategoryType } from '@/utils/types/CategoryType'
 import LoadingUI from '@/components/Common/LoadingUI'
-import CardGame from '@/components/Common/CardGame'
-import TitleService from '@/components/Common/TitleService'
+import CardGame from '@/components/Main/CardGame'
 import { CategoryDto } from '@/apiRequests/DataDomain/Category/CategoryDto'
+import TitleService from '../TitleService'
 
 const GameCategory = () => {
     const [games, setGames]=useState<CategoryDto[] |null>(null);

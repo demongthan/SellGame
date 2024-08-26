@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import RatingDisplay from './RatingDisplay';
+import RatingDisplay from '../Common/RatingDisplay';
 
 interface Props{
     isHot?:boolean,

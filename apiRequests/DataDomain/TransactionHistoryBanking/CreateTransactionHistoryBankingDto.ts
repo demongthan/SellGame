@@ -7,7 +7,11 @@ export interface CreateTransactionHistoryBankingDto{
     Type:TransactionBankingType,
     Amount:number,
     BankCodeName:string,
+    BankName?:string,
     BankSubAccId:string,
     WhenTransaction?:Date,
-    TransactionID?:string
+    TransactionID?:string,
+    FromBankCodeName?:string,
+    FromBankName?:string,
+    FromBankSubAccId?:string
 }

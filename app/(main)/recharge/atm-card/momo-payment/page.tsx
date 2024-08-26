@@ -1,28 +1,26 @@
 "use client"
 
-import { CountdownTimer, TitleRecharge } from '@/components'
-import LoadingUI from '@/components/Common/LoadingUI';
-import { Button } from '@headlessui/react';
+import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
+import { ButtonV2UI, CountdownTimer, LoadingUI, TitleRecharge } from '@/components'
+import { generateRandomUppercaseString } from '@/utils/utils';
+import moment from 'moment';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import ButtonV2UI from '@/components/Common/UI/Button/ButtonV2UI';
-import { useRouter, useSearchParams } from 'next/navigation';
-import moment from 'moment';
-import { generateRandomUppercaseString } from '@/utils/utils';
-import { showToast } from '@/utils/showToast';
-import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
+import { Button } from '@headlessui/react';
 import { transactionHistoryBakingApiRequest } from '@/apiRequests/transaction-history-banking';
 import { TransactionStatus } from '@/utils/constant/Transaction/TransactionStatus';
+import { showToast } from '@/utils/showToast';
 
-const ATMPayment = () => {
+const MoMoPayment = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const router = useRouter();
     const params = useSearchParams();
     const date = moment(new Date()).format('YYYYMMDDHHmm');
 
     const amount:any= params.get("amount"); 
-    const [code] =useState<string>(`ATMR${generateRandomUppercaseString(5)}${date}`);
-    const [linkQRCode] =useState<string>(`https://img.vietqr.io/image/MB-0399161228-compact.jpg?amount=${amount}&addInfo=${code}&accountName=${"NGUYEN VAN NAM"}`);
+    const [code] =useState<string>(`MOMOR${generateRandomUppercaseString(5)}${date}`);
+    const [linkQRCode] =useState<string>(`https://res.cloudinary.com/namnv57fpt/image/upload/v1724666043/EndSars/NamNV57/fbr115shuwsjrvb1xdg4.jpg`);
     
     const { userDisplay, setUser } = useGlobalState() as GlobalContextProps;
 
@@ -31,12 +29,12 @@ const ATMPayment = () => {
             const dataRequest:any={
                 amount:amount, 
                 code:code, 
-                bankCodeName:"MBBank", 
+                bankCodeName:"MOMO_NGUYEN VAN NAM", 
                 bankSubAccId:"0399161228",
-                bankName:"Ngân hàng Quân đội nhân dân"
+                bankName:"BVBank – Ngân hàng TMCP Bản Việt"
             }
 
-            const response = await fetch('/api/recharge/atm-card/atm-payment', {
+            const response = await fetch('/api/recharge/atm-card/momo-payment', {
                 method: 'POST',
                 body: JSON.stringify(dataRequest),
             })
@@ -65,12 +63,13 @@ const ATMPayment = () => {
         }
     }
 
+
     useEffect(() => {
         let timeoutId=setTimeout(()=>{
             setIsLoading(false);
         }, 500)
 
-        const intervalId = setInterval(processPayment, 3000);
+        const intervalId = setInterval(()=>{console.log("1111")}, 3000);
 
         return () => {
             clearTimeout(timeoutId);
@@ -80,28 +79,20 @@ const ATMPayment = () => {
 
     return (
         <div className='flex flex-col gap-10 h-full'>
-            <TitleRecharge title={'Nạp tiền từ ATM'}></TitleRecharge>
+            <TitleRecharge title={'Nạp tiền từ MOMO'}></TitleRecharge>
 
             {isLoading?(<LoadingUI></LoadingUI>):(
                 <form className="flex flex-row w-full gap-10 font-base">
                     <div className='flex flex-col gap-3 w-1/2'>
                         <CountdownTimer time={180} eventEndOfTime={()=>{router.push("/recharge/atm-card")} }></CountdownTimer>
 
-                        <div className='flex flex-row border-b border-gray-200 pb-2'>
-                            <Image alt='' src={"https://api.vietqr.io/img/MB.png"} width={0} height={0} sizes="100vw" style={{ width: '30%', height: '100%' }}></Image>
-                            <div>
-                                <span className='block font-semibold text-gray-500'>Ngân hàng</span>
-                                <span className='font-bold'>Ngân hàng TMCP Quân đội</span>
-                            </div>
-                        </div>
-
                         <div className='border-b border-gray-200 pb-2'>
-                            <span className='block font-semibold text-gray-500'>Tên tài khoản</span>
+                            <span className='block font-semibold text-gray-500'>Chủ tài khoản</span>
                             <span className='font-bold'>NGUYEN VAN NAM</span>
                         </div>
 
                         <div className='border-b border-gray-200 pb-2'>
-                            <span className='font-semibold text-gray-500'>Số tài khoản</span>
+                            <span className='font-semibold text-gray-500'>Số MoMo</span>
                             <div className='flex flex-row gap-2'>
                                 <span className='font-bold w-4/5'>0399161228</span>
                                 <Button className={`rounded-md w-1/5 px-3 py-1 -mt-2 border border-transparent font-semibold text-white bg-s2cyan1 hover:bg-blue-600 focus:outline-none 
@@ -138,7 +129,7 @@ const ATMPayment = () => {
                         </div>
                     </div>
 
-                    <div className='w-1/2 h-4/5 -mt-12'>
+                    <div className='w-1/2 h-full -mt-12'>
                         <Image alt='' src={linkQRCode} 
                         width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
                     </div>
@@ -148,4 +139,4 @@ const ATMPayment = () => {
     )
 }
 
-export default ATMPayment
+export default MoMoPayment

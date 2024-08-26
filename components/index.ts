@@ -5,18 +5,18 @@ import OutstandingService from "./Main/HomePage/OutstandingService";
 import GameCategory from "./Main/HomePage/GameCategory";
 import GameService from "./Main/HomePage/GameService";
 import MenuRecharge from "./Main/Recharge/MenuRecharge";
-import TitleRecharge from "./Common/TitleRecharge";
+import TitleRecharge from "./Main/TitleRecharge";
 import TableShowData from "./Common/TableShowData";
 import SelectUI from "./Common/UI/SelectUI";
 import InputUI from "./Common/UI/InputUI";
 import FromToDateUI from "./Common/UI/FromToDateUI";
 import ButtonSearchUI from "./Common/UI/Button/ButtonSearchUI";
 import ButtonV1UI from "./Common/UI/Button/ButtonV1";
-import BreadCrumb from "./Common/BreadCrumb";
-import TitleService from "./Common/TitleService";
+import BreadCrumb from "./Main/BreadCrumb";
+import TitleService from "./Main/TitleService";
 import ToastProvider from "./Common/ToastProvider";
 import LoadingUI from "./Common/LoadingUI";
-import CardGameDetail from "./Common/CardGameDetail";
+import CardGameDetail from "./Main/CardGameDetail";
 import DefaultPagination from "./Common/DefaultPagination";
 import { ProductImage } from "./Main/ImageGallery/ProductImage";
 import { CarouselThumbs } from "./Main/ImageGallery/CarouselThumbs";
@@ -42,8 +42,9 @@ import PropertyServiceDetailModalUI from "./Admin/Modal/ServiceDetail/PropertySe
 import SelectCoefficientModalUI from "./Admin/Modal/ServiceDetail/SelectCoefficientModalUI";
 import SelectPriceModalUI from "./Admin/Modal/ServiceDetail/SelectPriceModalUI";
 import UploadImageForServiceDetailModalUI from "./Admin/Modal/ServiceDetail/UploadImageForServiceDetailModalUI";
-import CardGame from "./Common/CardGame";
+import CardGame from "./Main/CardGame";
 import ButtonV2UI from "./Common/UI/Button/ButtonV2UI";
+import CountdownTimer from "./Main/CountdownTimer";
 
 export{
     Header,
@@ -92,4 +93,5 @@ export{
     UploadImageForServiceDetailModalUI,
     CardGame,
     ButtonV2UI,
+    CountdownTimer
 }

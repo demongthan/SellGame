@@ -3,7 +3,7 @@
 import { categoryApiRequest } from '@/apiRequests/category';
 import { CategoryDto } from '@/apiRequests/DataDomain/Category/CategoryDto';
 import { LoadingUI } from '@/components';
-import CardGame from '@/components/Common/CardGame'
+import CardGame from '@/components/Main/CardGame'
 import { CategoryType } from '@/utils/types/CategoryType';
 
 import React, { useEffect, useState } from 'react'

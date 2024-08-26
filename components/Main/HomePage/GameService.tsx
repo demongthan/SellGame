@@ -2,12 +2,11 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { CategoryType } from '@/utils/types/CategoryType';
 import LoadingUI from '@/components/Common/LoadingUI';
-import CardGame from '@/components/Common/CardGame';
-import TitleService from '@/components/Common/TitleService';
+import CardGame from '@/components/Main/CardGame';
 import { ServiceDetailDto } from '@/apiRequests/DataDomain/ServiceDetail/ServiceDetailDto';
 import { serviceDetailApiRequest } from '@/apiRequests/service-detail';
+import TitleService from '../TitleService';
 
 const GameService = () => {
     const [services, setServices]=useState<ServiceDetailDto[]>([]);
