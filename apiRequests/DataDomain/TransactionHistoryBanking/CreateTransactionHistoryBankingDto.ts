@@ -9,9 +9,5 @@ export interface CreateTransactionHistoryBankingDto{
     BankCodeName:string,
     BankSubAccId:string,
     WhenTransaction?:Date,
-    CorresponsiveName?:string,
-    CorresponsiveAccount?:string,
-    CorresponsiveBankId?:string,
-    CorresponsiveBankName?:string,
-    CorresponsiveId?:string,
+    TransactionID?:string
 }

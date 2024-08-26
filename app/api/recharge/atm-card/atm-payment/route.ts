@@ -19,8 +19,8 @@ export const POST=async (request: any)=> {
         });
 
         if(response.status==200){
-            const records:any=response.data.data.records;
-            const index:number=response.data.data.records.findIndex((_:any)=>_.amount==amount && _.description.includes(code));
+            const records:any=response.data.transactions;
+            const index:number=records.findIndex((_:any)=>_.amount==amount && _.description.includes(code));
 
             if(index>-1){
                 const record:any=records[index];
@@ -32,12 +32,8 @@ export const POST=async (request: any)=> {
                     Amount: amount,
                     BankCodeName: bankCodeName,
                     BankSubAccId: bankSubAccId,
-                    WhenTransaction: record.when,
-                    CorresponsiveName: record.corresponsiveName,
-                    CorresponsiveAccount: record.corresponsiveAccount,
-                    CorresponsiveBankId: record.corresponsiveBankId,
-                    CorresponsiveBankName: record.corresponsiveBankName,
-                    CorresponsiveId: record.accountId.toString(),
+                    WhenTransaction: record.transactionDate,
+                    TransactionID:record.transactionID
                 }
                 return NextResponse.json(
                     {isSuccess:true, data:dataReturn, data1:records[index], index, data2:records}
