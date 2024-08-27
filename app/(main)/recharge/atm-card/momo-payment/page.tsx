@@ -69,7 +69,7 @@ const MoMoPayment = () => {
             setIsLoading(false);
         }, 500)
 
-        const intervalId = setInterval(()=>{console.log("1111")}, 3000);
+        const intervalId = setInterval(processPayment, 3000);
 
         return () => {
             clearTimeout(timeoutId);

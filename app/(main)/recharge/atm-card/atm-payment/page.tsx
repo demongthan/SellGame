@@ -70,7 +70,7 @@ const ATMPayment = () => {
             setIsLoading(false);
         }, 500)
 
-        const intervalId = setInterval(processPayment, 3000);
+        const intervalId = setInterval(processPayment, 1000);
 
         return () => {
             clearTimeout(timeoutId);
