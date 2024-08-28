@@ -1,6 +1,7 @@
 "use client"
 
 import { ButtonAddItemUI, InputUI, LoadingUI, SelectPropertyValueModalUI } from '@/components'
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
 import { PropertiesItemJson } from '@/utils/types/PropertiesJson';
 import { Button } from '@headlessui/react';
 import { MinusCircleIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
@@ -10,10 +11,11 @@ interface Props {
     closeModel: () => void;
     propertyValueJson:string;
     idCategory:string;
-    setPropertyValueJson:(propertyValues:string)=>void
+    setPropertyValueJson:(propertyValues:string)=>void,
+    adminDisplay:AdminDisplay | null
 }
 
-const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPropertyValueJson}:Props) => {
+const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPropertyValueJson, adminDisplay}:Props) => {
     const [propertyValues, setPropertyValues]=useState<PropertiesItemJson[]>(JSON.parse(propertyValueJson));
     const [isOpenPropertyValueModal, setIsOpenPropertyValueModal]=useState<boolean>(false);
     const [isChangeData, setIsChangeData]=useState<boolean>(false);
@@ -45,8 +47,8 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
     
     return (
         <>
-            {isOpenPropertyValueModal && (<SelectPropertyValueModalUI closeModel={openModal} idCategory={idCategory} 
-            addPropertyValue={addPropertyValue} propertyValues={propertyValues}></SelectPropertyValueModalUI>)}
+            {isOpenPropertyValueModal && (<SelectPropertyValueModalUI closeModel={openModal} idCategory={idCategory}
+            addPropertyValue={addPropertyValue} propertyValues={propertyValues} adminDisplay={adminDisplay}></SelectPropertyValueModalUI>)}
 
             <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[100] justify-center bg-model
             items-center w-full md:inset-0 h-full max-h-full">
@@ -59,7 +61,6 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
                             <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                             w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                 event.preventDefault();
-                                
                                 closeModel();
                             }}>
                                 <XMarkIcon className="w-6 h-6"></XMarkIcon>

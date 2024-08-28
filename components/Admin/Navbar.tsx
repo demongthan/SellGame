@@ -127,7 +127,7 @@ const NavbarAdmin = () => {
           animation="origin-[75%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
         >
           <div className="flex w-[350px] flex-col gap-2 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500">
-            <div className="mb-2 aspect-video w-full rounded-lg bg-cover bg-no-repeat bg-[url('/img/layout/Navbar.png')]" />
+            <div className="mb-2 aspect-video w-full rounded-lg bg-cover bg-no-repeat" />
               <Link target="blank" href="https://horizon-ui.com/pro?ref=live-free-tailwind-react"
                 className="px-full linear flex cursor-pointer items-center justify-center rounded-xl bg-brand-500 py-[11px] font-bold 
                 text-white transition duration-200 active:bg-brand-700"

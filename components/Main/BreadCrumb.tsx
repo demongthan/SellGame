@@ -13,8 +13,6 @@ const BreadCrumb = () => {
     const pathTitles:any= params.get("title")?.split(',');
     const pathIds:any= params.get("id")?.split(',');
 
-    console.log(pathNames, params.get("title"), params.get("id"))
-
   return (
     <nav className="flex px-5 py-3 text-gray-700 border border-gray-200 rounded-lg bg-gray-50" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">

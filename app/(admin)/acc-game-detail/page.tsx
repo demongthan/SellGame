@@ -2,35 +2,26 @@
 
 import { AccGameDetailModalUI, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
-import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
-import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
-import Image from 'next/image'
 import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
-import { Button } from '@headlessui/react';
-import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 import { showToast } from '@/utils/showToast';
 import { ItemSelect } from '@/utils/types/SelectItem';
+import { AdminContextProps, useAdminState } from '@/AppProvider/AdminProvider';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { DecodedToken } from '@/utils/types/DecodedToken';
+
+import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
+import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
+import Image from 'next/image'
+import { Button } from '@headlessui/react';
+import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
+import jwt from 'jsonwebtoken';
 
 const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);
-    const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
     const [columnsData]=useState<HeaderItem[]>(adminAccGameDetailTable);
     const [tableData, setTableData]=useState<AccGameDetailDto[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [searchConditions, setSearchConditions]=useState<string[]>([]);
-    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
-    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
-    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
-
-    const [active, setActive] = useState<boolean>(true);
-    const [category, setCategory]=useState<any>({Name:"", Value:""});
-    const [categorySearch, setCategorySearch]=useState<ItemSelect[]>([]);
-    const [code, setCode]=useState<string>();
-    const [idAccGameDetail, setIdAccGameDetail]=useState<string>("");
-    
-
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
 
@@ -54,6 +45,22 @@ const AccGameDetail = () => {
     } = tableInstance;
     initialState.pageSize = 5;
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
+    const [isOpenImageModel, setIsOpenImageModel] = useState<boolean>(false);
+    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
+
+    const [active, setActive] = useState<boolean>(true);
+    const [category, setCategory]=useState<any>({Name:"", Value:""});
+    const [categorySearch, setCategorySearch]=useState<ItemSelect[]>([]);
+    const [code, setCode]=useState<string>();
+
+    const [idAccGameDetail, setIdAccGameDetail]=useState<string>("");
+    const [searchConditions, setSearchConditions]=useState<string[]>([]);
+    const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
+
+    const {adminDisplay, setAdmin}=useAdminState() as AdminContextProps;
+
     const openModal=()=>
         setIsOpenModel(!isOpenModel);
 
@@ -73,18 +80,12 @@ const AccGameDetail = () => {
         setIsLoading(true);
 
         try{
-            const formData:FormData = new FormData(event.currentTarget);
             let searches:string[]=[];
 
-            if(!isNullOrEmpty(formData.get("Active")?.toString())){
-                searches.push("Active=true");
-            }
-            else{
-                searches.push("Active=false");
-            }
+            searches.push(active?"Active=true":"Active=false");
 
-            if(!isNullOrEmpty(formData.get("Code")?.toString())){
-                searches.push("Code="+formData.get("Code")?.toString());
+            if(!isNullOrEmpty(code)){
+                searches.push("Code="+code);
             }
 
             setSearchConditions(searches);
@@ -176,21 +177,52 @@ const AccGameDetail = () => {
 
     const getAllAccGameDetailInit=async ():Promise<void>=>{
         try{
-            await accGameDetailApiRequest.getAllAccGameDetailForAdminInit().then((res)=>{
-                setTableData(res.payload.data.accGameDetails);
-                setMetaData(res.payload.data.metaData);
-
-                const itemSelects:ItemSelect[]=res.payload.data.selectSearchItems.map(({...item})=>({
-                    Name:item.name,
-                    Value:item.value
-                }))
-                setCategorySearch(itemSelects);
-                setCategory(itemSelects?itemSelects[0]:{Name:"", Value:""});
-
+            let admin:AdminDisplay|null;
+      
+            if(!adminDisplay){
+                const response=await fetch('/api/auth/admin',{
+                    method: 'GET'
+                })
+      
+                const res= await response.json();
+      
+                if(res.data){
+                    const jwtData=jwt.decode(res.data, { complete: true })?.payload as DecodedToken;
+                  
+                    admin={
+                        displayName:jwtData.sub,
+                        token:res.data
+                    }
+                }
+                else{
+                    admin=null;
+                }
+      
+                setAdmin(admin);
+            }
+            else{
+              admin=adminDisplay;
+            }
+      
+            if(admin){
+                await accGameDetailApiRequest.getAllAccGameDetailForAdminInit(adminDisplay?.token).then((res)=>{
+                    setTableData(res.payload.data.accGameDetails);
+                    setMetaData(res.payload.data.metaData);
+    
+                    const itemSelects:ItemSelect[]=res.payload.data.selectSearchItems.map(({...item})=>({
+                        Name:item.name,
+                        Value:item.value
+                    }))
+                    setCategorySearch(itemSelects);
+                    setCategory(itemSelects?itemSelects[0]:{Name:"", Value:""});
+    
+                    setIsLoading(false);
+                })
+            }
+            else{
                 setIsLoading(false);
-            })
-        }
-        catch(error){
+            }
+        }catch(error){
             console.log(error);
             setIsLoading(false);
         }
@@ -200,7 +232,7 @@ const AccGameDetail = () => {
         setIsLoading(true);
     
         try{
-            await accGameDetailApiRequest.deleteAccGameDetail(idAccGameDetail).then((res)=>{
+            await accGameDetailApiRequest.deleteAccGameDetail({id:idAccGameDetail, token:adminDisplay?.token}).then((res)=>{
                 if(res.payload.data){
                     showToast("success", <p>{res.payload.message.replace("{Item}", "ảnh")}</p>)
                     openDeleteModal()
@@ -228,12 +260,12 @@ const AccGameDetail = () => {
     return (
         <>
             {isOpenModel && (<AccGameDetailModalUI closeModal={openModal} idAccGameDetail={idAccGameDetail} idCategory={category.Value}
-            refreshAllAccGameDetailCreate={getAllAccGameDetail} refreshAllAccGameDetailUpdate={refreshAllAccGameDetail}></AccGameDetailModalUI>)}
+            refreshAllAccGameDetailCreate={getAllAccGameDetail} refreshAllAccGameDetailUpdate={refreshAllAccGameDetail} adminDisplay={adminDisplay}></AccGameDetailModalUI>)}
 
             {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'tài khoản game'} eventDeleteItem={deleteAccGameDetail}></DeleteModalUI>)}
 
-            {isOpenImageModel && (<UploadImageForAccGameDetailModalUI closeModel={openImageModel} idAccGameDetail={idAccGameDetail} 
-            refreshAllAccGameDetailUpdate={refreshAllAccGameDetail}></UploadImageForAccGameDetailModalUI>)}
+            {isOpenImageModel && (<UploadImageForAccGameDetailModalUI closeModel={openImageModel} idAccGameDetail={idAccGameDetail}
+            refreshAllAccGameDetailUpdate={refreshAllAccGameDetail} adminDisplay={adminDisplay}></UploadImageForAccGameDetailModalUI>)}
 
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">
@@ -269,7 +301,7 @@ const AccGameDetail = () => {
                                                     key={index}
                                                     className="border-b border-gray-200 pr-4 pb-[10px] text-start"
                                                 >
-                                                    <div className="flex w-full justify-between pr-4 text-base tracking-wide text-gray-600">
+                                                    <div className="flex w-full justify-between pr-4 text-sm tracking-wide text-gray-600">
                                                         {column.render("TitleHeader")}
                                                     </div>
                                                 </th>

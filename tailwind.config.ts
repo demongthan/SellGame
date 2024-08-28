@@ -157,6 +157,7 @@ const config: Config = {
         s2yellow1:"#f1c40f",
         s2cyan1:"#32c5d2",
         s2cyan2:"#d1ecf1",
+        s2cyan3: "rgba(209,239,241, 0.7)",
         s2gray1:"#ccc",
         s2gray2:"#ced4da",
         s2gray7:"rgba(95,96,96, 0.2)",

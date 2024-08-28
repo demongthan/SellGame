@@ -33,8 +33,8 @@ import DeleteModalUI from "./Admin/Modal/DeleteModalUI";
 import ImageDetailModalUI from "./Admin/Modal/ImageDetail/ImageDetailModalUI";
 import UploadImageForImageDetailModalUI from "./Admin/Modal/ImageDetail/UploadImageForImageDetailModalUI";
 import AccGameDetailModalUI from "./Admin/Modal/AccGameDetail/AccGameDetailModalUI";
-import SelectPropertyValueModalUI from "./Admin/Modal/SelectPropertyValueModalUI";
-import SelectPropertyModalUI from "./Admin/Modal/SelectPropertyModalUI";
+import SelectPropertyValueModalUI from "./Admin/Modal/AccGameDetail/SelectPropertyValueModalUI";
+import SelectPropertyModalUI from "./Admin/Modal/AccGameDetail/SelectPropertyModalUI";
 import UploadImageForAccGameDetailModalUI from "./Admin/Modal/AccGameDetail/UploadImageForAccGameDetailModalUI";
 import MethodCalculateDisplay from "./Admin/MethodCalculateDisplay";
 import ServiceDetailModalUI from "./Admin/Modal/ServiceDetail/ServiceDetailModalUI";
@@ -45,6 +45,7 @@ import UploadImageForServiceDetailModalUI from "./Admin/Modal/ServiceDetail/Uplo
 import CardGame from "./Main/CardGame";
 import ButtonV2UI from "./Common/UI/Button/ButtonV2UI";
 import CountdownTimer from "./Main/CountdownTimer";
+import DescriptionDisplay from "./Main/DescriptionDisplay";
 
 export{
     Header,
@@ -93,5 +94,6 @@ export{
     UploadImageForServiceDetailModalUI,
     CardGame,
     ButtonV2UI,
-    CountdownTimer
+    CountdownTimer,
+    DescriptionDisplay
 }

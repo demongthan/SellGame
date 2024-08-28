@@ -3,7 +3,8 @@
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, SelectPropertyModalUI } from '@/components';
 import { showToast } from '@/utils/showToast';
-import { isNullOrEmpty } from '@/utils/utils';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { convertNumberENtoNumber, convertNumberStrENtoString, isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { FormEvent, useEffect, useState } from 'react'
@@ -13,12 +14,14 @@ interface Props{
     idAccGameDetail:string | null,
     idCategory:string,
     refreshAllAccGameDetailCreate:()=>Promise<void>,
-    refreshAllAccGameDetailUpdate:()=>Promise<void>
+    refreshAllAccGameDetailUpdate:()=>Promise<void>,
+    adminDisplay:AdminDisplay | null
 }
 
-const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshAllAccGameDetailCreate, refreshAllAccGameDetailUpdate}:Props) => {
+const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshAllAccGameDetailCreate, refreshAllAccGameDetailUpdate, adminDisplay}:Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
+
     const isCreate=isNullOrEmpty(idAccGameDetail);
     const [errArr, setErrArr]=useState<ErrorValidate[]>();
     const [isChangeData, setIsChangeData] = useState<boolean>(false);
@@ -49,11 +52,10 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
 
             if(data.isSuccess){
                 if(isCreate){
-                    const result = await accGameDetailApiRequest.createAccGameDetail(data.data);
+                    const result = await accGameDetailApiRequest.createAccGameDetail({body:data.data, token:adminDisplay?.token});
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "tài khoản game")}</p>);
-
                         refreshAllAccGameDetailCreate();
                     }
                     else{
@@ -61,11 +63,10 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                     }
                 }
                 else{
-                    const result = await accGameDetailApiRequest.updateAccGameDetail({id:idAccGameDetail,body:data.data});
+                    const result = await accGameDetailApiRequest.updateAccGameDetail({id:idAccGameDetail,body:data.data, token:adminDisplay?.token});
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "tài khoản game")}</p>);
-
                         refreshAllAccGameDetailUpdate();
                     }
                     else{
@@ -101,12 +102,8 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
     const handleChange = (name:string) => (e: any) => {
         switch (name) {
             case "price":
-                if (/^\d*\.?\d*$/.test(e.target.value)) {
-                    if(isNullOrEmpty(e.target.value))
-                        setPrice(0);
-                    else
-                        setPrice(e.target.value);
-
+                if (/^\d*\.?\d*$/.test(convertNumberStrENtoString(e.target.value))) {
+                    setPrice(convertNumberENtoNumber(e.target.value));
                     setIsChangeData(true);
                 }
                 break;
@@ -115,24 +112,18 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                 setIsChangeData(true);
                 break;
             case "deposit":
-                if (/^\d*\.?\d*$/.test(e.target.value)) {
-                    if(isNullOrEmpty(e.target.value))
-                        setDeposit(0);
-                    else
-                        setDeposit(e.target.value);
-
+                if (/^\d*\.?\d*$/.test(convertNumberStrENtoString(e.target.value))) {
+                    setDeposit(convertNumberENtoNumber(e.target.value));
                     setIsChangeData(true);
                 }
                 break;
             case "discount":
-                if (/^\d*\.?\d*$/.test(e.target.value)) {
+                if (/^\d*\.?\d*$/.test(convertNumberStrENtoString(e.target.value))) {
                     console.log(Number(e.target.value)>99)
                     if(Number(e.target.value)>99)
                         setDiscount(99);
-                    else if(isNullOrEmpty(e.target.value))
-                        setDiscount(0);
                     else
-                        setDiscount(e.target.value);
+                        setDiscount(convertNumberENtoNumber(e.target.value));
 
                     setIsChangeData(true);
                 }
@@ -143,7 +134,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
 
     const getAccGameDetailInit=async (): Promise<void> => {
         try{
-            await accGameDetailApiRequest.getAccGameDetailById({id:idAccGameDetail, fields:"?fields=Price%2CDiscount%2CDeposit%2CActive%2CProperties"}).then((res)=>{
+            await accGameDetailApiRequest.getAccGameDetailById({id:idAccGameDetail, fields:"?fields=Price%2CDiscount%2CDeposit%2CActive%2CProperties", token:adminDisplay?.token}).then((res)=>{
                 setActive(res.payload.data.Active);
                 setPrice(res.payload.data.Price);
                 setDiscount(res.payload.data.Discount);
@@ -169,8 +160,8 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
     
     return (
         <>
-            {isOpenPropertiesModal && (<SelectPropertyModalUI closeModel={openModal} propertyValueJson={properties} idCategory={idCategory} 
-            setPropertyValueJson={setPropertyValueJson}></SelectPropertyModalUI>)}
+            {isOpenPropertiesModal && (<SelectPropertyModalUI closeModel={openModal} propertyValueJson={properties} idCategory={idCategory}
+            setPropertyValueJson={setPropertyValueJson} adminDisplay={adminDisplay}></SelectPropertyModalUI>)}
 
             <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center bg-model
             items-center w-full md:inset-0 h-full max-h-full">
@@ -200,8 +191,8 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                         <form className="p-4 md:p-5" onSubmit={onSubmit}>
                             <div className="grid gap-4 mb-4 grid-cols-2">
                                 <div className="col-span-2 sm:col-span-1">
-                                    <InputUI value={price} name='Price' label={"Giá :"} classDiv={"w-full"} classInput={"w-[85%]"}
-                                    onChangeEvent={handleChange("price")} max={9}
+                                    <InputUI value={price.toLocaleString('en')} name='Price' label={"Giá :"} classDiv={"w-full"} classInput={"w-[85%]"}
+                                    onChangeEvent={handleChange("price")} max={12}
                                     errArr={errArr?.filter((error)=>error.for==="price")}
                                     unit={"VND"} classUint={"w-[15%]"}></InputUI>
                                 </div>
@@ -219,7 +210,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                                 </div>
 
                                 <div className="col-span-2 sm:col-span-1">
-                                    <InputUI value={deposit} name='Deposit' label={"Đặt cọc :"} classDiv={"w-full"} classInput={"w-[85%]"}
+                                    <InputUI value={deposit.toLocaleString('en')} name='Deposit' label={"Đặt cọc :"} classDiv={"w-full"} classInput={"w-[85%]"}
                                     onChangeEvent={handleChange("deposit")}
                                     errArr={errArr?.filter((error)=>error.for==="deposit")}
                                     unit={"VND"} classUint={"w-[15%]"}></InputUI>

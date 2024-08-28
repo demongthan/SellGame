@@ -1,4 +1,4 @@
-interface OrderSearchValue{
+export interface OrderSearchValue{
     Name:string,
     Value:string
 }

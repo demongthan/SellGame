@@ -7,14 +7,16 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 import { showToast } from '@/utils/showToast';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
 
 interface Props{
     closeModel:()=>void,
     idAccGameDetail:string,
     refreshAllAccGameDetailUpdate:()=>Promise<void>,
+    adminDisplay:AdminDisplay | null
 }
 
-const UploadImageForAccGameDetailModalUI = ({closeModel, idAccGameDetail, refreshAllAccGameDetailUpdate}:Props) => {
+const UploadImageForAccGameDetailModalUI = ({closeModel, idAccGameDetail, refreshAllAccGameDetailUpdate, adminDisplay}:Props) => {
     const [file, setFile] = useState<any>(null);
     const [srcFile, setSrcFile]=useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -28,7 +30,7 @@ const UploadImageForAccGameDetailModalUI = ({closeModel, idAccGameDetail, refres
 
     const getUrlFileInit=async ():Promise<void>=>{
         try{
-            await accGameDetailApiRequest.getAccGameDetailById({id:idAccGameDetail,fields: "PathUrl"}).then((res)=>{
+            await accGameDetailApiRequest.getAccGameDetailById({id:idAccGameDetail,fields: "PathUrl", token:adminDisplay?.token}).then((res)=>{
                 setSrcFile(res.payload.data.PathUrl);
                 setIsLoading(false);
             })
@@ -45,7 +47,7 @@ const UploadImageForAccGameDetailModalUI = ({closeModel, idAccGameDetail, refres
             const formData:FormData = new FormData();
             formData.append("file", file);
 
-            await accGameDetailApiRequest.uploadImageForAccGameDetail({id:idAccGameDetail,body:formData}).then((res)=>{
+            await accGameDetailApiRequest.uploadImageForAccGameDetail({id:idAccGameDetail,body:formData, token:adminDisplay?.token}).then((res)=>{
                 if(res.payload.data){
                     showToast("success", <p>{res.payload.message}</p>)
                     refreshAllAccGameDetailUpdate();
@@ -59,9 +61,7 @@ const UploadImageForAccGameDetailModalUI = ({closeModel, idAccGameDetail, refres
         }
         catch(error){
             console.log(error);
-
             showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
-
             setIsLoadingPopup(false); 
         }
     }

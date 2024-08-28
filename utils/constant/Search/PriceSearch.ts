@@ -1,4 +1,4 @@
-interface PriceSearchValue{
+export interface PriceSearchValue{
     Name:string,
     MaxValue?:number,
     MinValue?:number

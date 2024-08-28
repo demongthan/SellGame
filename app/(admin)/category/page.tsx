@@ -7,19 +7,18 @@ import { ButtonAddItemUI,
   ButtonSearchUI, 
   Card, 
   CategoryModalUI, 
-  CategoryTypeDisplay, 
   CheckboxUI, 
   DefaultPagination, 
   DeleteModalUI, 
   InputUI, LoadingUI, 
-  RatingDisplay, SelectUI, 
+  RatingDisplay, 
   UploadImageModalUI 
 } from '@/components'
 import { adminCategoryTable } from '@/utils/constant/TitleTable/AdminCategoryTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { showToast } from '@/utils/showToast';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
-import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
+import { displayDateTime, isNullOrEmpty, truncateString } from '@/utils/utils';
 import { DecodedToken } from '@/utils/types/DecodedToken';
 
 import { Button } from '@headlessui/react';
@@ -98,9 +97,7 @@ const Category = () => {
         token:adminDisplay?.token
       }).then((res)=>{
         setTableData(res.payload.data.categories);
-        
         setMetaData(res.payload.data.metaData);
-
         setIsLoading(false);
       })
     }
@@ -121,15 +118,12 @@ const Category = () => {
         token:adminDisplay?.token
       }).then((res)=>{
         setTableData(res.payload.data.categories);
-        
         setMetaData(res.payload.data.metaData);
-
         setIsLoading(false);
       })
     }
     catch(error){
       console.log(error);
-
       setIsLoading(false);
     }
   }
@@ -143,15 +137,12 @@ const Category = () => {
         token:adminDisplay?.token
       }).then((res)=>{
         setTableData(res.payload.data.categories);
-        
         setMetaData(res.payload.data.metaData);
-
         setIsLoading(false);
       })
     }
     catch(error){
       console.log(error);
-
       setIsLoading(false);
     }
   } 
@@ -348,37 +339,33 @@ const Category = () => {
                             let data;
                             if (cell.column.Header === "NAME") {
                               data = (
-                                <p className="text-sm text-navy-700 pr-4 w-[12rem]">
+                                <p className="text-sm text-slate-950 pr-4 w-[12rem] font-semibold">
                                   {cell.value}
                                 </p>
                               );
-                            } else if (cell.column.Header === "TYPE") {
-                              data = (
-                                <CategoryTypeDisplay categoryType={cell.value}></CategoryTypeDisplay>
-                              );
                             } else if (cell.column.Header === "CODE") {
                               data = (
-                                <p className="text-sm text-navy-700 w-[10rem] pr-4">
+                                <p className="text-sm text-blue-600 w-[10rem] pr-4">
                                   {cell.value}
                                 </p>
                               );
                             } else if (cell.column.Header === "DESCRIPTION") {
                               data = (
-                                <p className="text-sm text-navy-700 w-[15rem] pr-4">
-                                  {cell.value}
+                                <p className="text-sm text-navy-700 w-[25rem] pr-4">
+                                  {cell.value?truncateString(cell.value, 200):""}
                                 </p>
                               );
                             }
                             else if (cell.column.Header === "TOTAL") {
                               data = (
-                                <p className="text-sm text-navy-700 w-[7rem] pr-4">
+                                <p className="text-sm text-green-700 w-[7rem] pr-4 font-semibold">
                                   {cell.value}
                                 </p>
                               );
                             }
                             else if (cell.column.Header === "TOTALSALE") {
                               data = (
-                                <p className="text-sm text-navy-700 w-[11rem] pr-4">
+                                <p className="text-sm text-red-600 w-[11rem] pr-4 font-semibold">
                                   {cell.value}
                                 </p>
                               );

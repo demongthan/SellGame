@@ -3,7 +3,7 @@
 import { ButtonSearchUI, FromToDateUI, SelectUI, TableShowData, TitleRecharge } from '@/components';
 import { titleTableRecharge_TransactionHistory } from '@/utils/constant/TitleTableRecharge';
 import { transactionStatus } from '@/utils/constant/Transaction/TransactionStatus';
-import { transactionType } from '@/utils/constant/TransactionType';
+import { transactionType } from '@/utils/constant/Transaction/TransactionType';
 import React from 'react'
 
 const TransactionHistory = () => {

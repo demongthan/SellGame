@@ -123,3 +123,13 @@ input:checked.defaultCheckboxInline::before {
   cursor: pointer;
 }
 /* END SCROLLBAR */
+
+#Description a{
+  color: #32C5D2;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+#Description ul{
+  padding-left: 2rem;
+}

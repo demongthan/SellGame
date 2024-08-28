@@ -2,9 +2,11 @@
 
 import { categoryApiRequest } from '@/apiRequests/category';
 import { ButtonAddItemUI, LoadingUI, SelectUI } from '@/components';
-import { PropertiesItemJson } from '@/utils/types/PropertiesJson';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { PropertiesItemJson, PropertiesJson, ValueKey } from '@/utils/types/PropertiesJson';
 import { ItemSelect } from '@/utils/types/SelectItem';
 import { isNullOrEmpty } from '@/utils/utils';
+
 import { Button } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
@@ -13,13 +15,16 @@ interface Props{
     closeModel:()=>void,
     idCategory:string,
     addPropertyValue:(name:string, value:string | undefined)=>void,
-    propertyValues:PropertiesItemJson[]
+    propertyValues:PropertiesItemJson[],
+    adminDisplay:AdminDisplay | null
 }
 
-const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, propertyValues}:Props) => {
+const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, propertyValues, adminDisplay}:Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
     const [name, setName] = useState<any>({Name:"", Value:""});
     const [value, setValue] = useState<any>({Name:""});
+
     const [nameSelectData, setNameSelectData] = useState<ItemSelect[]>([]);
     const [valueSelectData, setValueSelectData] = useState<ValueKey[]>([]);
     const [properties, setProperties] = useState<PropertiesJson[]>([]);
@@ -31,7 +36,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
 
     const getSelectDataInit=async ():Promise<void> => {
         try{
-            await categoryApiRequest.getCategoryById({id:idCategory, fields:"?fields=Properties"}).then((res)=>{
+            await categoryApiRequest.getCategoryById({id:idCategory, fields:"?fields=Properties", token:adminDisplay?.token}).then((res)=>{
                 const propertiesJsons:PropertiesJson[]=JSON.parse(res.payload.data.Properties);
 
                 if(propertiesJsons){
@@ -105,7 +110,6 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                             <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                             w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                 event.preventDefault();
-                                
                                 closeModel();
                             }}>
                                 <XMarkIcon className="w-6 h-6"></XMarkIcon>

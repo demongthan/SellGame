@@ -35,3 +35,19 @@ export const convertStringToDate=(dateString:string):Date=>{
 
   return new Date(year, month - 1, day, hours, minutes, seconds);
 }
+
+export const truncateString=(str: string, maxLength: number): string =>{
+  if (str.length <= maxLength) {
+    return str;
+  }
+
+  return str.substring(0, maxLength) + '...';
+}
+
+export const convertNumberENtoNumber=(numberEN:string):number=>{
+  return parseFloat(numberEN.replace(/,/g, ''));
+}
+
+export const convertNumberStrENtoString=(numberEN:string):string=>{
+  return numberEN.replace(/,/g, '');
+}
