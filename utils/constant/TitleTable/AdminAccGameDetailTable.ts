@@ -7,6 +7,16 @@ export const adminAccGameDetailTable:HeaderItem[]=[
         accessor:"Code"
     },
     {
+        Header:"STATUS",
+        TitleHeader:"Trạng thái",
+        accessor:"Status"
+    },
+    {
+        Header:"DESCRIPTION",
+        TitleHeader:"Mô tả",
+        accessor:"Description"
+    },
+    {
         Header:"PRICE",
         TitleHeader:"Giá",
         accessor:"Price"

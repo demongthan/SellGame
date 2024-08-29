@@ -52,6 +52,7 @@ const UploadImageForImageDetailModalUI = ({closeModel, idImageDetail, refreshAll
             if(res.payload.data){
                 showToast("success", <p>{res.payload.message}</p>)
                 refreshAllImageDetailUpdate();
+                closeModel();
             }
             else{
                 showToast("error", <p>{res.payload.message}</p>)

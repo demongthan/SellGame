@@ -1,7 +1,9 @@
 interface UpdateAccGameDetailDto{
     Price:number,
+    Description?: string,
     Discount:number,
     Deposit:number,
     Active:boolean,
-    Properties?:string
+    Properties?:string,
+    ReturnProperties?:string
 }

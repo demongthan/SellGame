@@ -384,7 +384,7 @@ const Category = () => {
                             }
                             else if (cell.column.Header === "PATHURL") {
                               data = (
-                                <div className='w-[10rem] pr-4'>
+                                <div className='w-[12rem] pr-4'>
                                   {cell.value && <Image alt='' src={cell.value} width={0} height={0} sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>}
                                 </div>
                               );

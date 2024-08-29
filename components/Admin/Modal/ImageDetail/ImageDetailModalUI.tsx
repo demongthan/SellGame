@@ -51,7 +51,8 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
-                        refreshAllCategoryCreate()
+                        refreshAllCategoryCreate();
+                        closeModal();
                     }
                     else{
                         showToast("error", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
@@ -70,7 +71,6 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
                 }
             }
             else{
-                console.log(active);
                 const updateImageDetailDto:UpdateImageDetailDto={
                     Description:description,
                     Active:active
@@ -81,6 +81,7 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
                         refreshAllCategoryUpdate();
+                        closeModal();
                     }
                     else{
                         showToast("error", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);

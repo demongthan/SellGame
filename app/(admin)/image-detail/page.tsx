@@ -17,6 +17,7 @@ import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import jwt from 'jsonwebtoken';
+import envConfig from '@/config';
 
 const ImageDetail = () => {
     const [columnsData]=useState<HeaderItem[]>(adminImageDetailTable);
@@ -41,9 +42,9 @@ const ImageDetail = () => {
         headerGroups,
         page,
         prepareRow,
-        initialState,
+        initialState
     } = tableInstance;
-    initialState.pageSize = 5;
+    initialState.pageSize = envConfig.NEXT_PUBLIC_PAGE_SIZE;
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -147,7 +148,7 @@ const ImageDetail = () => {
         setIsLoading(true);
 
         try{
-            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:1, token:adminDisplay?.token}).then((res)=>{
+            await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:metaData.currentPage, token:adminDisplay?.token}).then((res)=>{
                 setTableData(res.payload.data.imageDetails); 
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -297,7 +298,7 @@ const ImageDetail = () => {
 
                                                     if (cell.column.Header === "CODE") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 pr-4 w-[12rem]">
+                                                            <p className="text-sm text-blue-600 pr-4 w-[12rem]">
                                                                 {cell.value}
                                                             </p>
                                                         );

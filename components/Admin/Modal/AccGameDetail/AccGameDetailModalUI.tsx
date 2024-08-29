@@ -1,7 +1,7 @@
 "use client"
 
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
-import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, SelectPropertyModalUI } from '@/components';
+import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, ReturnPropertyModalUI, SelectPropertyModalUI } from '@/components';
 import { showToast } from '@/utils/showToast';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
 import { convertNumberENtoNumber, convertNumberStrENtoString, isNullOrEmpty } from '@/utils/utils';
@@ -26,12 +26,15 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
     const [errArr, setErrArr]=useState<ErrorValidate[]>();
     const [isChangeData, setIsChangeData] = useState<boolean>(false);
     const [isOpenPropertiesModal, setIsOpenPropertiesModal]=useState<boolean>(false);
+    const [isOpenReturnPropertiesModal, setIsOpenReturnPropertiesModal]=useState<boolean>(false);
 
     const [properties, setProperties]=useState<string>('[]');
     const [price, setPrice]=useState<number>(0);
     const [discount, setDiscount]=useState<number>(0);
     const [active, setActive]=useState<boolean>(true);
     const [deposit, setDeposit]=useState<number>(0);
+    const [description, setDescription]=useState<string>("");
+    const [returnProperties, setReturnProperties]=useState<string>("");
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
@@ -56,6 +59,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "tài khoản game")}</p>);
+                        closeModal();
                         refreshAllAccGameDetailCreate();
                     }
                     else{
@@ -93,11 +97,21 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
         }
     }
 
-    const openModal=()=>
+    const openModalProperties=()=>
         setIsOpenPropertiesModal(!isOpenPropertiesModal);
 
-    const setPropertyValueJson =(propertyValue:string)=>
+    const openModalReturnProperties=()=>
+        setIsOpenReturnPropertiesModal(!isOpenReturnPropertiesModal);
+
+    const setPropertyValueJson =(propertyValue:string)=>{
         setProperties(propertyValue);
+        setIsChangeData(true);
+    }
+
+    const setReturnPropertiesJson =(propertyValue:string)=>{
+        setReturnProperties(propertyValue);
+        setIsChangeData(true);
+    }
 
     const handleChange = (name:string) => (e: any) => {
         switch (name) {
@@ -111,6 +125,10 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                 setActive(e.target.isChecked);
                 setIsChangeData(true);
                 break;
+            case "description":
+                setDescription(e.target.value);
+                setIsChangeData(true);
+                break;
             case "deposit":
                 if (/^\d*\.?\d*$/.test(convertNumberStrENtoString(e.target.value))) {
                     setDeposit(convertNumberENtoNumber(e.target.value));
@@ -119,7 +137,6 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                 break;
             case "discount":
                 if (/^\d*\.?\d*$/.test(convertNumberStrENtoString(e.target.value))) {
-                    console.log(Number(e.target.value)>99)
                     if(Number(e.target.value)>99)
                         setDiscount(99);
                     else
@@ -134,12 +151,17 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
 
     const getAccGameDetailInit=async (): Promise<void> => {
         try{
-            await accGameDetailApiRequest.getAccGameDetailById({id:idAccGameDetail, fields:"?fields=Price%2CDiscount%2CDeposit%2CActive%2CProperties", token:adminDisplay?.token}).then((res)=>{
+            await accGameDetailApiRequest.getAccGameDetailById({
+                id:idAccGameDetail, 
+                fields:"?fields=Price%2CDescription%2CDiscount%2CDeposit%2CActive%2CProperties%2CReturnProperties", 
+                token:adminDisplay?.token
+            }).then((res)=>{
                 setActive(res.payload.data.Active);
                 setPrice(res.payload.data.Price);
                 setDiscount(res.payload.data.Discount);
                 setDeposit(res.payload.data.Deposit);
                 setProperties(res.payload.data.Properties?res.payload.data.Properties:"[]");
+                setReturnProperties(res.payload.data.ReturnProperties?res.payload.data.ReturnProperties:"[]")
                 setIsLoading(false);
             })
         }
@@ -160,8 +182,11 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
     
     return (
         <>
-            {isOpenPropertiesModal && (<SelectPropertyModalUI closeModel={openModal} propertyValueJson={properties} idCategory={idCategory}
+            {isOpenPropertiesModal && (<SelectPropertyModalUI closeModel={openModalProperties} propertyValueJson={properties} idCategory={idCategory}
             setPropertyValueJson={setPropertyValueJson} adminDisplay={adminDisplay}></SelectPropertyModalUI>)}
+
+            {isOpenReturnPropertiesModal && (<ReturnPropertyModalUI closeModel={openModalReturnProperties} returnPropertiesJson={returnProperties} 
+            setReturnPropertiesJson={setReturnPropertiesJson}></ReturnPropertyModalUI>)}
 
             <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center bg-model
             items-center w-full md:inset-0 h-full max-h-full">
@@ -191,10 +216,10 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                         <form className="p-4 md:p-5" onSubmit={onSubmit}>
                             <div className="grid gap-4 mb-4 grid-cols-2">
                                 <div className="col-span-2 sm:col-span-1">
-                                    <InputUI value={price.toLocaleString('en')} name='Price' label={"Giá :"} classDiv={"w-full"} classInput={"w-[85%]"}
+                                    <InputUI value={price.toLocaleString('en')} name='Price' label={"Giá :"} classDiv={"w-full"} classInput={"w-[80%]"}
                                     onChangeEvent={handleChange("price")} max={12}
                                     errArr={errArr?.filter((error)=>error.for==="price")}
-                                    unit={"VND"} classUint={"w-[15%]"}></InputUI>
+                                    unit={"VND"} classUint={"w-[20%] text-base font-semibold text-yellow-500"}></InputUI>
                                 </div>
 
                                 <div className="col-span-2 sm:col-span-1 pt-[2.5rem]">
@@ -203,17 +228,24 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                                 </div>
 
                                 <div className="col-span-2 sm:col-span-1">
-                                    <InputUI value={discount} name='Discount' label={"Giảm giá :"} classDiv={"w-full"} classInput={"w-[85%]"}
+                                    <InputUI value={discount} name='Discount' label={"Giảm giá :"} classDiv={"w-full"} classInput={"w-[80%]"}
                                     onChangeEvent={handleChange("discount")}
                                     errArr={errArr?.filter((error)=>error.for==="discount")}
-                                    unit={"%"} classUint={"w-[15%]"}></InputUI>
+                                    unit={"%"} classUint={"w-[20%] text-base font-semibold text-red-500"}></InputUI>
                                 </div>
 
                                 <div className="col-span-2 sm:col-span-1">
-                                    <InputUI value={deposit.toLocaleString('en')} name='Deposit' label={"Đặt cọc :"} classDiv={"w-full"} classInput={"w-[85%]"}
+                                    <InputUI value={deposit.toLocaleString('en')} name='Deposit' label={"Đặt cọc :"} classDiv={"w-full"} classInput={"w-[80%]"}
                                     onChangeEvent={handleChange("deposit")}
                                     errArr={errArr?.filter((error)=>error.for==="deposit")}
-                                    unit={"VND"} classUint={"w-[15%]"}></InputUI>
+                                    unit={"VND"} classUint={"w-[20%] text-base font-semibold text-yellow-500"}></InputUI>
+                                </div>
+
+                                <div className="col-span-2">
+                                    <InputUI name='Description' label={"Mô tả :"} classDiv={"w-full"} classInput={"w-full"}
+                                    value={description}
+                                    onChangeEvent={handleChange("description")}
+                                    ></InputUI>
                                 </div>
 
                                 <div className="col-span-2">
@@ -222,7 +254,18 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
 
                                         <Button className={"w-[10%] flex justify-center items-center pt-6"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                             event.preventDefault();
-                                            openModal();
+                                            openModalProperties();
+                                        }}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem]'></PlusCircleIcon></Button>
+                                    </div>
+                                </div>
+
+                                <div className="col-span-2">
+                                    <div className='flex flex-row gap-1'>
+                                        <InputUI value={returnProperties} name='ReturnProperties' label={"Thuộc tính gửi khách hàng:"} classDiv={"w-[90%]"} classInput={"w-full"} isReadOnly={true}></InputUI>
+
+                                        <Button className={"w-[10%] flex justify-center items-center pt-6"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                            event.preventDefault();
+                                            openModalReturnProperties();
                                         }}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem]'></PlusCircleIcon></Button>
                                     </div>
                                 </div>

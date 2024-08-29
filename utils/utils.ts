@@ -45,6 +45,9 @@ export const truncateString=(str: string, maxLength: number): string =>{
 }
 
 export const convertNumberENtoNumber=(numberEN:string):number=>{
+  if(isNullOrEmpty(numberEN))
+    return 0;
+
   return parseFloat(numberEN.replace(/,/g, ''));
 }
 

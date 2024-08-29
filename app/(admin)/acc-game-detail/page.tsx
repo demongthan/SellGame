@@ -1,6 +1,6 @@
 "use client"
 
-import { AccGameDetailModalUI, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
+import { AccGameDetailModalUI, AccGameDetailStatusDisplay, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
 import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
@@ -17,6 +17,7 @@ import Image from 'next/image'
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import jwt from 'jsonwebtoken';
+import { AccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/AccGameDetailDto';
 
 const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);
@@ -56,7 +57,7 @@ const AccGameDetail = () => {
     const [code, setCode]=useState<string>();
 
     const [idAccGameDetail, setIdAccGameDetail]=useState<string>("");
-    const [searchConditions, setSearchConditions]=useState<string[]>([]);
+    const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true"]);
     const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
 
     const {adminDisplay, setAdmin}=useAdminState() as AdminContextProps;
@@ -91,7 +92,7 @@ const AccGameDetail = () => {
             setSearchConditions(searches);
 
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searches.join('&'), pageNumber:1, 
-                fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -108,7 +109,7 @@ const AccGameDetail = () => {
 
         try{
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:pageNumber, 
-                fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -125,7 +126,7 @@ const AccGameDetail = () => {
 
         try{
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:metaData.currentPage, 
-                fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -144,10 +145,9 @@ const AccGameDetail = () => {
             setActive(true);
             setCode('');
             setSearchConditions([]);
-            setCategory(categorySearch[0]);
 
-            await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:categorySearch[0].Value, search:searchConditions.join('&'), pageNumber:1, 
-                fields:"Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+            await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:1, 
+                fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -205,7 +205,9 @@ const AccGameDetail = () => {
             }
       
             if(admin){
-                await accGameDetailApiRequest.getAllAccGameDetailForAdminInit(adminDisplay?.token).then((res)=>{
+                await accGameDetailApiRequest.getAllAccGameDetailForAdminInit({
+                    fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc", 
+                    token:admin?.token}).then((res)=>{
                     setTableData(res.payload.data.accGameDetails);
                     setMetaData(res.payload.data.metaData);
     
@@ -215,7 +217,6 @@ const AccGameDetail = () => {
                     }))
                     setCategorySearch(itemSelects);
                     setCategory(itemSelects?itemSelects[0]:{Name:"", Value:""});
-    
                     setIsLoading(false);
                 })
             }
@@ -321,26 +322,39 @@ const AccGameDetail = () => {
 
                                                     if (cell.column.Header === "CODE") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 pr-4 w-[15rem]">
+                                                            <p className="text-sm text-blue-600 pr-4 w-[15rem]">
                                                                 {cell.value}
                                                             </p>
                                                         );
-                                                    }else if (cell.column.Header === "PRICE") {
+                                                    }
+                                                    else if (cell.column.Header === "STATUS") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 w-[12rem] pr-4">
+                                                            <AccGameDetailStatusDisplay accGameDetailStatus={cell.value}></AccGameDetailStatusDisplay>
+                                                        );
+                                                    }
+                                                    else if (cell.column.Header === "DESCRIPTION") {
+                                                        data = (
+                                                            <p className="text-sm text-navy-700 w-[25rem] pr-4">
+                                                                {cell.value}
+                                                            </p>
+                                                        );
+                                                    }
+                                                    else if (cell.column.Header === "PRICE") {
+                                                        data = (
+                                                            <p className="text-sm text-green-700 w-[7rem] pr-4">
                                                                 {cell.value.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}
                                                             </p>
                                                         );
                                                     }
                                                     else if (cell.column.Header === "DISCOUNT") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 w-[7rem] pr-4">
+                                                            <p className="text-sm text-red-500 w-[7rem] pr-4">
                                                                 {cell.value}%
                                                             </p>
                                                         );
                                                     }else if (cell.column.Header === "DEPOSIT") {
                                                         data = (
-                                                            <p className="text-sm text-navy-700 w-[12rem] pr-4">
+                                                            <p className="text-sm text-yellow-400 w-[7rem] pr-4">
                                                                 {cell.value.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}
                                                             </p>
                                                         );
@@ -353,7 +367,7 @@ const AccGameDetail = () => {
                                                     }
                                                     else if (cell.column.Header === "PATHURL") {
                                                         data = (
-                                                            <div className='w-[10rem] pr-4'>
+                                                            <div className='w-[12rem] pr-4'>
                                                                 {cell.value && <Image alt='' src={cell.value} width={0} height={0} sizes="100vw" 
                                                                 style={{ width: '100%', height: '100%' }}></Image>}
                                                             </div>

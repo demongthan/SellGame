@@ -1,10 +1,13 @@
 import envConfig from "@/config";
 import http from "./http";
 import { PayAccGameInitDto } from "./DataDomain/AccGameDetail/PayAccGameInitDto";
+import { AccGameDetailDto } from "./DataDomain/AccGameDetail/AccGameDetailDto";
+import { AccGameDetailSearchDto } from "./DataDomain/AccGameDetail/AccGameDetailSearchDto";
+import { AccGameDetailAdminInit } from "./DataDomain/AccGameDetail/AccGameDetailAdminInit";
 
 export const accGameDetailApiRequest={
-    getAllAccGameDetailForAdminInit:(token?:string)=>
-        http.get<ApiReponse<AccGameDetailAdminInit>>(`/AccGameDetail/GetAllAccGameDetailForAdminInit?PageNumber=1&Active=true&Fields=Id%2CCode%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}`, token),
+    getAllAccGameDetailForAdminInit:(input:{fields:string ,token?:string})=>
+        http.get<ApiReponse<AccGameDetailAdminInit>>(`/AccGameDetail/GetAllAccGameDetailForAdminInit?${input.fields}&PageNumber=1&Active=true&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}`, input.token),
 
     getAllAccGamesDetailInit:(idCategory:string | undefined)=>
         http.get<ApiReponse<AccGameDetailInitDto>>(
@@ -31,5 +34,5 @@ export const accGameDetailApiRequest={
 
     getAllAccGamesDetail:(input:{idCategory:string | undefined, search:string, pageNumber:number, fields:string})=>
         http.get<ApiReponse<AccGameDetailSearchDto>>(
-            `/AccGameDetail/GetAllAccGameDetail/${input.idCategory}?Active=true&${input.fields}&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`)
+            `/AccGameDetail/GetAllAccGameDetail/${input.idCategory}?${input.fields}&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`)
 }

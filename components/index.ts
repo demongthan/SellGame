@@ -46,6 +46,8 @@ import CardGame from "./Main/CardGame";
 import ButtonV2UI from "./Common/UI/Button/ButtonV2UI";
 import CountdownTimer from "./Main/CountdownTimer";
 import DescriptionDisplay from "./Main/DescriptionDisplay";
+import ReturnPropertyModalUI from "./Admin/Modal/AccGameDetail/ReturnPropertyModalUI";
+import AccGameDetailStatusDisplay from "./Admin/AccGameDetailStatusDisplay";
 
 export{
     Header,
@@ -95,5 +97,7 @@ export{
     CardGame,
     ButtonV2UI,
     CountdownTimer,
-    DescriptionDisplay
+    DescriptionDisplay,
+    ReturnPropertyModalUI,
+    AccGameDetailStatusDisplay
 }

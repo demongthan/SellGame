@@ -1,3 +1,4 @@
+import { convertNumberENtoNumber } from "@/utils/utils";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -22,9 +23,9 @@ export const POST=async (request: any)=> {
     let res:any;
 
     res=mySchema.safeParse({
-        price: Number(data.get("Price").toString()),
-        discount: Number(data.get("Discount").toString()),
-        deposit: Number(data.get("Deposit").toString()),
+        price: convertNumberENtoNumber(data.get("Price").toString()),
+        discount: convertNumberENtoNumber(data.get("Discount").toString()),
+        deposit: convertNumberENtoNumber(data.get("Deposit").toString()),
     });
 
     if (!res.success) {
@@ -43,11 +44,13 @@ export const POST=async (request: any)=> {
         if(data.get("IsCreate")=="true"){
             const dataReturn: CreateAccGameDetailDto={
                 IdCategory:data.get("IdCategory"),
-                Price: Number(data.get("Price").toString()),
-                Discount: Number(data.get("Discount").toString()),
-                Deposit: Number(data.get("Deposit").toString()),
+                Price: convertNumberENtoNumber(data.get("Price").toString()),
+                Discount: convertNumberENtoNumber(data.get("Discount").toString()),
+                Deposit: convertNumberENtoNumber(data.get("Deposit").toString()),
                 Active: data.get("Active")=="on"?true:false,
-                Properties: data.get("Properties")
+                Properties: data.get("Properties"),
+                Description: data.get("Description"),
+                ReturnProperties: data.get("ReturnProperties")
             }
     
             return NextResponse.json(
@@ -56,11 +59,13 @@ export const POST=async (request: any)=> {
         }
         else{
             const dataReturn: UpdateAccGameDetailDto={
-                Price: Number(data.get("Price").toString()),
-                Discount: Number(data.get("Discount").toString()),
-                Deposit: Number(data.get("Deposit").toString()),
+                Price: convertNumberENtoNumber(data.get("Price").toString()),
+                Discount: convertNumberENtoNumber(data.get("Discount").toString()),
+                Deposit: convertNumberENtoNumber(data.get("Deposit").toString()),
                 Active: data.get("Active")=="on"?true:false,
-                Properties: data.get("Properties")
+                Properties: data.get("Properties"),
+                Description: data.get("Description"),
+                ReturnProperties: data.get("ReturnProperties")
             }
     
             return NextResponse.json(

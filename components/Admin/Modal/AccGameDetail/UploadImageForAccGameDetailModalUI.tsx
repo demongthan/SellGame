@@ -30,7 +30,7 @@ const UploadImageForAccGameDetailModalUI = ({closeModel, idAccGameDetail, refres
 
     const getUrlFileInit=async ():Promise<void>=>{
         try{
-            await accGameDetailApiRequest.getAccGameDetailById({id:idAccGameDetail,fields: "PathUrl", token:adminDisplay?.token}).then((res)=>{
+            await accGameDetailApiRequest.getAccGameDetailById({id:idAccGameDetail,fields: "?fields=PathUrl", token:adminDisplay?.token}).then((res)=>{
                 setSrcFile(res.payload.data.PathUrl);
                 setIsLoading(false);
             })
@@ -51,6 +51,7 @@ const UploadImageForAccGameDetailModalUI = ({closeModel, idAccGameDetail, refres
                 if(res.payload.data){
                     showToast("success", <p>{res.payload.message}</p>)
                     refreshAllAccGameDetailUpdate();
+                    closeModel();
                 }
                 else{
                     showToast("error", <p>{res.payload.message}</p>)

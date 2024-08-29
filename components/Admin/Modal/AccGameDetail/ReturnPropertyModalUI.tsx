@@ -1,7 +1,7 @@
 "use client"
 
-import { ButtonAddItemUI, InputUI, LoadingUI, SelectPropertyValueModalUI } from '@/components'
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import ButtonAddItemUI from '@/components/Common/UI/Button/ButtonAddItemUI';
+import InputUI from '@/components/Common/UI/InputUI';
 import { PropertiesItemJson } from '@/utils/types/PropertiesJson';
 
 import { Button } from '@headlessui/react';
@@ -10,47 +10,52 @@ import React, { useState } from 'react'
 
 interface Props {
     closeModel: () => void;
-    propertyValueJson:string;
-    idCategory:string;
-    setPropertyValueJson:(propertyValues:string)=>void,
-    adminDisplay:AdminDisplay | null
+    returnPropertiesJson:string;
+    setReturnPropertiesJson:(propertyValues:string)=>void
 }
 
-const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPropertyValueJson, adminDisplay}:Props) => {
-    const [propertyValues, setPropertyValues]=useState<PropertiesItemJson[]>(JSON.parse(propertyValueJson));
-    const [isOpenPropertyValueModal, setIsOpenPropertyValueModal]=useState<boolean>(false);
+const ReturnPropertyModalUI = ({closeModel, returnPropertiesJson, setReturnPropertiesJson}:Props) => {
+    const [returnProperties, setReturnProperties]=useState<PropertiesItemJson[]>(JSON.parse(returnPropertiesJson));
     const [isChangeData, setIsChangeData]=useState<boolean>(false);
 
     const removePropertyValue=(index:number)=>{
-        setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
+        setReturnProperties([...returnProperties.slice(0, index), ...returnProperties.slice(index + 1)]);
     }
 
-    const addPropertyValue=(name:string,value:string | undefined)=>{
-        const propertyValue:PropertiesItemJson={
-            Name:name,
-            Value:value
+    const addPropertyValue=()=>{
+        const returnProperty:PropertiesItemJson={
+            Name:"",
+            Value:""
         }
 
-        setPropertyValues([...propertyValues, propertyValue]);
+        setReturnProperties([...returnProperties, returnProperty]);
         setIsChangeData(true);
     }
 
-    const openModal=()=>
-        setIsOpenPropertyValueModal(!isOpenPropertyValueModal);
-
-    const openPropertyValueModal=()=>
-        setIsOpenPropertyValueModal(!isOpenPropertyValueModal);
-
     const eventButtonSubmit=()=>{
-        setPropertyValueJson(JSON.stringify(propertyValues));
+        setReturnPropertiesJson(JSON.stringify(returnProperties));
         closeModel();
+    }
+
+    const handleChange=(name:string, index:number)=> (e: any)=>{
+        switch (name) {
+            case "name":
+                returnProperties[index].Name=e.target.value;
+                setReturnProperties([...returnProperties]);
+                setIsChangeData(true);
+                break;
+            case "value":
+                returnProperties[index].Value=e.target.value;
+                setReturnProperties([...returnProperties]);
+                setIsChangeData(true);
+                break;
+            default:
+                break;
+        }
     }
     
     return (
         <>
-            {isOpenPropertyValueModal && (<SelectPropertyValueModalUI closeModel={openModal} idCategory={idCategory}
-            addPropertyValue={addPropertyValue} propertyValues={propertyValues} adminDisplay={adminDisplay}></SelectPropertyValueModalUI>)}
-
             <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[100] justify-center bg-model
             items-center w-full md:inset-0 h-full max-h-full">
                 <div className="relative p-4 w-full max-w-md max-h-full">
@@ -81,16 +86,18 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
                                     </div>
                                     
                                     <div className='mt-1 flex justify-end w-[7%]'>
-                                        <ButtonAddItemUI eventButtonClicked={openPropertyValueModal}></ButtonAddItemUI>
+                                        <ButtonAddItemUI eventButtonClicked={addPropertyValue}></ButtonAddItemUI>
                                     </div>
                                 </div>
 
                                 <div className='h-36 overflow-y-auto w-full'>
-                                    {propertyValues && propertyValues.map((propertyValue:PropertiesItemJson, index)=>(
+                                    {returnProperties && returnProperties.map((propertyValue:PropertiesItemJson, index)=>(
                                         <div className="flex flex-row gap-1 w-[98%]" key={index}>
-                                            <InputUI isDisabled={true} value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}></InputUI>
+                                            <InputUI value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}
+                                            onChangeEvent={handleChange("name", index)}></InputUI>
 
-                                            <InputUI isDisabled={true} value={propertyValue.Value} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}></InputUI>
+                                            <InputUI value={propertyValue.Value} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}
+                                            onChangeEvent={handleChange("value", index)}></InputUI>
 
                                             <Button className={"-mt-2 w-[7%]"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                 event.preventDefault();
@@ -102,7 +109,7 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
                             </div>
 
                             <div className='mt-6'>
-                                <ButtonAddItemUI isDisabled={!isChangeData || propertyValues.length==0} titleButton={'Thêm danh sách'} eventButtonClicked={eventButtonSubmit}></ButtonAddItemUI>
+                                <ButtonAddItemUI isDisabled={!isChangeData || returnProperties.length==0} titleButton={'Thêm danh sách'} eventButtonClicked={eventButtonSubmit}></ButtonAddItemUI>
                             </div>
                         </div>
                     </div>
@@ -112,4 +119,4 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
     )
 }
 
-export default SelectPropertyModalUI
+export default ReturnPropertyModalUI
