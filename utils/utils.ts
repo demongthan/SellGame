@@ -54,3 +54,7 @@ export const convertNumberENtoNumber=(numberEN:string):number=>{
 export const convertNumberStrENtoString=(numberEN:string):string=>{
   return numberEN.replace(/,/g, '');
 }
+
+export const createArrayFromRange=(start: number, end: number): number[] =>{
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+}

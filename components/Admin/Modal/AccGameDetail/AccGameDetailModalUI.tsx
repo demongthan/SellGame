@@ -34,7 +34,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
     const [active, setActive]=useState<boolean>(true);
     const [deposit, setDeposit]=useState<number>(0);
     const [description, setDescription]=useState<string>("");
-    const [returnProperties, setReturnProperties]=useState<string>("");
+    const [returnProperties, setReturnProperties]=useState<string>("[]");
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
