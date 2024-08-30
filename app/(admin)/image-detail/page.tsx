@@ -91,7 +91,6 @@ const ImageDetail = () => {
             await imageDetailApiRequest.getAllImageDetail({search:searches.join('&'), pageNumber:1, token:adminDisplay?.token}).then((res)=>{
                 setTableData(res.payload.data.imageDetails);
                 setMetaData(res.payload.data.metaData);
-                initialState.pageSize = envConfig.NEXT_PUBLIC_PAGE_SIZE;
                 setIsLoading(false);
             })
         }
@@ -135,7 +134,6 @@ const ImageDetail = () => {
                 await imageDetailApiRequest.getAllImageDetail({search:'Active=true', pageNumber:1, token:admin.token}).then((res)=>{
                     setTableData(res.payload.data.imageDetails);
                     setMetaData(res.payload.data.metaData);
-                    initialState.pageSize = envConfig.NEXT_PUBLIC_PAGE_SIZE;
                 });
             }
 
@@ -153,7 +151,6 @@ const ImageDetail = () => {
             await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:metaData.currentPage, token:adminDisplay?.token}).then((res)=>{
                 setTableData(res.payload.data.imageDetails); 
                 setMetaData(res.payload.data.metaData);
-                initialState.pageSize = envConfig.NEXT_PUBLIC_PAGE_SIZE;
                 setIsLoading(false);
             })
         }
@@ -170,7 +167,6 @@ const ImageDetail = () => {
             await imageDetailApiRequest.getAllImageDetail({search:searchConditions.join('&'), pageNumber:pageNumber, token:adminDisplay?.token}).then((res)=>{
                 setTableData(res.payload.data.imageDetails); 
                 setMetaData(res.payload.data.metaData);
-                initialState.pageSize = envConfig.NEXT_PUBLIC_PAGE_SIZE;
                 setIsLoading(false);
             })
         }
@@ -191,7 +187,6 @@ const ImageDetail = () => {
             await imageDetailApiRequest.getAllImageDetail({search:'', pageNumber:1, token:adminDisplay?.token}).then((res)=>{
                 setTableData(res.payload.data.imageDetails); 
                 setMetaData(res.payload.data.metaData);
-                initialState.pageSize = envConfig.NEXT_PUBLIC_PAGE_SIZE;
                 setIsLoading(false);
             })
         }
@@ -393,8 +388,9 @@ const ImageDetail = () => {
                         currentPage={metaData.currentPage}
                         totalPages={metaData.totalPages}
                         hasPrevious={metaData.hasPrevious}
-                        hasNext={metaData.hasNext} 
-                        EventClickSwitchPage={getAllImageDetailByPageNumber}>                    
+                        hasNext={metaData.hasNext}
+                        EventClickSwitchPage={getAllImageDetailByPageNumber} 
+                        totalCount={metaData.totalCount}>                    
                     </DefaultPagination>
                 </footer>
             </Card>

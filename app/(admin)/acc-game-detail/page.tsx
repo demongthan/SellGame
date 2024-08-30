@@ -18,6 +18,8 @@ import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import jwt from 'jsonwebtoken';
 import { AccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/AccGameDetailDto';
+import envConfig from '@/config';
+import { AccGameDetailStatus, accGameDetailStatus } from '@/utils/constant/AccGameDetailStatus';
 
 const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);
@@ -44,7 +46,7 @@ const AccGameDetail = () => {
         prepareRow,
         initialState,
     } = tableInstance;
-    initialState.pageSize = 5;
+    initialState.pageSize = envConfig.NEXT_PUBLIC_PAGE_SIZE;
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
@@ -55,9 +57,10 @@ const AccGameDetail = () => {
     const [category, setCategory]=useState<any>({Name:"", Value:""});
     const [categorySearch, setCategorySearch]=useState<ItemSelect[]>([]);
     const [code, setCode]=useState<string>();
+    const [status, setStatus]=useState<any>(accGameDetailStatus[0]);
 
     const [idAccGameDetail, setIdAccGameDetail]=useState<string>("");
-    const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true"]);
+    const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true&Status=1"]);
     const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
 
     const {adminDisplay, setAdmin}=useAdminState() as AdminContextProps;
@@ -88,6 +91,8 @@ const AccGameDetail = () => {
             if(!isNullOrEmpty(code)){
                 searches.push("Code="+code);
             }
+
+            searches.push("Status="+status.Value);
 
             setSearchConditions(searches);
 
@@ -166,6 +171,9 @@ const AccGameDetail = () => {
                 break;
             case "category":
                 setCategory(e);
+                break;
+            case "status":
+                setStatus(e);
                 break;
             case "code":
                 setCode(e.target.value);
@@ -273,9 +281,13 @@ const AccGameDetail = () => {
                     <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
                         <div className='flex flex-row w-full gap-10'>
                             <SelectUI isBlockLabel={false} label={"Loại :"} name={"Category"} data={categorySearch} selected={category}
-                            classDiv={"w-[30%]"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={setCategory}></SelectUI>
+                            classDiv={"w-[25%]"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={handleChange("category")}></SelectUI>
 
-                            <InputUI name='Code' value={code} onChangeEvent={handleChange("code")} isBlockLabel={false} label={"Mã số :"} classDiv={"w-[30%]"} classInput={"w-[80%]"} classLabel={"w-[20%]"}></InputUI>
+                            <SelectUI isBlockLabel={false} label={"Loại :"} name={"AccGameDetailStatus"} data={accGameDetailStatus} selected={status}
+                            classDiv={"w-[25%]"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={handleChange("status")}></SelectUI>
+
+                            <InputUI name='Code' value={code} onChangeEvent={handleChange("code")} isBlockLabel={false} label={"Mã số :"} 
+                            classDiv={"w-[25%]"} classInput={"w-[80%]"} classLabel={"w-[20%]"}></InputUI>
 
                             <CheckboxUI name='Active' isChecked={active} label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}
                             onChangeEvent={handleChange("active")}></CheckboxUI>
@@ -439,8 +451,9 @@ const AccGameDetail = () => {
                         currentPage={metaData.currentPage}
                         totalPages={metaData.totalPages}
                         hasPrevious={metaData.hasPrevious}
-                        hasNext={metaData.hasNext} 
-                        EventClickSwitchPage={getAllAccGameDetailByPageNumber}>                    
+                        hasNext={metaData.hasNext}
+                        EventClickSwitchPage={getAllAccGameDetailByPageNumber} 
+                        totalCount={metaData.totalCount}>                    
                     </DefaultPagination>
                 </footer>
             </Card>
