@@ -24,8 +24,11 @@ const UploadImageForAccGameDetailModalUI = ({closeModel, idAccGameDetail, refres
 
     const handleFileChange = (event:any) => {
         const fileUpload = event.target.files[0];
-        setFile(fileUpload);
-        setSrcFile(URL.createObjectURL(fileUpload));
+        
+        if(fileUpload){
+            setFile(fileUpload);
+            setSrcFile(URL.createObjectURL(fileUpload));
+        }
     }
 
     const getUrlFileInit=async ():Promise<void>=>{
