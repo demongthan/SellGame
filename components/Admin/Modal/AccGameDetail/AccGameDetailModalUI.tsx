@@ -33,7 +33,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
     const [discount, setDiscount]=useState<number>(0);
     const [active, setActive]=useState<boolean>(true);
     const [deposit, setDeposit]=useState<number>(0);
-    const [description, setDescription]=useState<string>("");
+    const [description, setDescription]=useState<string | undefined>("");
     const [returnProperties, setReturnProperties]=useState<string>("[]");
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
@@ -71,6 +71,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "tài khoản game")}</p>);
+                        closeModal();
                         refreshAllAccGameDetailUpdate();
                     }
                     else{
@@ -158,6 +159,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
             }).then((res)=>{
                 setActive(res.payload.data.Active);
                 setPrice(res.payload.data.Price);
+                setDescription(res.payload.data.Description);
                 setDiscount(res.payload.data.Discount);
                 setDeposit(res.payload.data.Deposit);
                 setProperties(res.payload.data.Properties?res.payload.data.Properties:"[]");
