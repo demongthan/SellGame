@@ -24,11 +24,11 @@ const ToastProvider = ({ children }: ToastProviderProps) => {
       <ToastContainer
         toastClassName={(context) =>
           contextClass[context?.type || "default"] +
-          " z-[10000] relative bg-zinc-300 flex p-1 top-[140px] min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
+          " z-[10000] relative flex p-1 top-[140px] min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
         }
         bodyClassName={() => "flex text-base font-med block p-3"}
         position="bottom-left"
-        autoClose={2000}
+        autoClose={1000}
       />
 
         {children}
