@@ -11,12 +11,12 @@ interface ToastProviderProps {
 
 const ToastProvider = ({ children }: ToastProviderProps) => {
     const contextClass = {
-        success: "bg-green-400",
-        error: "bg-red-600",
-        info: "bg-gray-600",
-        warning: "bg-orange-400",
-        default: "bg-indigo-600",
-        dark: "bg-white-600 font-gray-300",
+        success: "text-green-400 border-green-400",
+        error: "text-red-600 border-red-600",
+        info: "text-gray-60 border-gray-600",
+        warning: "text-orange-400 border-orange-600",
+        default: "text-indigo-600 border-indigo-600",
+        dark: "text-white-600 font-gray-300 border-gray-300",
       };
 
   return (
@@ -24,7 +24,7 @@ const ToastProvider = ({ children }: ToastProviderProps) => {
       <ToastContainer
         toastClassName={(context) =>
           contextClass[context?.type || "default"] +
-          " z-[10000] relative flex p-1 top-[140px] min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
+          " z-[10000] relative flex p-1 top-[140px] min-h-10 rounded-md justify-between overflow-hidden cursor-pointer bg-white border rounded-xl shadow-lg font-semibold text-base"
         }
         bodyClassName={() => "flex text-base font-med block p-3"}
         position="bottom-left"
