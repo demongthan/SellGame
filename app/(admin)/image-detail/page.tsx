@@ -238,7 +238,7 @@ const ImageDetail = () => {
 
     return (
         <>
-            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'danh mục'} eventDeleteItem={deleteImageDetail}></DeleteModalUI>)}
+            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'thông tin ảnh'} eventDeleteItem={deleteImageDetail}></DeleteModalUI>)}
 
             {isOpenImageModel && (<UploadImageForImageDetailModalUI closeModel={openImageModel} idImageDetail={idImageDetail}
             refreshAllImageDetailUpdate={refreshAllImageDetail} adminDisplay={adminDisplay}></UploadImageForImageDetailModalUI>)}

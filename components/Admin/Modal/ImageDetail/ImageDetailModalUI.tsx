@@ -52,7 +52,6 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
                         refreshAllCategoryCreate();
-                        closeModal();
                     }
                     else{
                         showToast("error", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
