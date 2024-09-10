@@ -210,12 +210,12 @@ const ImageDetail = () => {
 
     const deleteImageDetail=async ():Promise<void> => {
         setIsLoading(true);
+        openDeleteModal();
     
         try{
             await imageDetailApiRequest.deleteImageDetail({id:idImageDetail, token:adminDisplay?.token}).then((res)=>{
                 if(res.payload.data){
                     showToast("success", <p>{res.payload.message.replace("{Item}", "ảnh")}</p>)
-                    openDeleteModal()
                     refreshAllImageDetail();
                 }
                 else{
