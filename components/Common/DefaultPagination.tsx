@@ -32,8 +32,6 @@ const DefaultPagination = ({hasPrevious, hasNext, totalPages, currentPage, Event
     arrPages=[];
   }
 
-  console.log(totalPages, currentPage, start, end, arrPages)
-
   return (
 
     <nav className='flex flex-row'>

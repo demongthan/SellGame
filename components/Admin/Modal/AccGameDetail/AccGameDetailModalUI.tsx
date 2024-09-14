@@ -243,6 +243,10 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                                     unit={"VND"} classUint={"w-[20%] text-base font-semibold text-yellow-500"}></InputUI>
                                 </div>
 
+                                <div className="col-span-2 sm:col-span-1">
+                                    
+                                </div>
+
                                 <div className="col-span-2">
                                     <InputUI name='Description' label={"Mô tả :"} classDiv={"w-full"} classInput={"w-full"}
                                     value={description}

@@ -1,4 +1,4 @@
-import { AccGameDetailStatus } from '@/utils/constant/AccGameDetailStatus'
+import { AccGameDetailStatus } from '@/utils/constant/AccGameDetail/AccGameDetailStatus'
 
 import React from 'react'
 import Image from 'next/image'

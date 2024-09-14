@@ -1,4 +1,4 @@
-import { AccGameDetailStatus } from "@/utils/constant/AccGameDetailStatus"
+import { AccGameDetailStatus } from "@/utils/constant/AccGameDetail/AccGameDetailStatus"
 
 export interface AccGameDetailDto{
     Id:string,

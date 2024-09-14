@@ -77,14 +77,14 @@ const ImageDetailModalUI = ({closeModal, idImageDetail, refreshAllCategoryCreate
 
                 const result = await imageDetailApiRequest.updateImageDetail({id:idImageDetail, body:updateImageDetailDto, token:adminDisplay?.token});
 
-                    if(result.payload.data){
-                        showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
-                        refreshAllCategoryUpdate();
-                        closeModal();
-                    }
-                    else{
-                        showToast("error", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
-                    }
+                if(result.payload.data){
+                    showToast("success", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
+                    refreshAllCategoryUpdate();
+                    closeModal();
+                }
+                else{
+                    showToast("error", <p>{result.payload.message.replace("{Item}", "ảnh")}</p>);
+                }
 
                 setIsLoadingPopup(false);
             }

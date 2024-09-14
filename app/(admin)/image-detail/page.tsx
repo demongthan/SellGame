@@ -244,7 +244,7 @@ const ImageDetail = () => {
             refreshAllImageDetailUpdate={refreshAllImageDetail} adminDisplay={adminDisplay}></UploadImageForImageDetailModalUI>)}
 
             {isOpenModel && (<ImageDetailModalUI closeModal={openModel} idImageDetail={idImageDetail}
-            refreshAllCategoryCreate={getAllImageDetailInit} refreshAllCategoryUpdate={refreshAllImageDetail} adminDisplay={adminDisplay}></ImageDetailModalUI>)}
+            refreshAllCategoryCreate={getAllImageDetailInitTotal} refreshAllCategoryUpdate={refreshAllImageDetail} adminDisplay={adminDisplay}></ImageDetailModalUI>)}
 
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">

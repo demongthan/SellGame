@@ -2,7 +2,7 @@
 
 import { AccGameDetailModalUI, AccGameDetailStatusDisplay, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
-import { displayDateTime, isNullOrEmpty } from '@/utils/utils';
+import { displayDateTime, isNullOrEmpty, truncateString } from '@/utils/utils';
 import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 import { showToast } from '@/utils/showToast';
@@ -19,7 +19,7 @@ import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/2
 import jwt from 'jsonwebtoken';
 import { AccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/AccGameDetailDto';
 import envConfig from '@/config';
-import { AccGameDetailStatus, accGameDetailStatus } from '@/utils/constant/AccGameDetailStatus';
+import { AccGameDetailStatus, accGameDetailStatus } from '@/utils/constant/AccGameDetail/AccGameDetailStatus';
 
 const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);
@@ -280,14 +280,14 @@ const AccGameDetail = () => {
                 <header className="relative">
                     <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
                         <div className='flex flex-row w-full gap-10'>
-                            <SelectUI isBlockLabel={false} label={"Loại :"} name={"Category"} data={categorySearch} selected={category}
-                            classDiv={"w-[25%]"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={handleChange("category")}></SelectUI>
+                            <SelectUI isBlockLabel={false} label={"Danh mục :"} name={"Category"} data={categorySearch} selected={category}
+                            classDiv={"w-[25%]"} classLabel={"w-[25%]"} classSelect={"w-[75%]"} onChangeEvent={handleChange("category")}></SelectUI>
 
-                            <SelectUI isBlockLabel={false} label={"Loại :"} name={"AccGameDetailStatus"} data={accGameDetailStatus} selected={status}
-                            classDiv={"w-[25%]"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={handleChange("status")}></SelectUI>
+                            <SelectUI isBlockLabel={false} label={"Trạng thái :"} name={"AccGameDetailStatus"} data={accGameDetailStatus} selected={status}
+                            classDiv={"w-[25%]"} classLabel={"w-[25%]"} classSelect={"w-[75%]"} onChangeEvent={handleChange("status")}></SelectUI>
 
                             <InputUI name='Code' value={code} onChangeEvent={handleChange("code")} isBlockLabel={false} label={"Mã số :"} 
-                            classDiv={"w-[25%]"} classInput={"w-[80%]"} classLabel={"w-[20%]"}></InputUI>
+                            classDiv={"w-[25%]"} classInput={"w-[75%]"} classLabel={"w-[20%]"}></InputUI>
 
                             <CheckboxUI name='Active' isChecked={active} label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}
                             onChangeEvent={handleChange("active")}></CheckboxUI>
@@ -347,7 +347,7 @@ const AccGameDetail = () => {
                                                     else if (cell.column.Header === "DESCRIPTION") {
                                                         data = (
                                                             <p className="text-sm text-navy-700 w-[25rem] pr-4">
-                                                                {cell.value}
+                                                                {cell.value?truncateString(cell.value, 200):""}
                                                             </p>
                                                         );
                                                     }
