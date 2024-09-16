@@ -1,6 +1,7 @@
 "use client"
 
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
+import { AccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/AccGameDetailDto';
 import { ButtonSearchUI, CardGameDetail, DefaultPagination, DescriptionDisplay, InputUI, LoadingUI, SelectUI, TitleService } from '@/components'
 import { orderSearch, OrderSearchValue } from '@/utils/constant/Search/OrderSearch';
 import { priceSearch, PriceSearchValue } from '@/utils/constant/Search/PriceSearch';
@@ -15,7 +16,7 @@ const BuyAccountDetail = () => {
     const params = useSearchParams();
     const idCategory:string | undefined= params.get("id")?.split(',')[1];
     const pathTitles:any= params.get("title")?.split(',');
-    const [fields]=useState<string>("Fields=PathUrl%2CProperties%2CDiscount%2CPrice%2CCode");
+    const [fields]=useState<string>("Fields=PathUrl%2CProperties%2CDiscount%2CPrice%2CCode%2CDescription%2CId");
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingSearch, setIsLoadingSearch] = useState<boolean>(false);
@@ -125,7 +126,7 @@ const BuyAccountDetail = () => {
 
     const getAllAccGameDetailInit=async():Promise<void>=>{
         try{
-            await accGameDetailApiRequest.getAllAccGamesDetailInit(idCategory).then((res)=>{
+            await accGameDetailApiRequest.getAllAccGamesDetailInit({idCategory:idCategory, fields:fields}).then((res)=>{
                 const properties:PropertiesJson[]=JSON.parse(res.payload.data.properties);
 
                 setPropertyItems(new Array(properties.length).fill({Name:""}));
@@ -211,6 +212,7 @@ const BuyAccountDetail = () => {
                         titleButton={'Mua ngay'}
                         price={accGameDetail.Price}
                         code={accGameDetail.Code} 
+                        description={accGameDetail.Description}
                         urlButton={`/buy-account/buy-account-detail/pay-account?title=${params.get("title")},Thanh toán&id=${params.get("id")},${accGameDetail.Id}`}>
                         </CardGameDetail>
                     ))}
@@ -221,8 +223,9 @@ const BuyAccountDetail = () => {
         <DefaultPagination currentPage={metaData.currentPage}
           totalPages={metaData.totalPages}
           hasPrevious={metaData.hasPrevious}
-          hasNext={metaData.hasNext} EventClickSwitchPage={getAllAccGameDetailByPageNumber}
-          ></DefaultPagination>
+          hasNext={metaData.hasNext} EventClickSwitchPage={getAllAccGameDetailByPageNumber} 
+          totalCount={metaData.totalCount}
+        ></DefaultPagination>
     </div>
   )
 }

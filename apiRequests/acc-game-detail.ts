@@ -9,10 +9,9 @@ export const accGameDetailApiRequest={
     getAllAccGameDetailForAdminInit:(input:{fields:string ,token?:string})=>
         http.get<ApiReponse<AccGameDetailAdminInit>>(`/AccGameDetail/GetAllAccGameDetailForAdminInit?${input.fields}&PageNumber=1&Active=true&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}`, input.token),
 
-    getAllAccGamesDetailInit:(idCategory:string | undefined)=>
+    getAllAccGamesDetailInit:(input:{idCategory:string | undefined, fields: string})=>
         http.get<ApiReponse<AccGameDetailInitDto>>(
-            `/AccGameDetail/GetAllAccGameDetailInit/${idCategory}
-            ?Active=true&Fields=Id%2CCode%2CPrice%2CDiscount%2CPathUrl%2CProperties&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}`),
+            `/AccGameDetail/GetAllAccGameDetailInit/${input.idCategory}?Active=true&${input.fields}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}`),
 
     createAccGameDetail:(input:{body:CreateAccGameDetailDto, token?:string})=>
         http.post<ApiReponse<boolean>>(`/AccGameDetail/CreateAccGameDetail`, input.body, input.token),
