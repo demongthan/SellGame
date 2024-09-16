@@ -11,7 +11,7 @@ import PropertyValueModalUI from './PropertyValueModalUI';
 interface Props{
     closeModal:()=>void,
     propertiesJson:string,
-    setPropertiesJson:any
+    setPropertiesJson:(property:string)=>void
 }
 
 const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props) => {

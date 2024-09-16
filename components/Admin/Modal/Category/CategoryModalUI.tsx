@@ -60,6 +60,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "danh mục game")}</p>);
+                        closeModel();
                         refreshAllCategoryCreate()
                     }
                     else{
@@ -71,6 +72,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "danh mục game")}</p>);
+                        closeModel();
                         refreshAllCategoryUpdate();
                     }
                     else{
@@ -132,6 +134,11 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
         }
     }
 
+    const setProperties = (property:string)=>{
+        setPropertiesJson(property);
+        setIsChangeData(true);
+    }
+
     useEffect(()=>{
         if(!isCreate){
             getCategoryInit();
@@ -144,7 +151,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
 
   return (
     <>
-        {isOpenPropertiesModal && <PropertiesModalUI closeModal={openModel} propertiesJson={propertiesJson} setPropertiesJson={setPropertiesJson} ></PropertiesModalUI>}
+        {isOpenPropertiesModal && <PropertiesModalUI closeModal={openModel} propertiesJson={propertiesJson} setPropertiesJson={setProperties} ></PropertiesModalUI>}
         
         <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center bg-model
         items-center w-full md:inset-0 h-full max-h-full">
