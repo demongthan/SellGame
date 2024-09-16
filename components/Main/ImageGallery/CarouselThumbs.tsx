@@ -11,11 +11,11 @@ interface Props{
 
 export const CarouselThumbs=({ gallery, setThumbsSwiper }:Props)=> {
   return (
-    <div className="max-w-md mt-5 lg:mt-8 mx-auto relative lg:pb-2">
+    <div className="max-w-[33rem] mt-5 lg:mt-8 mx-auto relative lg:pb-2">
       <Swiper
         onSwiper={setThumbsSwiper}
         spaceBetween={20}
-        slidesPerView={4}
+        slidesPerView={6}
         watchSlidesProgress={true}
         freeMode={true}
         observer={true}
