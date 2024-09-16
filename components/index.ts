@@ -48,6 +48,7 @@ import CountdownTimer from "./Main/CountdownTimer";
 import DescriptionDisplay from "./Main/DescriptionDisplay";
 import ReturnPropertyModalUI from "./Admin/Modal/AccGameDetail/ReturnPropertyModalUI";
 import AccGameDetailStatusDisplay from "./Admin/AccGameDetailStatusDisplay";
+import AccGameDetailTypeDisplay from "./Admin/AccGameDetailTypeDisplay";
 
 export{
     Header,
@@ -99,5 +100,6 @@ export{
     CountdownTimer,
     DescriptionDisplay,
     ReturnPropertyModalUI,
-    AccGameDetailStatusDisplay
+    AccGameDetailStatusDisplay,
+    AccGameDetailTypeDisplay
 }

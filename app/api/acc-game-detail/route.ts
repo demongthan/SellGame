@@ -1,3 +1,6 @@
+import { CreateAccGameDetailDto } from "@/apiRequests/DataDomain/AccGameDetail/CreateAccGameDetailDto";
+import { UpdateAccGameDetailDto } from "@/apiRequests/DataDomain/AccGameDetail/UpdateAccGameDetailDto";
+import { AccGameDetailType, accGameDetailType } from "@/utils/constant/AccGameDetail/AccGameDetailType";
 import { convertNumberENtoNumber } from "@/utils/utils";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -41,6 +44,8 @@ export const POST=async (request: any)=> {
         )
     }
     else{
+        const type=accGameDetailType.find(item=>item.Name==data.get("AccGameDetailType").toString());
+        
         if(data.get("IsCreate")=="true"){
             const dataReturn: CreateAccGameDetailDto={
                 IdCategory:data.get("IdCategory"),
@@ -50,7 +55,8 @@ export const POST=async (request: any)=> {
                 Active: data.get("Active")=="on"?true:false,
                 Properties: data.get("Properties"),
                 Description: data.get("Description"),
-                ReturnProperties: data.get("ReturnProperties")
+                ReturnProperties: data.get("ReturnProperties"),
+                Type:type?type.Value:AccGameDetailType.Regular
             }
     
             return NextResponse.json(
@@ -65,7 +71,8 @@ export const POST=async (request: any)=> {
                 Active: data.get("Active")=="on"?true:false,
                 Properties: data.get("Properties"),
                 Description: data.get("Description"),
-                ReturnProperties: data.get("ReturnProperties")
+                ReturnProperties: data.get("ReturnProperties"),
+                Type:type?type.Value:AccGameDetailType.Regular
             }
     
             return NextResponse.json(

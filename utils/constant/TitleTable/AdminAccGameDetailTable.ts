@@ -12,6 +12,11 @@ export const adminAccGameDetailTable:HeaderItem[]=[
         accessor:"Status"
     },
     {
+        Header:"TYPE",
+        TitleHeader:"Loại",
+        accessor:"Type"
+    },
+    {
         Header:"DESCRIPTION",
         TitleHeader:"Mô tả",
         accessor:"Description"

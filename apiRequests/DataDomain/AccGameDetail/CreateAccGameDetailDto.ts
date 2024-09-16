@@ -1,4 +1,6 @@
-interface CreateAccGameDetailDto{
+import { AccGameDetailType } from "@/utils/constant/AccGameDetail/AccGameDetailType";
+
+export interface CreateAccGameDetailDto{
     IdCategory:string | undefined,
     Description?: string,
     Price:number,
@@ -6,5 +8,6 @@ interface CreateAccGameDetailDto{
     Deposit:number,
     Active:boolean,
     Properties?:string,
-    ReturnProperties?:string
+    ReturnProperties?:string,
+    Type:AccGameDetailType
 }

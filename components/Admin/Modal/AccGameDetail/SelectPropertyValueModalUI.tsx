@@ -30,7 +30,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
     const [properties, setProperties] = useState<PropertiesJson[]>([]);
 
     const eventButtonClick=()=> {
-        addPropertyValue(name.Value, value.Name);
+        addPropertyValue(name.Name, value.Name);
         closeModel();
     }
 
@@ -43,7 +43,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                     let names:ItemSelect[]=[];
                     propertiesJsons.map((propertiesJson:PropertiesJson, index)=>{
                         if(propertiesJson.Only){
-                            if(propertyValues.findIndex(_=>_.Name==propertiesJson.Key)==-1){
+                            if(propertyValues.findIndex(_=>_.Name==propertiesJson.Name)==-1){
                                 names.push({Name:propertiesJson.Name, Value:propertiesJson.Key});
                             }
                         }

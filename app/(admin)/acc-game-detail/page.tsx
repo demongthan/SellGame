@@ -1,6 +1,6 @@
 "use client"
 
-import { AccGameDetailModalUI, AccGameDetailStatusDisplay, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
+import { AccGameDetailModalUI, AccGameDetailStatusDisplay, AccGameDetailTypeDisplay, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { displayDateTime, isNullOrEmpty, truncateString } from '@/utils/utils';
 import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
@@ -10,6 +10,9 @@ import { ItemSelect } from '@/utils/types/SelectItem';
 import { AdminContextProps, useAdminState } from '@/AppProvider/AdminProvider';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
 import { DecodedToken } from '@/utils/types/DecodedToken';
+import {accGameDetailStatus } from '@/utils/constant/AccGameDetail/AccGameDetailStatus';
+import { AccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/AccGameDetailDto';
+import envConfig from '@/config';
 
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
@@ -17,9 +20,7 @@ import Image from 'next/image'
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import jwt from 'jsonwebtoken';
-import { AccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/AccGameDetailDto';
-import envConfig from '@/config';
-import { AccGameDetailStatus, accGameDetailStatus } from '@/utils/constant/AccGameDetail/AccGameDetailStatus';
+import { accGameDetailType } from '@/utils/constant/AccGameDetail/AccGameDetailType';
 
 const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);
@@ -27,6 +28,7 @@ const AccGameDetail = () => {
     const [tableData, setTableData]=useState<AccGameDetailDto[]>([]);
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
+    const [flieds]=useState<string>("Fields=Id%2CCode%2CStatus%2CType%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc")
 
     const tableInstance = useTable(
         {
@@ -58,12 +60,14 @@ const AccGameDetail = () => {
     const [categorySearch, setCategorySearch]=useState<ItemSelect[]>([]);
     const [code, setCode]=useState<string>();
     const [status, setStatus]=useState<any>(accGameDetailStatus[0]);
+    const [type, setType]=useState<any>(accGameDetailType[0]);
 
     const [idAccGameDetail, setIdAccGameDetail]=useState<string>("");
     const [searchConditions, setSearchConditions]=useState<string[]>(["Active=true&Status=1"]);
     const [metaData, setMetaData]=useState<MetaData>({currentPage:0, totalPages:1, pageSize:0, totalCount:0, hasNext:false, hasPrevious:false});
 
     const {adminDisplay, setAdmin}=useAdminState() as AdminContextProps;
+
 
     const openModal=()=>
         setIsOpenModel(!isOpenModel);
@@ -97,7 +101,7 @@ const AccGameDetail = () => {
             setSearchConditions(searches);
 
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searches.join('&'), pageNumber:1, 
-                fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                fields:flieds}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -114,7 +118,7 @@ const AccGameDetail = () => {
 
         try{
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:pageNumber, 
-                fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                fields:flieds}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -131,7 +135,7 @@ const AccGameDetail = () => {
 
         try{
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:metaData.currentPage, 
-                fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                fields:flieds}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -152,7 +156,7 @@ const AccGameDetail = () => {
             setSearchConditions([]);
 
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:category.Value, search:searchConditions.join('&'), pageNumber:1, 
-                fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc"}).then((res)=>{
+                fields:flieds}).then((res)=>{
                 setTableData(res.payload.data.accGameDetails);
                 setMetaData(res.payload.data.metaData);
                 setIsLoading(false);
@@ -174,6 +178,9 @@ const AccGameDetail = () => {
                 break;
             case "status":
                 setStatus(e);
+                break;
+            case "type":
+                setType(e);
                 break;
             case "code":
                 setCode(e.target.value);
@@ -214,7 +221,7 @@ const AccGameDetail = () => {
       
             if(admin){
                 await accGameDetailApiRequest.getAllAccGameDetailForAdminInit({
-                    fields:"Fields=Id%2CCode%2CStatus%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc", 
+                    fields:flieds, 
                     token:admin?.token}).then((res)=>{
                     setTableData(res.payload.data.accGameDetails);
                     setMetaData(res.payload.data.metaData);
@@ -281,13 +288,16 @@ const AccGameDetail = () => {
                     <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
                         <div className='flex flex-row w-full gap-10'>
                             <SelectUI isBlockLabel={false} label={"Danh mục :"} name={"Category"} data={categorySearch} selected={category}
-                            classDiv={"w-[25%]"} classLabel={"w-[25%]"} classSelect={"w-[75%]"} onChangeEvent={handleChange("category")}></SelectUI>
+                            classDiv={"w-[20%]"} classLabel={"w-[35%]"} classSelect={"w-[65%]"} onChangeEvent={handleChange("category")}></SelectUI>
 
                             <SelectUI isBlockLabel={false} label={"Trạng thái :"} name={"AccGameDetailStatus"} data={accGameDetailStatus} selected={status}
-                            classDiv={"w-[25%]"} classLabel={"w-[25%]"} classSelect={"w-[75%]"} onChangeEvent={handleChange("status")}></SelectUI>
+                            classDiv={"w-[20%]"} classLabel={"w-[35%]"} classSelect={"w-[65%]"} onChangeEvent={handleChange("status")}></SelectUI>
+
+                            <SelectUI isBlockLabel={false} label={"Loại :"} name={"AccGameDetailType"} data={accGameDetailType} selected={type}
+                            classDiv={"w-[20%]"} classLabel={"w-[35%]"} classSelect={"w-[65%]"} onChangeEvent={handleChange("type")}></SelectUI>
 
                             <InputUI name='Code' value={code} onChangeEvent={handleChange("code")} isBlockLabel={false} label={"Mã số :"} 
-                            classDiv={"w-[25%]"} classInput={"w-[75%]"} classLabel={"w-[20%]"}></InputUI>
+                            classDiv={"w-[20%]"} classInput={"w-[75%]"} classLabel={"w-[25%]"}></InputUI>
 
                             <CheckboxUI name='Active' isChecked={active} label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}
                             onChangeEvent={handleChange("active")}></CheckboxUI>
@@ -342,6 +352,11 @@ const AccGameDetail = () => {
                                                     else if (cell.column.Header === "STATUS") {
                                                         data = (
                                                             <AccGameDetailStatusDisplay accGameDetailStatus={cell.value}></AccGameDetailStatusDisplay>
+                                                        );
+                                                    }
+                                                    else if (cell.column.Header === "TYPE") {
+                                                        data = (
+                                                            <AccGameDetailTypeDisplay accGameDetailType={cell.value}></AccGameDetailTypeDisplay>
                                                         );
                                                     }
                                                     else if (cell.column.Header === "DESCRIPTION") {

@@ -1,7 +1,8 @@
 "use client"
 
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
-import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, ReturnPropertyModalUI, SelectPropertyModalUI } from '@/components';
+import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, ReturnPropertyModalUI, SelectPropertyModalUI, SelectUI } from '@/components';
+import { accGameDetailType } from '@/utils/constant/AccGameDetail/AccGameDetailType';
 import { showToast } from '@/utils/showToast';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
 import { convertNumberENtoNumber, convertNumberStrENtoString, isNullOrEmpty } from '@/utils/utils';
@@ -35,6 +36,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
     const [deposit, setDeposit]=useState<number>(0);
     const [description, setDescription]=useState<string | undefined>("");
     const [returnProperties, setReturnProperties]=useState<string>("[]");
+    const [type, setType]=useState<any>(accGameDetailType[0]);
 
     const onSubmit=async(event: FormEvent<HTMLFormElement>)=> {
         event.preventDefault();
@@ -130,6 +132,10 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                 setDescription(e.target.value);
                 setIsChangeData(true);
                 break;
+            case "type":
+                setType(e);
+                setIsChangeData(true);
+                break;
             case "deposit":
                 if (/^\d*\.?\d*$/.test(convertNumberStrENtoString(e.target.value))) {
                     setDeposit(convertNumberENtoNumber(e.target.value));
@@ -154,7 +160,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
         try{
             await accGameDetailApiRequest.getAccGameDetailById({
                 id:idAccGameDetail, 
-                fields:"?fields=Price%2CDescription%2CDiscount%2CDeposit%2CActive%2CProperties%2CReturnProperties", 
+                fields:"?fields=Price%2CDescription%2CType%2CDiscount%2CDeposit%2CActive%2CProperties%2CReturnProperties", 
                 token:adminDisplay?.token
             }).then((res)=>{
                 setActive(res.payload.data.Active);
@@ -162,6 +168,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                 setDescription(res.payload.data.Description);
                 setDiscount(res.payload.data.Discount);
                 setDeposit(res.payload.data.Deposit);
+                setType(accGameDetailType.find(item=>item.Value==res.payload.data.Type));
                 setProperties(res.payload.data.Properties?res.payload.data.Properties:"[]");
                 setReturnProperties(res.payload.data.ReturnProperties?res.payload.data.ReturnProperties:"[]")
                 setIsLoading(false);
@@ -244,7 +251,8 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                                 </div>
 
                                 <div className="col-span-2 sm:col-span-1">
-                                    
+                                    <SelectUI label={"Loại :"} name={"AccGameDetailType"} data={accGameDetailType} selected={type}
+                                    classDiv={"w-full"} classSelect={"w-full"} onChangeEvent={handleChange("type")}></SelectUI>
                                 </div>
 
                                 <div className="col-span-2">
