@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react'
 interface Props{
     closeModel:()=>void,
     idCategory:string,
-    addPropertyValue:(name:string, value:string | undefined)=>void,
+    addPropertyValue:(name:string, value:string)=>void,
     propertyValues:PropertiesItemJson[],
     adminDisplay:AdminDisplay | null
 }
@@ -42,13 +42,13 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                 if(propertiesJsons){
                     let names:ItemSelect[]=[];
                     propertiesJsons.map((propertiesJson:PropertiesJson, index)=>{
-                        if(propertiesJson.Only){
+                        if(propertiesJson.IsOnly){
                             if(propertyValues.findIndex(_=>_.Name==propertiesJson.Name)==-1){
-                                names.push({Name:propertiesJson.Name, Value:propertiesJson.Key});
+                                names.push({Name:propertiesJson.Name, Value:propertiesJson.Id});
                             }
                         }
                         else{
-                            names.push({Name:propertiesJson.Name, Value:propertiesJson.Key});
+                            names.push({Name:propertiesJson.Name, Value:propertiesJson.Id});
                         }
                     });
 
@@ -56,7 +56,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                     setName(names?names[0]:{Name:"", Value:""});
                     
                     if(names){
-                        const index:number=propertiesJsons.findIndex(_=>_.Key==names[0].Value);
+                        const index:number=propertiesJsons.findIndex(_=>_.Id==names[0].Value);
 
                         const selectData:ValueKey[]=propertiesJsons[index].Value.filter(_=>propertyValues.findIndex(item=>item.Value==_.Name && item.Name==names[0].Value)==-1);
                         setValueSelectData(selectData);
@@ -79,7 +79,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
             case "name":
                 setName(e);
 
-                const index:number=properties.findIndex(_=>_.Key==e.Value);
+                const index:number=properties.findIndex(_=>_.Id==e.Value);
                 const selectData:ValueKey[]=properties[index].Value.filter(_=>propertyValues.findIndex(item=>item.Value==_.Name && item.Name==e.Value)==-1);
 
                 setValueSelectData(selectData);

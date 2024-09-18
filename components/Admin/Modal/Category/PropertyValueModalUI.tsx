@@ -20,18 +20,25 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
 
     const addPropertyValue=()=>{
         const propertyValue:ValueKey={
-            Name:""
+            Id:"af1bc80d-f1b1-4634-9955-883630428d5b",
+            Name:"",
+            Status:1
         }
 
         setPropertyValues([...propertyValues, propertyValue]);
     }
 
     const removePropertyValue=(index:number)=>{
-        setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
+        propertyValues[index].Status=3;
+        setPropertyValues([...propertyValues]);
     }
 
     const onChangePropertyValue=(index:number)=> (e: any)=>{
         propertyValues[index].Name=e.target.value;
+
+        if(propertyValues[index].Status==0)
+            propertyValues[index].Status=2;
+
         setPropertyValues([...propertyValues]);
     }
 
@@ -43,7 +50,7 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
   return (
     <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[200] justify-center bg-model
     items-center w-full md:inset-0 h-full max-h-full">
-        <div className="relative p-4 w-full max-w-xs max-h-full">
+        <div className="relative p-4 w-full max-w-[30rem] max-h-full">
             <div className="relative bg-white rounded-lg shadow">
                 <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -72,19 +79,28 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
                             </div>
                         </div>
 
-                        <div className='h-36 overflow-y-auto w-full'>
-                            {propertyValues && propertyValues.map((propertyValue:ValueKey, index)=>(
-                                <div className="flex flex-row gap-1 w-[98%]" key={index}>
-                                    <InputUI value={propertyValue.Name} name={`Name${index}`} classDiv={"w-full"} classInput={"w-full"}
-                                    onChangeEvent={onChangePropertyValue(index)}></InputUI>
+                        <div className='h-96 overflow-y-auto w-full'>
+                            {propertyValues && propertyValues.map((propertyValue:ValueKey, index)=>{
+                                let data;
 
-                                    <Button className={"-mt-2"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
-                                        event.preventDefault();
-                                        
-                                        removePropertyValue(index);
-                                    }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>
-                                </div>
-                            ))}
+                                if(propertyValue.Status!=3){
+                                    data=(
+                                        <div className="flex flex-row gap-4 w-[98%]" key={index}>
+                                            <InputUI value={propertyValue.Name} name={`Name${index}`} classDiv={"w-full"} classInput={"w-full"}
+                                            onChangeEvent={onChangePropertyValue(index)}></InputUI>
+
+                                            <Button className={"-mt"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                                event.preventDefault();
+                                                removePropertyValue(index);
+                                            }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>
+                                        </div>
+                                    )
+                                }
+
+                                return (
+                                    data
+                                )
+                            })}
                         </div>
                     </div>
 

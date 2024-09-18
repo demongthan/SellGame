@@ -201,7 +201,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
 
                                 <div className="col-span-2">
                                     <div className='flex flex-row gap-1'>
-                                        <InputUI value={propertiesJson} name='Properties' label={"Danh mục :"} classDiv={"w-[90%]"} classInput={"w-full"} isReadOnly={true}></InputUI>
+                                        <InputUI value={propertiesJson} name='Properties' label={"Thuộc tính :"} classDiv={"w-[90%]"} classInput={"w-full"} isReadOnly={true}></InputUI>
 
                                         <Button className={"w-[10%] flex justify-center items-center pt-6"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                             event.preventDefault();

@@ -1,19 +1,22 @@
 import { ItemSelect } from "./SelectItem"
 
 export interface ValueKey{
-    Name:string
+    Id:string,
+    Name:string,
+    Status:number
 }
 
 export interface PropertiesJson{
-    Key:string,
+    Id:string,
+    Status:number,
     Name:string,
-    Only:boolean,
+    IsOnly:boolean,
     Value:ValueKey[]
 }
 
 export interface PropertiesItemJson{
     Name:string,
-    Value?:string
+    Value:string
 }
 
 export interface ServiceDetailProperties{

@@ -25,7 +25,7 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
         setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
     }
 
-    const addPropertyValue=(name:string,value:string | undefined)=>{
+    const addPropertyValue=(name:string,value:string)=>{
         const propertyValue:PropertiesItemJson={
             Name:name,
             Value:value
