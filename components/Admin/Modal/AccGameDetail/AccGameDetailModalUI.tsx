@@ -1,7 +1,7 @@
 "use client"
 
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
-import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, ReturnPropertyModalUI, SelectPropertyModalUI, SelectUI } from '@/components';
+import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, SelectUI } from '@/components';
 import { accGameDetailType } from '@/utils/constant/AccGameDetail/AccGameDetailType';
 import { showToast } from '@/utils/showToast';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
@@ -9,6 +9,8 @@ import { convertNumberENtoNumber, convertNumberStrENtoString, isNullOrEmpty } fr
 import { Button } from '@headlessui/react';
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { FormEvent, useEffect, useState } from 'react'
+import SelectPropertyModalUI from './SelectPropertyModalUI';
+import ReturnPropertyModalUI from './ReturnPropertyModalUI';
 
 interface Props{
     closeModal:()=>void,

@@ -1,12 +1,15 @@
 "use client"
 
-import { ButtonAddItemUI, InputUI, LoadingUI, SelectPropertyValueModalUI } from '@/components'
+import { ButtonAddItemUI, CheckboxUI, InputUI } from '@/components'
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
-import { PropertiesItemJson } from '@/utils/types/PropertiesJson';
+import { PropertiesItemJson, ValueItemKey } from '@/utils/types/PropertiesJson';
+import { ItemSelect } from '@/utils/types/SelectItem';
 
 import { Button } from '@headlessui/react';
-import { MinusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
+import { MinusCircleIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useState } from 'react'
+import SelectPropertyValueModalUI from './SelectPropertyValueModalUI';
+import { ModeAction } from '@/utils/types/ModeAction';
 
 interface Props {
     closeModel: () => void;
@@ -21,25 +24,53 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
     const [isOpenPropertyValueModal, setIsOpenPropertyValueModal]=useState<boolean>(false);
     const [isChangeData, setIsChangeData]=useState<boolean>(false);
 
+    const [isCreate, setIsCreate]=useState<boolean>(true);
+    const [indexPropertyValue, setIndexPropertyValue]=useState<number>(0);
+
     const removePropertyValue=(index:number)=>{
         setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
     }
 
-    const addPropertyValue=(name:string,value:string)=>{
+    const addPropertyValue=(name:ItemSelect,value:ValueItemKey[], isShow:boolean, description:string | undefined)=>{
         const propertyValue:PropertiesItemJson={
-            Name:name,
-            Value:value
+            Name: name.Name,
+            Value: value,
+            IdName: name.Value,
+            Status: ModeAction.CREATE,
+            IsShow: isShow,
+            Description: description,
+            Id: "74055f4b-afea-46a6-b467-7680014808c5"
         }
 
         setPropertyValues([...propertyValues, propertyValue]);
         setIsChangeData(true);
     }
 
+    const editPropertyValue=(value:ValueItemKey[], isShow:boolean, description:string | undefined, index:number)=>{
+        propertyValues[index].Description = description;
+        propertyValues[index].IsShow = isShow;
+        propertyValues[index].Value = value;
+        if(propertyValues[index].Status==ModeAction.NOCHANGE)
+            propertyValues[index].Status = ModeAction.UPDATE;
+
+        setPropertyValues([...propertyValues]);
+        setIsChangeData(true);
+    }
+
     const openModal=()=>
         setIsOpenPropertyValueModal(!isOpenPropertyValueModal);
 
-    const openPropertyValueModal=()=>
+    const openCreatePropertyValueModal=()=>{
+        setIsCreate(true);
+        setIndexPropertyValue(0);
         setIsOpenPropertyValueModal(!isOpenPropertyValueModal);
+    }
+
+    const openUpdatePropertyValueModal=(index:number)=>{
+        setIsCreate(false);
+        setIndexPropertyValue(index);
+        setIsOpenPropertyValueModal(!isOpenPropertyValueModal);
+    }
 
     const eventButtonSubmit=()=>{
         setPropertyValueJson(JSON.stringify(propertyValues));
@@ -49,11 +80,12 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
     return (
         <>
             {isOpenPropertyValueModal && (<SelectPropertyValueModalUI closeModel={openModal} idCategory={idCategory}
-            addPropertyValue={addPropertyValue} propertyValues={propertyValues} adminDisplay={adminDisplay}></SelectPropertyValueModalUI>)}
+            addPropertyValue={addPropertyValue} propertyValues={propertyValues} adminDisplay={adminDisplay}
+            isCreate={isCreate} indexPropertyValue={indexPropertyValue} editPropertyValue={editPropertyValue}></SelectPropertyValueModalUI>)}
 
             <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[100] justify-center bg-model
             items-center w-full md:inset-0 h-full max-h-full">
-                <div className="relative p-4 w-full max-w-md max-h-full">
+                <div className="relative p-4 w-full max-w-[50rem] max-h-full">
                     <div className="relative bg-white rounded-lg shadow">
                         <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -71,31 +103,53 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
                         
                         <div className="p-4 md:p-5">
                             <div className="flex flex-col gap-4 mb-4 w-full">
-                                <div className="flex flex-row border-b border-gray-200 pb-2 w-[98%]">
-                                    <div className="text-base text-black font-semibold leading-6 w-[46.5%]">
+                                <div className="flex flex-row gap-4 border-b border-gray-200 pb-2 w-[98%] text-base text-black font-semibold leading-6">
+                                    <div className="w-[30%]">
                                         Tên
                                     </div>
 
-                                    <div className="text-base text-black font-semibold leading-6 w-[46.5%]">
+                                    <div className="w-[20%]">
                                         Giá trị
                                     </div>
+
+                                    <div className="w-[10%]">
+                                        Hiển thị
+                                    </div>
+
+                                    <div className="w-[30%]">
+                                        Mô tả
+                                    </div>
                                     
-                                    <div className='mt-1 flex justify-end w-[7%]'>
-                                        <ButtonAddItemUI eventButtonClicked={openPropertyValueModal}></ButtonAddItemUI>
+                                    <div className='mt-1 flex justify-end w-[10%]'>
+                                        <ButtonAddItemUI eventButtonClicked={openCreatePropertyValueModal}></ButtonAddItemUI>
                                     </div>
                                 </div>
 
-                                <div className='h-36 overflow-y-auto w-full'>
+                                <div className='h-56 overflow-y-auto w-full'>
                                     {propertyValues && propertyValues.map((propertyValue:PropertiesItemJson, index)=>(
-                                        <div className="flex flex-row gap-1 w-[98%]" key={index}>
-                                            <InputUI isDisabled={true} value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}></InputUI>
+                                        <div className="flex flex-row gap-4 w-[98%]" key={index}>
+                                            <InputUI isDisabled={true} value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[30%]"} classInput={"w-full"}></InputUI>
 
-                                            <InputUI isDisabled={true} value={propertyValue.Value} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}></InputUI>
+                                            <InputUI isDisabled={true} value={JSON.stringify(propertyValue.Value)} name={`Name${index}`} classDiv={"w-[20%]"} classInput={"w-full"}></InputUI>
 
-                                            <Button className={"-mt-2 w-[7%]"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
-                                                event.preventDefault();
-                                                removePropertyValue(index);
-                                            }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>
+                                            <div className='flex justify-center items-center w-[10%]'>
+                                                <CheckboxUI disabled={true} isChecked={propertyValue.IsShow} className='defaultCheckboxInline'></CheckboxUI>
+                                            </div>
+
+                                            <InputUI isDisabled={true} value={propertyValue.Description} name={`Name${index}`} classDiv={"w-[30%]"} classInput={"w-full"}></InputUI>
+
+                                            <div className='flex flex-row w-[10%] gap-1 -mt-2'>
+                                                <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                                    event.preventDefault();
+                                                    openUpdatePropertyValueModal(index);
+                                                }}><PencilSquareIcon className='h-[1.5rem] w-[1.5rem]'></PencilSquareIcon></Button>
+
+                                                <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                                    event.preventDefault();
+                                                    removePropertyValue(index);
+                                                }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>
+                                            </div>
+                                            
                                         </div>
                                     ))}
                                 </div>

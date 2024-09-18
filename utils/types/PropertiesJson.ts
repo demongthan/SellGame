@@ -1,3 +1,4 @@
+import { ModeAction } from "./ModeAction"
 import { ItemSelect } from "./SelectItem"
 
 export interface ValueKey{
@@ -8,15 +9,27 @@ export interface ValueKey{
 
 export interface PropertiesJson{
     Id:string,
-    Status:number,
+    Status:ModeAction,
     Name:string,
     IsOnly:boolean,
     Value:ValueKey[]
 }
 
-export interface PropertiesItemJson{
-    Name:string,
+export interface ValueItemKey{
+    Id:string,
+    Status:ModeAction,
+    IdValue:string,
     Value:string
+}
+
+export interface PropertiesItemJson{
+    Id:string
+    IdName:string,
+    Name:string,
+    Value:ValueItemKey[],
+    Status:ModeAction,
+    IsShow:boolean,
+    Description?:string
 }
 
 export interface ServiceDetailProperties{

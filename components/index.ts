@@ -86,8 +86,6 @@ export{
     ImageDetailModalUI,
     UploadImageForImageDetailModalUI,
     AccGameDetailModalUI,
-    SelectPropertyValueModalUI,
-    SelectPropertyModalUI,
     UploadImageForAccGameDetailModalUI,
     MethodCalculateDisplay,
     ServiceDetailModalUI,
@@ -99,7 +97,6 @@ export{
     ButtonV2UI,
     CountdownTimer,
     DescriptionDisplay,
-    ReturnPropertyModalUI,
     AccGameDetailStatusDisplay,
     AccGameDetailTypeDisplay
 }

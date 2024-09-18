@@ -1,4 +1,5 @@
 import { Button } from '@headlessui/react'
+import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 
 interface Props{
@@ -18,14 +19,13 @@ const ButtonUpdateItemUI = ({titleButton, eventButtonClicked, type, isDisabled=f
                 {titleButton && (<p className='text-base font-semibold'>{titleButton}</p>)}
             </Button>
         ):(
-            <Button disabled={isDisabled} type={type} className={`flex justify-center items-center text-white bg-s2cyan1 border border-transparent 
+            <Button disabled={isDisabled} type={type} className={`flex gap-1 justify-center items-center text-white bg-s2cyan1 border border-transparent 
                 rounded-md ${titleButton?"px-4 h-9":"px-1 h-5"} disabled:opacity-70 hover:opacity-70`}
             onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                     event.preventDefault();
-                
                     eventButtonClicked();
             }}>
-
+                <PencilSquareIcon className={`${titleButton?"h-[1.2rem] w-[1.2rem]":"h-[1rem] w-[1rem]"}`}></PencilSquareIcon>
                 {titleButton && (<p className='text-base font-semibold'>{titleButton}</p>)}
             </Button>
         )}
