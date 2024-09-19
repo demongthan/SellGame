@@ -1,4 +1,4 @@
-import { CheckboxUI, InputUI } from '@/components';
+import { ButtonAddItemUI, CheckboxUI, InputUI } from '@/components';
 import { ModeAction } from '@/utils/types/ModeAction';
 import { ValueItemKey } from '@/utils/types/PropertiesJson';
 import { ItemSelect } from '@/utils/types/SelectItem';
@@ -19,16 +19,19 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
     const [value, setValue]=useState<string>("");
     const [valueSelectDataShow, setValueSelectDataShow]=useState<ItemSelect[]>(valueSelectData);
     const [valuesSelect, setValuesSelect]=useState<ValueItemKey[]>(values);
+    const [isChangeData, setIsChangeData]=useState<boolean>(false);
     
     const handleChange = (name:string) => (e: any) => {
         switch(name){
             case "value":
                 setValue(e.target.value);
+                setIsChangeData(true);
                 setValueSelectDataShow(valueSelectData.filter(_=> isNullOrEmpty(e.target.value) || _.Name.includes(e.target.value)));
                 break;
             case "selectAll":
                 const isCheck=!isSelectAll;
                 setIsSelectAll(isCheck);
+                setIsChangeData(true);
 
                 if(isCheck){
                     let lstItem:ValueItemKey[]=[];
@@ -51,6 +54,7 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
 
     const handleSelectChange=(index:number)=>(event: React.ChangeEvent<HTMLInputElement>)=>{
         const indexItem=valuesSelect.findIndex(_=>_.IdValue==valueSelectDataShow[index].Value);
+        setIsChangeData(true);
 
         if(event.target.checked){
             if(indexItem>-1){
@@ -87,8 +91,11 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
                 setValuesSelect([...valuesSelect.slice(0, indexItem), ...valuesSelect.slice(indexItem + 1)]);
             }
         }
+    }
 
-        console.log(event.target.checked, indexItem, valuesSelect, valueSelectDataShow, index)
+    const eventButtonAddClicked=()=>{
+        addValue(valuesSelect);
+        closeModel();
     }
 
     return (
@@ -131,6 +138,8 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
                                 ))}
                             </div>
                         </div>
+
+                        <ButtonAddItemUI isDisabled={!isChangeData} titleButton={"Thêm"} eventButtonClicked={eventButtonAddClicked}></ButtonAddItemUI>
                     </div>
                 </div>
             </div>

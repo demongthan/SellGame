@@ -29,6 +29,7 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
 
     const removePropertyValue=(index:number)=>{
         setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
+        setIsChangeData(true);
     }
 
     const addPropertyValue=(name:ItemSelect,value:ValueItemKey[], isShow:boolean, description:string | undefined)=>{
@@ -130,7 +131,7 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
                                         <div className="flex flex-row gap-4 w-[98%]" key={index}>
                                             <InputUI isDisabled={true} value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[30%]"} classInput={"w-full"}></InputUI>
 
-                                            <InputUI isDisabled={true} value={JSON.stringify(propertyValue.Value)} name={`Name${index}`} classDiv={"w-[20%]"} classInput={"w-full"}></InputUI>
+                                            <InputUI isDisabled={true} value={propertyValue.Value?propertyValue.Value.map(_=>_.Value).join("|"):""} name={`Name${index}`} classDiv={"w-[20%]"} classInput={"w-full"}></InputUI>
 
                                             <div className='flex justify-center items-center w-[10%]'>
                                                 <CheckboxUI disabled={true} isChecked={propertyValue.IsShow} className='defaultCheckboxInline'></CheckboxUI>
@@ -156,7 +157,7 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
                             </div>
 
                             <div className='mt-6'>
-                                <ButtonAddItemUI isDisabled={!isChangeData || propertyValues.length==0} titleButton={'Thêm danh sách'} eventButtonClicked={eventButtonSubmit}></ButtonAddItemUI>
+                                <ButtonAddItemUI isDisabled={!isChangeData} titleButton={'Thêm danh sách'} eventButtonClicked={eventButtonSubmit}></ButtonAddItemUI>
                             </div>
                         </div>
                     </div>
