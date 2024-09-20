@@ -7,6 +7,7 @@ import PropertyValueModalUI from './PropertyValueModalUI'
 
 import { MinusCircleIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, {useState } from 'react';
+import { ModeAction } from '@/utils/types/ModeAction';
 
 interface Props{
     closeModal:()=>void,
@@ -23,7 +24,7 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
     const addProperty=()=>{
         let property:PropertiesJson={
             Id:"af1bc80d-f1b1-4634-9955-883630428d5b",
-            Status:1,
+            Status:ModeAction.CREATE,
             Name:"",
             IsOnly:true,
             Value:[]
@@ -33,7 +34,7 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
     }
 
     const removeProperty=(index:number)=>{
-        properties[index].Status=3;
+        properties[index].Status=ModeAction.DELETE;
         setProperties([...properties]);
     }
 
@@ -45,16 +46,16 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
             case "name":
                 properties[index].Name=e.target.value;
 
-                if(properties[index].Status==0)
-                    properties[index].Status=2;
+                if(properties[index].Status==ModeAction.NOCHANGE)
+                    properties[index].Status=ModeAction.UPDATE;
 
                 setProperties([...properties]);
                 break;
             case "only":
                 properties[index].IsOnly=!properties[index].IsOnly;
 
-                if(properties[index].Status==0)
-                    properties[index].Status=2;
+                if(properties[index].Status==ModeAction.NOCHANGE)
+                    properties[index].Status=ModeAction.UPDATE;
 
                 setProperties([...properties]);
                 break;
@@ -66,8 +67,8 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
     const setPropertyValue=(index:number, propertyValues:ValueKey[])=>{
         properties[index].Value=propertyValues;
 
-        if(properties[index].Status==0)
-            properties[index].Status=2;
+        if(properties[index].Status==ModeAction.NOCHANGE)
+            properties[index].Status=ModeAction.UPDATE;
         
         setProperties([...properties]);
     }

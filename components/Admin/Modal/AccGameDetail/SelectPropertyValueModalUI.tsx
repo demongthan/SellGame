@@ -11,6 +11,7 @@ import { Button } from '@headlessui/react';
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
 import SelectPropertyValueNotOnlyModalUI from './SelectPropertyValueNotOnlyModalUI';
+import { ModeAction } from '@/utils/types/ModeAction';
 
 interface Props{
     closeModel:()=>void,
@@ -70,39 +71,48 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
 
                         setNameSelectData(names);
                         setName(names?names[0]:{Name:"", Value:""});
+
+                        if(names){
+                            const index=propertiesJsons.findIndex(_=>_.Id==names[0].Value);
+                            setIsOnly(propertiesJsons[index].IsOnly);
+
+                            const selectData:ItemSelect[]=propertiesJsons[index].Value?propertiesJsons[index].Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
+                            setValueSelectData(selectData);
+
+                            if(propertiesJsons[index].IsOnly){
+                                setValue(selectData?selectData[0]:{Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
+                                setValues([{Id:"74055f4b-afea-46a6-b467-7680014808c5", IdValue:selectData[0].Value, Status:1, Value:selectData[0].Name}])
+                            }
+                            else{
+                                setValues([]);
+                            }
+                        }
                     }
                     else{
                         propertiesJsons.map((propertiesJson:PropertiesJson)=>{
-                            const index=propertyValues.findIndex(_=>_.Id==propertiesJson.Id);
-                            if(propertyValues.findIndex(_=>_.Id==propertiesJson.Id)==-1 || index==indexPropertyValue){
+                            const index=propertyValues.findIndex(_=>_.IdName==propertiesJson.Id);
+                            if(index==-1 || index==indexPropertyValue){
                                 names.push({Name:propertiesJson.Name, Value:propertiesJson.Id});
+                            }
+
+                            console.log(index, propertiesJson, propertyValues, indexPropertyValue)
+                            if(index==indexPropertyValue){
+                                setIsOnly(propertiesJson.IsOnly);
+                                const selectData:ItemSelect[]=propertiesJson.Value?propertiesJson.Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
+                                setValueSelectData(selectData);
+
+                                if(propertiesJson.IsOnly){
+                                    setValue(selectData?selectData[selectData.findIndex(_=>propertyValues[indexPropertyValue].Value[0].IdValue==_.Value)]:{Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
+                                    setValues(propertyValues[index].Value);
+                                }
+                                else{
+                                    setValues([]);
+                                }
                             }
 
                             setNameSelectData(names);
                             setName(names?names[names.findIndex(_=>_.Value==propertyValues[indexPropertyValue].IdName)]:{Name:"", Value:""});
                         });
-                    }
-                    
-                    if(names){
-                        const index:number=isCreate?propertiesJsons.findIndex(_=>_.Id==names[0].Value):indexPropertyValue;
-                        setIsOnly(propertiesJsons[index].IsOnly);
-
-                        const selectData:ItemSelect[]=propertiesJsons[index].Value?propertiesJsons[index].Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
-                        setValueSelectData(selectData);
-
-                        if(propertiesJsons[index].IsOnly){
-                            if(isCreate){
-                                setValue(selectData?selectData[0]:{Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
-                                setValues([{Id:"74055f4b-afea-46a6-b467-7680014808c5", IdValue:selectData[0].Value, Status:1, Value:selectData[0].Name}])
-                            }
-                            else{
-                                setValue(selectData?selectData[selectData.findIndex(_=>propertyValues[index].Value[0].IdValue==_.Value)]:{Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
-                                setValues(propertyValues[index].Value);
-                            }
-                        }
-                        else{
-                            setValues([]);
-                        }
                     }
                 }
 
@@ -138,7 +148,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                     setValue(selectData?selectData[0]:{Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
                     values[0].IdValue=selectData[0].Value;
                     values[0].Value=selectData[0].Name;
-                    setValues(values);
+                    setValues([...values]);
                 }
                 else{
                     setValues([]);
@@ -147,7 +157,10 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
             case "value":
                 setValue(e);
                 values[0].IdValue=e.Value;
-                setValues(values)
+                values[0].Value=e.Name;
+                if(values[0].Status==ModeAction.NOCHANGE)
+                    values[0].Status=ModeAction.UPDATE;
+                setValues([...values]);
                 break;
             case "isShow":
                 setIsShow(!isShow);

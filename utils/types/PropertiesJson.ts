@@ -4,7 +4,7 @@ import { ItemSelect } from "./SelectItem"
 export interface ValueKey{
     Id:string,
     Name:string,
-    Status:number
+    Status:ModeAction
 }
 
 export interface PropertiesJson{

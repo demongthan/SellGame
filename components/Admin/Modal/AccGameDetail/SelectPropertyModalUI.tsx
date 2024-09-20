@@ -28,7 +28,14 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
     const [indexPropertyValue, setIndexPropertyValue]=useState<number>(0);
 
     const removePropertyValue=(index:number)=>{
-        setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
+        if(propertyValues[index].Status==ModeAction.CREATE){
+            setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
+        }
+        else{
+            propertyValues[index].Status=ModeAction.DELETE;
+            setPropertyValues([...propertyValues]);
+        }
+
         setIsChangeData(true);
     }
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { ButtonAddItemUI, InputUI } from '@/components';
+import { ModeAction } from '@/utils/types/ModeAction';
 import { ValueKey } from '@/utils/types/PropertiesJson';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
@@ -22,22 +23,22 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
         const propertyValue:ValueKey={
             Id:"af1bc80d-f1b1-4634-9955-883630428d5b",
             Name:"",
-            Status:1
+            Status:ModeAction.CREATE
         }
 
         setPropertyValues([...propertyValues, propertyValue]);
     }
 
     const removePropertyValue=(index:number)=>{
-        propertyValues[index].Status=3;
+        propertyValues[index].Status=ModeAction.DELETE;
         setPropertyValues([...propertyValues]);
     }
 
     const onChangePropertyValue=(index:number)=> (e: any)=>{
         propertyValues[index].Name=e.target.value;
 
-        if(propertyValues[index].Status==0)
-            propertyValues[index].Status=2;
+        if(propertyValues[index].Status==ModeAction.NOCHANGE)
+            propertyValues[index].Status=ModeAction.UPDATE;
 
         setPropertyValues([...propertyValues]);
     }
