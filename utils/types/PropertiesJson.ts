@@ -22,6 +22,11 @@ export interface ValueItemKey{
     Value:string
 }
 
+export interface ValueReturnItem{
+    Name:string,
+    Value:string
+}
+
 export interface PropertiesItemJson{
     Id:string
     IdName:string,

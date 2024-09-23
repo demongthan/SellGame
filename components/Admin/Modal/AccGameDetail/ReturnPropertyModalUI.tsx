@@ -2,7 +2,7 @@
 
 import ButtonAddItemUI from '@/components/Common/UI/Button/ButtonAddItemUI';
 import InputUI from '@/components/Common/UI/InputUI';
-import { PropertiesItemJson } from '@/utils/types/PropertiesJson';
+import {ValueReturnItem } from '@/utils/types/PropertiesJson';
 
 import { Button } from '@headlessui/react';
 import { MinusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const ReturnPropertyModalUI = ({closeModel, returnPropertiesJson, setReturnPropertiesJson}:Props) => {
-    const [returnProperties, setReturnProperties]=useState<PropertiesItemJson[]>(JSON.parse(returnPropertiesJson));
+    const [returnProperties, setReturnProperties]=useState<ValueReturnItem[]>(JSON.parse(returnPropertiesJson));
     const [isChangeData, setIsChangeData]=useState<boolean>(false);
 
     const removePropertyValue=(index:number)=>{
@@ -23,7 +23,7 @@ const ReturnPropertyModalUI = ({closeModel, returnPropertiesJson, setReturnPrope
     }
 
     const addPropertyValue=()=>{
-        const returnProperty:PropertiesItemJson={
+        const returnProperty:ValueReturnItem={
             Name:"",
             Value:""
         }
@@ -91,7 +91,7 @@ const ReturnPropertyModalUI = ({closeModel, returnPropertiesJson, setReturnPrope
                                 </div>
 
                                 <div className='h-36 overflow-y-auto w-full'>
-                                    {returnProperties && returnProperties.map((propertyValue:PropertiesItemJson, index)=>(
+                                    {returnProperties && returnProperties.map((propertyValue:ValueReturnItem, index)=>(
                                         <div className="flex flex-row gap-1 w-[98%]" key={index}>
                                             <InputUI value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}
                                             onChangeEvent={handleChange("name", index)}></InputUI>

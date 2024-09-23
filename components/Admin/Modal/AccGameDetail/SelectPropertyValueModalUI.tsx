@@ -234,7 +234,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                                         </div>
 
                                         <div className="col-span-2">
-                                            <InputUI value={description} name='Description' label={"Mô tả :"} classDiv={"w-full"} classInput={"w-full"}
+                                            <InputUI isDisabled={isShow} value={description} name='Description' label={"Mô tả :"} classDiv={"w-full"} classInput={"w-full"}
                                             onChangeEvent={handleChange("description")}></InputUI>
                                         </div>
                                     </div>
