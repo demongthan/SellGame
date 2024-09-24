@@ -51,7 +51,7 @@ const SelectUI = ({
             <div className="relative w-full cursor-default overflow-hidden bg-white text-left">
               <ComboboxInput name={name}
                 className="w-full border-s2gray2 border rounded-lg py-2.5 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:border-s2cyan1 focus:outline-none"
-                displayValue={(item:any) => item.Name}
+                displayValue={(item:any) => item?item.Name:""}
                 onChange={(event) => setQuery(event.target.value)}
               >
               </ComboboxInput>

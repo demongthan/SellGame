@@ -44,40 +44,8 @@ export const POST=async (request: any)=> {
         )
     }
     else{
-        const type=accGameDetailType.find(item=>item.Name==data.get("AccGameDetailType").toString());
-        
-        if(data.get("IsCreate")=="true"){
-            const dataReturn: CreateAccGameDetailDto={
-                IdCategory:data.get("IdCategory"),
-                Price: convertNumberENtoNumber(data.get("Price").toString()),
-                Discount: convertNumberENtoNumber(data.get("Discount").toString()),
-                Deposit: convertNumberENtoNumber(data.get("Deposit").toString()),
-                Active: data.get("Active")=="on"?true:false,
-                Properties: data.get("Properties"),
-                Description: data.get("Description"),
-                ReturnProperties: data.get("ReturnProperties"),
-                Type:type?type.Value:AccGameDetailType.Regular
-            }
-    
-            return NextResponse.json(
-                {isSuccess:res.success, data:dataReturn}
-            )
-        }
-        else{
-            const dataReturn: UpdateAccGameDetailDto={
-                Price: convertNumberENtoNumber(data.get("Price").toString()),
-                Discount: convertNumberENtoNumber(data.get("Discount").toString()),
-                Deposit: convertNumberENtoNumber(data.get("Deposit").toString()),
-                Active: data.get("Active")=="on"?true:false,
-                Properties: data.get("Properties"),
-                Description: data.get("Description"),
-                ReturnProperties: data.get("ReturnProperties"),
-                Type:type?type.Value:AccGameDetailType.Regular
-            }
-    
-            return NextResponse.json(
-                {isSuccess:res.success, data:dataReturn}
-            )
-        }
+        return NextResponse.json(
+            {isSuccess:res.success}
+        )
     }
 }

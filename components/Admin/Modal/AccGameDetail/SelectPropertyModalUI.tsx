@@ -10,6 +10,7 @@ import { MinusCircleIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/react/2
 import React, { useState } from 'react'
 import SelectPropertyValueModalUI from './SelectPropertyValueModalUI';
 import { ModeAction } from '@/utils/types/ModeAction';
+import { truncateString } from '@/utils/utils';
 
 interface Props {
     closeModel: () => void;
@@ -111,12 +112,12 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
                         
                         <div className="p-4 md:p-5">
                             <div className="flex flex-col gap-4 mb-4 w-full">
-                                <div className="flex flex-row gap-4 border-b border-gray-200 pb-2 w-[98%] text-base text-black font-semibold leading-6">
-                                    <div className="w-[30%]">
+                                <div className="flex flex-row gap-4 border-b border-gray-200 pb-2 w-[96%] text-base text-black font-semibold leading-6">
+                                    <div className="w-[20%]">
                                         Tên
                                     </div>
 
-                                    <div className="w-[20%]">
+                                    <div className="w-[30%]">
                                         Giá trị
                                     </div>
 
@@ -135,29 +136,28 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
 
                                 <div className='h-56 overflow-y-auto w-full'>
                                     {propertyValues && propertyValues.map((propertyValue:PropertiesItemJson, index)=>(
-                                        <div className="flex flex-row gap-4 w-[98%]" key={index}>
-                                            <InputUI isDisabled={true} value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[30%]"} classInput={"w-full"}></InputUI>
+                                        <div className="flex flex-row justify-center gap-4 w-[98%] border-gray-100 border-b hover:bg-teal-100 py-4" key={index}>
+                                            <label className='w-[20%] font-semibold'>{propertyValue.Name}</label>
 
-                                            <InputUI isDisabled={true} value={propertyValue.Value?propertyValue.Value.map(_=>_.Value).join("|"):""} name={`Name${index}`} classDiv={"w-[20%]"} classInput={"w-full"}></InputUI>
+                                            <label className='w-[30%]'>{truncateString(propertyValue.Value?propertyValue.Value.map(_=>_.Value).join("|"):"", 20)}</label>
 
                                             <div className='flex justify-center items-center w-[10%]'>
                                                 <CheckboxUI disabled={true} isChecked={propertyValue.IsShow} className='defaultCheckboxInline'></CheckboxUI>
                                             </div>
 
-                                            <InputUI isDisabled={true} value={propertyValue.Description} name={`Name${index}`} classDiv={"w-[30%]"} classInput={"w-full"}></InputUI>
+                                            <label className='w-[30%]'>{propertyValue.Description}</label>
 
-                                            <div className='flex flex-row w-[10%] gap-1 -mt-2'>
+                                            <div className='flex flex-row items-end w-[10%] gap-1 -mt-2'>
                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                     event.preventDefault();
                                                     openUpdatePropertyValueModal(index);
-                                                }}><PencilSquareIcon className='h-[1.5rem] w-[1.5rem]'></PencilSquareIcon></Button>
+                                                }}><PencilSquareIcon className='h-[1.5rem] w-[1.5rem] text-blue-600'></PencilSquareIcon></Button>
 
                                                 <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                     event.preventDefault();
                                                     removePropertyValue(index);
-                                                }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>
+                                                }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem] text-red-500'></MinusCircleIcon></Button>
                                             </div>
-                                            
                                         </div>
                                     ))}
                                 </div>

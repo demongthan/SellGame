@@ -26,7 +26,7 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
             case "value":
                 setValue(e.target.value);
                 setIsChangeData(true);
-                setValueSelectDataShow(valueSelectData.filter(_=> isNullOrEmpty(e.target.value) || _.Name.includes(e.target.value)));
+                setValueSelectDataShow(valueSelectData.filter(_=> isNullOrEmpty(e.target.value) || _.Name.toLowerCase().includes(e.target.value.toLowerCase())));
                 break;
             case "selectAll":
                 const isCheck=!isSelectAll;
@@ -127,7 +127,7 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
                                 isChecked={isSelectAll} onChangeEvent={handleChange("selectAll")}></CheckboxUI>
                             </div>
 
-                            <div className="grid gap-4 grid-cols-4 max-h-96 overflow-y-auto w-full px-2">
+                            <div className="grid gap-4 grid-cols-4 h-96 overflow-y-auto w-full px-2">
                                 {valueSelectDataShow && valueSelectDataShow.map((item:ItemSelect, index:number)=>(
                                     <div key={index} className="flex items-center h-12">
                                         <Input id={`Value${index}`} checked={valuesSelect.some(_=>_.IdValue==item.Value && _.Status!=ModeAction.DELETE)} type="checkbox" value="" 

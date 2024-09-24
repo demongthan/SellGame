@@ -156,8 +156,8 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                 break;
             case "value":
                 setValue(e);
-                values[0].IdValue=e.Value;
-                values[0].Value=e.Name;
+                values[0].IdValue=e?e.Value:"";
+                values[0].Value=e?e.Name:"";
                 if(values[0].Status==ModeAction.NOCHANGE)
                     values[0].Status=ModeAction.UPDATE;
                 setValues([...values]);

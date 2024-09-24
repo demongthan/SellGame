@@ -5,7 +5,7 @@ import InputUI from '@/components/Common/UI/InputUI';
 import {ValueReturnItem } from '@/utils/types/PropertiesJson';
 
 import { Button } from '@headlessui/react';
-import { MinusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
+import { TrashIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useState } from 'react'
 
 interface Props {
@@ -93,16 +93,16 @@ const ReturnPropertyModalUI = ({closeModel, returnPropertiesJson, setReturnPrope
                                 <div className='h-36 overflow-y-auto w-full'>
                                     {returnProperties && returnProperties.map((propertyValue:ValueReturnItem, index)=>(
                                         <div className="flex flex-row gap-1 w-[98%]" key={index}>
-                                            <InputUI value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}
+                                            <InputUI value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[45%]"} classInput={"w-full"}
                                             onChangeEvent={handleChange("name", index)}></InputUI>
 
-                                            <InputUI value={propertyValue.Value} name={`Name${index}`} classDiv={"w-[46.5%]"} classInput={"w-full"}
+                                            <InputUI value={propertyValue.Value} name={`Name${index}`} classDiv={"w-[45%]"} classInput={"w-full"}
                                             onChangeEvent={handleChange("value", index)}></InputUI>
 
-                                            <Button className={"-mt-2 w-[7%]"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                            <Button className={"-mt-2 w-[10%] flex justify-center items-center"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                 event.preventDefault();
                                                 removePropertyValue(index);
-                                            }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>
+                                            }}><TrashIcon className='h-[1.2rem] w-[1.2rem] text-red-500'></TrashIcon></Button>
                                         </div>
                                     ))}
                                 </div>

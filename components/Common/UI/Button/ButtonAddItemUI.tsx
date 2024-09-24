@@ -13,14 +13,14 @@ const ButtonAddItemUI = ({titleButton, eventButtonClicked, type, isDisabled=fals
   return (
     <>
         {type=="submit"?(
-            <Button disabled={isDisabled} type="submit" className={`flex flex-row gap-2 justify-center items-center text-white bg-s2cyan1 border border-transparent 
+            <Button disabled={isDisabled} type="submit" className={`flex flex-row gap-2 justify-center items-center text-white bg-green-600 border border-transparent 
             rounded-md ${titleButton?"px-4 h-9":"px-2 h-5"} disabled:opacity-70 hover:opacity-70`}>
                 <PlusIcon className={`${titleButton?"h-[1.5rem] w-[1.5rem]":"h-[1rem] w-[1rem]"}`}></PlusIcon>
 
                 {titleButton && (<p className='text-base font-semibold'>{titleButton}</p>)}
             </Button>
         ):(
-            <Button disabled={isDisabled} type={type} className={`flex flex-row gap-2 justify-center items-center text-white bg-s2cyan1 border border-transparent 
+            <Button disabled={isDisabled} type={type} className={`flex flex-row gap-2 justify-center items-center text-white bg-green-600 border border-transparent 
                 rounded-md ${titleButton?"px-4 h-9":"px-1 h-5"} disabled:opacity-70 hover:opacity-70`}
             onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                     event.preventDefault();
