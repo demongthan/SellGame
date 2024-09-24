@@ -127,7 +127,7 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
                                                     <CheckboxUI isChecked={property.IsOnly} onChangeEvent={handleChange("only", index)} className='defaultCheckboxInline'></CheckboxUI>
                                                 </div>
 
-                                                <InputUI value={property.Value?property.Value.filter(_=>_.Status!=ModeAction.DELETE).map(_=>_.Name).join("|"):""} name={`Value${index}`} classDiv={"w-[22%]"} classInput={"w-full"} isDisabled={true}></InputUI>
+                                                <InputUI value={property.Value?property.Value.filter(_=>_.Status!=ModeAction.DELETE).map(_=>_.Name).join(" | "):""} name={`Value${index}`} classDiv={"w-[22%]"} classInput={"w-full"} isDisabled={true}></InputUI>
 
                                                 <div className='flex flex-row w-[7%] gap-1 -mt-2'>
                                                     <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{

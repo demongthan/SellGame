@@ -6,12 +6,14 @@ import InputUI from '@/components/Common/UI/InputUI'
 import PropertiesModalUI from './PropertiesModalUI'
 import { categoryApiRequest } from '@/apiRequests/category'
 import { showToast } from '@/utils/showToast'
-import { isNullOrEmpty } from '@/utils/utils'
+import { isNullOrEmpty, truncateString } from '@/utils/utils'
 import { AdminDisplay } from '@/utils/types/AdminDisplay'
 
-import { Button } from '@headlessui/react'
-import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import { Button, Input } from '@headlessui/react'
+import { PencilSquareIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import React, { FormEvent, useEffect, useState } from 'react'
+import { PropertiesJson } from '@/utils/types/PropertiesJson'
+import { CreateCategoryDto } from '@/apiRequests/DataDomain/Category/CreateCategoryDto'
 
 interface Props{
     refreshAllCategoryCreate:()=>Promise<void>,
@@ -44,8 +46,8 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
         setIsLoadingPopup(true);
 
         try{
-            const formData = new FormData(event.currentTarget)
-            formData.append("isCreate", isCreate?"true":"false");
+            const formData = new FormData();
+            formData.append("Name", name);
 
             const response = await fetch('/api/category', {
                 method: 'POST',
@@ -56,7 +58,14 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
     
             if(data.isSuccess){
                 if(isCreate){
-                    const result = await categoryApiRequest.createCategory({body:data.data, token:adminDisplay?.token});
+                    const createCategoryDto: CreateCategoryDto={
+                        Name: name,
+                        Description: description,
+                        Active: active,
+                        Properties:propertiesJson
+                    }
+
+                    const result = await categoryApiRequest.createCategory({body:createCategoryDto, token:adminDisplay?.token})
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "danh mục game")}</p>);
@@ -68,7 +77,14 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                     }
                 }
                 else{
-                    const result = await categoryApiRequest.updateCategory({body:data.data, id:idCategory, token:adminDisplay?.token});
+                    const updateCategoryDto: UpdateCategoryDto={
+                        Name: name,
+                        Description: description,
+                        Active: active,
+                        Properties:propertiesJson
+                    }
+
+                    const result = await categoryApiRequest.updateCategory({body:updateCategoryDto, id:idCategory, token:adminDisplay?.token});
 
                     if(result.payload.data){
                         showToast("success", <p>{result.payload.message.replace("{Item}", "danh mục game")}</p>);
@@ -155,7 +171,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
         
         <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center bg-model
         items-center w-full md:inset-0 h-full max-h-full">
-            <div className="relative p-4 w-full max-w-md max-h-full">
+            <div className="relative p-4 w-full max-w-[40rem] max-h-full">
                 {isLoading?(<LoadingUI></LoadingUI>):(
                     <div className="relative bg-white rounded-lg shadow">
                         <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
@@ -195,18 +211,42 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                                 </div>
 
                                 <div className="col-span-2">
-                                    <CheckboxUI name='Active' isChecked={active} isBlockLabel={false} label={"Hiệu lực :"} classDiv={"w-full"} classLabel={"w-1/5"}
+                                    <CheckboxUI name='Active' isChecked={active} isBlockLabel={false} label={"Hiệu lực :"} classDiv={"w-full"} classLabel={"w-2/5"}
                                     onChangeEvent={handleChange("active")}></CheckboxUI>
                                 </div>
 
                                 <div className="col-span-2">
-                                    <div className='flex flex-row gap-1'>
-                                        <InputUI value={propertiesJson} name='Properties' label={"Thuộc tính :"} classDiv={"w-[90%]"} classInput={"w-full"} isReadOnly={true}></InputUI>
+                                    <div className='flex flex-col'>
+                                        <div className='flex flex-row w-full'>
+                                            <label className='text-base text-black font-semibold leading-6 w-[90%]'>Thuộc tính:</label>
 
-                                        <Button className={"w-[10%] flex justify-center items-center pt-6"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
-                                            event.preventDefault();
-                                            openModel();
-                                        }}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem]'></PlusCircleIcon></Button>
+                                            <Button className={"w-[10%] flex justify-end items-center"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                                event.preventDefault();
+                                                openModel();
+                                            }}>{isCreate?(<PlusCircleIcon className='h-[1.5rem] w-[1.5rem]'></PlusCircleIcon>)
+                                            :(<PencilSquareIcon className='h-[1.5rem] w-[1.5rem]'></PencilSquareIcon>)}</Button>
+                                        </div>
+                                    </div>
+
+                                    <Input value={propertiesJson} name='Properties' readOnly={true} hidden={true}></Input>
+
+                                    <div className="flex flex-col w-full py-2 mt-2 max-h-40 overflow-y-auto">
+                                        {propertiesJson && JSON.parse(propertiesJson).map((property:PropertiesJson, index:number) =>(
+                                            <div key={index} className="cursor-pointer w-full border-gray-100 border-b hover:bg-teal-100">
+                                                <div className="flex w-full items-center py-2 border-transparent border-l-2 relative hover:border-teal-100">
+                                                    <div className="w-full items-center flex py-2">
+                                                        <div className="w-4/5 "><span className='text-sm font-semibold'>{property.Name}</span>
+                                                            <div className="text-xs truncate w-full normal-case font-normal mt-1 text-gray-500">{truncateString(property.Value.map(_=>_.Name). join(" | "), 80)}</div>
+                                                        </div>
+                                                        <div className="w-1/5 flex">
+                                                            <div className={`flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full ${property.IsOnly?"text-fuchsia-700 bg-fuchsia-100":"text-purple-700 bg-purple-100"} border border-teal-300 `}>
+                                                                <div className="text-xs font-normal leading-none max-w-full flex-initial">{property.IsOnly?"Chọn một":"Chọn nhiều"}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>

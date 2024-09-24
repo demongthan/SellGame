@@ -17,7 +17,8 @@ interface Props{
 }
 
 const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyValueJson}:Props) => {
-    const [propertyValues, setPropertyValues]=useState<ValueKey[]>(JSON.parse(propertyValueJson))
+    const [propertyValues, setPropertyValues]=useState<ValueKey[]>(JSON.parse(propertyValueJson));
+    const [search, setSearch] = useState<string>("");
 
     const addPropertyValue=()=>{
         const propertyValue:ValueKey={
@@ -30,8 +31,13 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
     }
 
     const removePropertyValue=(index:number)=>{
-        propertyValues[index].Status=ModeAction.DELETE;
-        setPropertyValues([...propertyValues]);
+        if(propertyValues[index].Status!=ModeAction.CREATE){
+            propertyValues[index].Status=ModeAction.DELETE;
+            setPropertyValues([...propertyValues]);
+        }
+        else{
+            setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
+        }
     }
 
     const onChangePropertyValue=(index:number)=> (e: any)=>{
@@ -42,6 +48,9 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
 
         setPropertyValues([...propertyValues]);
     }
+
+    const handleChangeSearch=(e:any)=>
+        setSearch(e.target.value);
 
     const eventButtonAddItem=()=>{
         addProperty(indexProperty, propertyValues.filter(_=>!isNullOrEmpty(_.Name)));
@@ -60,7 +69,6 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
                     <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                     w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                         event.preventDefault();
-                        
                         closeModel();
                       }}>
                         <XMarkIcon className="w-6 h-6"></XMarkIcon>
@@ -69,13 +77,16 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
                 </div>
                 
                 <div className="p-4 md:p-5">
-                    <div className="flex flex-col gap-4 mb-4">
-                        <div className="flex flex-row border-b border-gray-200 pb-2 w-full">
-                            <div className="text-base text-black font-semibold leading-6 w-1/2">
-                                Giá trị
+                    <div className="flex flex-col gap-4 mb-4 w-full">
+                        <div className="flex flex-row gap-4 border-b border-gray-200 pb-2 w-[98%]">
+                            <div className='flex flex-col gap-2 w-[94%]'>
+                                <div className="text-base text-black font-semibold leading-6">
+                                    Giá trị
+                                </div>
+                                <InputUI classDiv={"w-full"} classInput={"w-full"} value={search} onChangeEvent={handleChangeSearch}></InputUI>
                             </div>
                             
-                            <div className='mt-1 flex justify-end w-1/2'>
+                            <div className='mt-1 flex justify-end w-[6%]'>
                                 <ButtonAddItemUI eventButtonClicked={addPropertyValue}></ButtonAddItemUI>
                             </div>
                         </div>
@@ -84,13 +95,13 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
                             {propertyValues && propertyValues.map((propertyValue:ValueKey, index)=>{
                                 let data;
 
-                                if(propertyValue.Status!=3){
+                                if(propertyValue.Status!=3 && (isNullOrEmpty(search) || propertyValue.Name.includes(search))){
                                     data=(
                                         <div className="flex flex-row gap-4 w-[98%]" key={index}>
-                                            <InputUI value={propertyValue.Name} name={`Name${index}`} classDiv={"w-full"} classInput={"w-full"}
+                                            <InputUI value={propertyValue.Name} name={`Name${index}`} classDiv={"w-[94%]"} classInput={"w-full"}
                                             onChangeEvent={onChangePropertyValue(index)}></InputUI>
 
-                                            <Button className={"-mt"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                            <Button className={"-mt-1 w-[6%] flex justify-end items-center"} onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                 event.preventDefault();
                                                 removePropertyValue(index);
                                             }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>

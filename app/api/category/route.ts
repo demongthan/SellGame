@@ -10,9 +10,9 @@ export const POST=async (request: any)=> {
     const data=await request.formData();
     let res:any;
 
-        res=mySchema.safeParse({
-            name: data.get("Name"),
-        });
+    res=mySchema.safeParse({
+        name: data.get("Name"),
+    });
 
     if (!res.success) {
         let errArr: ErrorValidate[] = [];
@@ -27,29 +27,8 @@ export const POST=async (request: any)=> {
         )
     }
     else{
-        if(data.get("isCreate")=="true"){
-            const dataReturn: CreateCategoryDto={
-                Name: data.get("Name"),
-                Description: data.get("Description"),
-                Active: data.get("Active")=="on"?true:false,
-                Properties:data.get("Properties")
-            }
-    
-            return NextResponse.json(
-                {isSuccess:res.success, data:dataReturn}
-            )
-        }
-        else{
-            const dataReturn: UpdateCategoryDto={
-                Name: data.get("Name"),
-                Description: data.get("Description"),
-                Active: data.get("Active")=="on"?true:false,
-                Properties:data.get("Properties")
-            }
-    
-            return NextResponse.json(
-                {isSuccess:res.success, data:dataReturn}
-            )
-        }
+        return NextResponse.json(
+            {isSuccess:res.success}
+        )
     }
 }

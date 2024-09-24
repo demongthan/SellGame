@@ -1,6 +1,6 @@
 interface UpdateCategoryDto{
     Name:string,
-    Description:string,
+    Description:string | undefined,
     Active:boolean,
     Properties:string,
 }
