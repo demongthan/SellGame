@@ -12,6 +12,7 @@ export interface PropertiesJson{
     Status:ModeAction,
     Name:string,
     IsOnly:boolean,
+    IsSearch:boolean,
     Value:ValueKey[]
 }
 

@@ -5,7 +5,7 @@ import { Button } from '@headlessui/react';
 import { PropertiesJson, ValueKey } from '@/utils/types/PropertiesJson';
 import PropertyValueModalUI from './PropertyValueModalUI'
 
-import { MinusCircleIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
+import { MinusCircleIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, {useState } from 'react';
 import { ModeAction } from '@/utils/types/ModeAction';
 
@@ -27,6 +27,7 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
             Status:ModeAction.CREATE,
             Name:"",
             IsOnly:true,
+            IsSearch:true,
             Value:[]
         }
 
@@ -53,6 +54,14 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
                 break;
             case "only":
                 properties[index].IsOnly=!properties[index].IsOnly;
+
+                if(properties[index].Status==ModeAction.NOCHANGE)
+                    properties[index].Status=ModeAction.UPDATE;
+
+                setProperties([...properties]);
+                break;
+            case "search":
+                properties[index].IsSearch=!properties[index].IsSearch;
 
                 if(properties[index].Status==ModeAction.NOCHANGE)
                     properties[index].Status=ModeAction.UPDATE;
@@ -104,8 +113,9 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
                     <form className="p-4 md:p-5">
                         <div className="flex flex-col gap-4 mb-4">
                             <div className="flex flex-row gap-4 text-base text-black font-semibold leading-6 border-b border-gray-200 pb-2 w-[97%]">
-                                <p className='w-[60%]'>Tên</p>
-                                <p className='w-[11%]'>Chọn một</p>
+                                <p className='w-[45%]'>Tên</p>
+                                <p className='w-[13%]'>Tìm kiếm</p>
+                                <p className='w-[13%]'>Chọn một</p>
                                 <p className='w-[22%]'>Giá trị</p>
 
                                 <div className='mt-1 flex justify-end w-[7%]'>
@@ -120,10 +130,14 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
                                     if(property.Status!=3){
                                         data=(
                                             <div className="flex flex-row gap-4 w-[97%]" key={index}>
-                                                <InputUI value={property.Name} name={`Name${index}`} classDiv={"w-[60%]"} classInput={"w-full"}
+                                                <InputUI value={property.Name} name={`Name${index}`} classDiv={"w-[45%]"} classInput={"w-full"}
                                                 onChangeEvent={handleChange("name", index)}></InputUI>
+
+                                                <div className='flex justify-center items-center w-[13%]'>
+                                                    <CheckboxUI isChecked={property.IsSearch} onChangeEvent={handleChange("search", index)} className='defaultCheckboxInline'></CheckboxUI>
+                                                </div>
                                                 
-                                                <div className='flex justify-center items-center w-[11%]'>
+                                                <div className='flex justify-center items-center w-[13%]'>
                                                     <CheckboxUI isChecked={property.IsOnly} onChangeEvent={handleChange("only", index)} className='defaultCheckboxInline'></CheckboxUI>
                                                 </div>
 
@@ -135,12 +149,12 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
                                                         setIndexProperty(index);
                                                         setPropertyValueJson(JSON.stringify(property.Value));
                                                         openModal();
-                                                    }}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem]'></PlusCircleIcon></Button>
+                                                    }} disabled={!property.IsSearch}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem] text-green-600'></PlusCircleIcon></Button>
 
                                                     <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                         event.preventDefault();
                                                         removeProperty(index);
-                                                    }}><MinusCircleIcon className='h-[1.5rem] w-[1.5rem]'></MinusCircleIcon></Button>
+                                                    }}><TrashIcon className='h-[1.2rem] w-[1.2rem] text-red-600'></TrashIcon></Button>
                                                 </div>
                                             </div>
                                         )

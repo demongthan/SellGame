@@ -235,14 +235,20 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                                             <div key={index} className="cursor-pointer w-full border-gray-100 border-b hover:bg-teal-100">
                                                 <div className="flex w-full items-center py-2 border-transparent border-l-2 relative hover:border-teal-100">
                                                     <div className="w-full items-center flex py-2">
-                                                        <div className="w-4/5 "><span className='text-sm font-semibold'>{property.Name}</span>
-                                                            <div className="text-xs truncate w-full normal-case font-normal mt-1 text-gray-500">{truncateString(property.Value.map(_=>_.Name). join(" | "), 80)}</div>
+                                                        <div className="w-[68%] "><span className='text-sm font-semibold'>{property.Name}</span>
+                                                            <div className="text-xs truncate w-full normal-case font-normal mt-1 text-gray-500">{truncateString(property.Value.map(_=>_.Name). join(" | "), 75)}</div>
                                                         </div>
-                                                        <div className="w-1/5 flex">
+                                                        <div className="w-[17%] flex">
                                                             <div className={`flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full ${property.IsOnly?"text-fuchsia-700 bg-fuchsia-100":"text-purple-700 bg-purple-100"} border border-teal-300 `}>
                                                                 <div className="text-xs font-normal leading-none max-w-full flex-initial">{property.IsOnly?"Chọn một":"Chọn nhiều"}</div>
                                                             </div>
                                                         </div>
+
+                                                        {property.IsSearch && (<div className="w-[15%] flex">
+                                                            <div className={`flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full text-fuchsia-700 bg-fuchsia-100 border border-teal-300 `}>
+                                                                <div className="text-xs font-normal leading-none max-w-full flex-initial">Tìm kiếm</div>
+                                                            </div>
+                                                        </div>)}
                                                     </div>
                                                 </div>
                                             </div>

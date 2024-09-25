@@ -37,6 +37,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
     const [valueSelectData, setValueSelectData] = useState<ItemSelect[]>([]);
     const [properties, setProperties] = useState<PropertiesJson[]>([]);
     const [isOnly, setIsOnly]=useState<boolean>(true);
+    const [isSearch, setIsSearch] = useState<boolean>(true);
 
     const [values, setValues] =useState<ValueItemKey[]>([]);
 
@@ -75,6 +76,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                         if(names){
                             const index=propertiesJsons.findIndex(_=>_.Id==names[0].Value);
                             setIsOnly(propertiesJsons[index].IsOnly);
+                            setIsSearch(propertiesJsons[index].IsSearch);
 
                             const selectData:ItemSelect[]=propertiesJsons[index].Value?propertiesJsons[index].Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
                             setValueSelectData(selectData);
@@ -98,6 +100,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                             console.log(index, propertiesJson, propertyValues, indexPropertyValue)
                             if(index==indexPropertyValue){
                                 setIsOnly(propertiesJson.IsOnly);
+                                setIsSearch(propertiesJson.IsSearch);
                                 const selectData:ItemSelect[]=propertiesJson.Value?propertiesJson.Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
                                 setValueSelectData(selectData);
 
@@ -140,18 +143,21 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
 
                 const index:number=properties.findIndex(_=>_.Id==e.Value);
                 setIsOnly(properties[index].IsOnly);
+                setIsSearch(properties[index].IsSearch);
                 
                 const selectData:ItemSelect[]=properties[index].Value?properties[index].Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
                 setValueSelectData(selectData);
 
-                if(properties[index].IsOnly){
-                    setValue(selectData?selectData[0]:{Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
-                    values[0].IdValue=selectData[0].Value;
-                    values[0].Value=selectData[0].Name;
-                    setValues([...values]);
-                }
-                else{
-                    setValues([]);
+                if(properties[index].IsSearch){
+                    if(properties[index].IsOnly){
+                        setValue(selectData?selectData[0]:{Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
+                        values[0].IdValue=selectData[0].Value;
+                        values[0].Value=selectData[0].Name;
+                        setValues([...values]);
+                    }
+                    else{
+                        setValues([]);
+                    }
                 }
                 break;
             case "value":
@@ -211,11 +217,13 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                                             <SelectUI isDisabled={!isCreate} selected={name} label={"Tên :"} name={"Name"} data={nameSelectData} onChangeEvent={handleChange("name")}></SelectUI>
                                         </div>
 
-                                        {isOnly?(
+                                        {isSearch && isOnly && (
                                             <div className="col-span-2">
                                                 <SelectUI selected={value} label={"Giá trị :"} name={"Value"} data={valueSelectData} onChangeEvent={handleChange("value")}></SelectUI>
                                             </div>
-                                        ):(
+                                        )}
+                                        
+                                        {isSearch &&  !isOnly && (
                                             <div className="col-span-2">
                                                 <div className='flex flex-row gap-1'>
                                                     <InputUI value={value?values.map(_=>_.Value).join("|"):""} name='Properties' label={"Thuộc tính :"} classDiv={"w-[90%]"} classInput={"w-full"} isReadOnly={true}></InputUI>
@@ -228,13 +236,15 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                                             </div>
                                         )}
 
-                                        <div className="col-span-2 sm:col-span-1 pt-2">
-                                            <CheckboxUI name='IsShow' isBlockLabel={false} label={"Hiển thị :"} classDiv={"w-full"} classLabel={"w-1/2"} 
-                                            isChecked={isShow} onChangeEvent={handleChange("isShow")}></CheckboxUI>
-                                        </div>
+                                        {isSearch && (
+                                            <div className="col-span-2 sm:col-span-1 pt-2">
+                                                <CheckboxUI name='IsShow' isBlockLabel={false} label={"Hiển thị :"} classDiv={"w-full"} classLabel={"w-1/2"} 
+                                                isChecked={isShow} onChangeEvent={handleChange("isShow")}></CheckboxUI>
+                                            </div>
+                                        )}
 
                                         <div className="col-span-2">
-                                            <InputUI isDisabled={isShow} value={description} name='Description' label={"Mô tả :"} classDiv={"w-full"} classInput={"w-full"}
+                                            <InputUI isDisabled={!(!(isSearch && isShow) || !isSearch)} value={description} name='Description' label={"Mô tả :"} classDiv={"w-full"} classInput={"w-full"}
                                             onChangeEvent={handleChange("description")}></InputUI>
                                         </div>
                                     </div>
