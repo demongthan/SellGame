@@ -315,7 +315,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                                                             <div className="text-xs truncate w-full normal-case font-normal text-gray-500">{truncateString(property.Value.map(_=>_.Value). join(" | "), 80)}</div>
                                                         </div>
                                                         <div className="w-1/5 flex">
-                                                            {!property.IsShow && (<div className={`flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full text-fuchsia-700 bg-fuchsia-100 border border-teal-300 `}>
+                                                            {!property.IsShow && !isNullOrEmpty(property.Description) && (<div className={`flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full text-fuchsia-700 bg-fuchsia-100 border border-teal-300 `}>
                                                                 <div className="text-xs font-normal leading-none max-w-full flex-initial">{truncateString(property.Description?property.Description:"", 20)}</div>
                                                             </div>)}
                                                         </div>

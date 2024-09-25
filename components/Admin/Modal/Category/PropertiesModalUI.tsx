@@ -8,17 +8,20 @@ import PropertyValueModalUI from './PropertyValueModalUI'
 import { MinusCircleIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, {useState } from 'react';
 import { ModeAction } from '@/utils/types/ModeAction';
+import { AdminDisplay } from '@/utils/types/AdminDisplay';
 
 interface Props{
     closeModal:()=>void,
     propertiesJson:string,
-    setPropertiesJson:(property:string)=>void
+    setPropertiesJson:(property:string)=>void,
+    adminDisplay:AdminDisplay | null
 }
 
-const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props) => {
+const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson, adminDisplay}:Props) => {
     const [properties, setProperties]=useState<PropertiesJson[]>(JSON.parse(propertiesJson));
     const [isOpenPropertyValueModal, setIsOpenPropertyValueModal]=useState<boolean>(false);
     const [indexProperty, setIndexProperty]=useState<number>(-1);
+    const [isOnly, setIsOnly]=useState<boolean>(true);
     const [propertyValueJson, setPropertyValueJson]=useState<string>('[]');
 
     const addProperty=()=>{
@@ -35,8 +38,13 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
     }
 
     const removeProperty=(index:number)=>{
-        properties[index].Status=ModeAction.DELETE;
-        setProperties([...properties]);
+        if(properties[index].Status==ModeAction.CREATE){
+            setProperties([...properties.slice(0, index), ...properties.slice(index + 1)]);
+        }
+        else{
+            properties[index].Status=ModeAction.DELETE;
+            setProperties([...properties]);
+        }
     }
 
     const openModal=()=>
@@ -89,8 +97,8 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
 
   return (
     <>
-        {isOpenPropertyValueModal && <PropertyValueModalUI closeModel={openModal} addProperty={setPropertyValue} 
-        indexProperty={indexProperty} propertyValueJson={propertyValueJson}></PropertyValueModalUI>}
+        {isOpenPropertyValueModal && <PropertyValueModalUI closeModel={openModal} addProperty={setPropertyValue}
+          indexProperty={indexProperty} propertyValueJson={propertyValueJson} isOnly={isOnly} adminDisplay={adminDisplay}></PropertyValueModalUI>}
 
         <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[100] justify-center bg-model
         items-center w-full md:inset-0 h-full max-h-full">
@@ -148,6 +156,7 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson}:Props
                                                         event.preventDefault();
                                                         setIndexProperty(index);
                                                         setPropertyValueJson(JSON.stringify(property.Value));
+                                                        setIsOnly(property.IsOnly);
                                                         openModal();
                                                     }} disabled={!property.IsSearch}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem] text-green-600'></PlusCircleIcon></Button>
 

@@ -1,26 +1,27 @@
 "use client"
 
 import { Button } from '@headlessui/react';
-import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
-import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
+import React, { useState } from 'react'
 
-import { LoadingUI } from '@/components';
-import { categoryApiRequest } from '@/apiRequests/category';
+import { AdminDisplay } from '@/utils/types/AdminDisplay'
 import { showToast } from '@/utils/showToast';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { categoryApiRequest } from '@/apiRequests/category';
+import { isNullOrEmpty } from '@/utils/utils';
 
 interface Props{
     closeModel:()=>void,
-    idCategory:string,
-    refreshAllCategoryUpdate:()=>Promise<void>,
-    adminDisplay:AdminDisplay | null
+    adminDisplay:AdminDisplay | null,
+    pathUrl?:string,
+    indexPropertyValue:number,
+    changePropertyPathUrl:(url:string ,index:number)=>void,
+    idPropertyDetail:string,
 }
 
-const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate, adminDisplay}:Props) => {
+const UploadImagePropertyValueModalUI = ({pathUrl, closeModel, adminDisplay, changePropertyPathUrl, indexPropertyValue, idPropertyDetail}:Props) => {
     const [file, setFile] = useState<any>(null);
-    const [srcFile, setSrcFile]=useState<string>("");
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [srcFile, setSrcFile]=useState<string | undefined>(pathUrl);
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
 
     const handleFileChange = (event:any) => {
@@ -32,33 +33,21 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate, a
         }
     }
 
-    const getUrlFileInit=async ():Promise<void>=>{
-        try{
-            await categoryApiRequest.getCategoryById({id:idCategory,fields: "?fields=PathUrl", token:adminDisplay?.token}).then((res)=>{
-                setSrcFile(res.payload.data.PathUrl);
-                setIsLoading(false);
-            })
-        }
-        catch(error){
-            console.log(error);
-
-            setIsLoading(false);
-        }
-    }
-
     const eventUploadImage = async ():Promise<void>=>{
         setIsLoadingPopup(true);    
         try{
             const formData:FormData = new FormData();
             formData.append("file", file);
+            formData.append("pathUrl", srcFile?srcFile:"");
 
-            await categoryApiRequest.uploadImageCategory({id:idCategory,body:formData, token:adminDisplay?.token}).then((res)=>{
-                if(res.payload.data){
+            await categoryApiRequest.uploadImageCategoryPropertyDetail({idPropertyDetail:idPropertyDetail,body:formData, token:adminDisplay?.token}).then((res)=>{
+                if(!isNullOrEmpty(res.payload.data)){
                     showToast("success", <p>{res.payload.message}</p>)
-                    refreshAllCategoryUpdate();
+                    closeModel();
+                    changePropertyPathUrl(res.payload.data, indexPropertyValue);
                 }
                 else{
-                    showToast("error", <p>{res.payload.message}</p>)
+                    showToast("error", <p>{res.payload.message}</p>);
                 }
 
                 setIsLoadingPopup(false); 
@@ -71,15 +60,10 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate, a
         }
     }
 
-    useEffect(()=>{
-        getUrlFileInit();
-    }, [setSrcFile])
-
     return (
-        <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[200] justify-center bg-model
+        <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[300] justify-center bg-model
         items-center w-full md:inset-0 h-full max-h-full">
             <div className="relative p-4 w-full max-w-md max-h-full">
-            {isLoading?(<LoadingUI></LoadingUI>):(
                 <div className="relative bg-white rounded-lg shadow">
                     {isLoadingPopup &&(
                         <div className='w-full h-full flex items-center justify-center bg-s2gray7 absolute top-0 z-[1000]'>
@@ -94,7 +78,6 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate, a
                         <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                         w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                             event.preventDefault();
-                            
                             closeModel();
                         }}>
                             <XMarkIcon className="w-6 h-6"></XMarkIcon>
@@ -119,22 +102,21 @@ const UploadImageModalUI = ({closeModel, idCategory, refreshAllCategoryUpdate, a
                         </div>
 
                         <div className='mt-6'>
-                        <Button disabled={file==null} className={`flex flex-row gap-2 justify-center items-center text-white bg-s2cyan1 border border-transparent 
-                            rounded-md px-4 h-9 disabled:opacity-70 hover:opacity-70`}
-                            onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                            <Button disabled={file==null} className={`flex flex-row gap-2 justify-center items-center text-white bg-s2cyan1 border border-transparent 
+                                rounded-md px-4 h-9 disabled:opacity-70 hover:opacity-70`}
+                                onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                     event.preventDefault();
                                     eventUploadImage();
-                            }}>
-                            <ArrowUpTrayIcon className="h-[1.5rem] w-[1.5rem]"></ArrowUpTrayIcon>
-                            Tải ảnh
-                        </Button>
+                                }}>
+                                <ArrowUpTrayIcon className="h-[1.5rem] w-[1.5rem]"></ArrowUpTrayIcon>
+                                Tải ảnh
+                            </Button>
                         </div>
                     </div>
                 </div>
-            )}
             </div>
         </div>
     )
 }
 
-export default UploadImageModalUI
+export default UploadImagePropertyValueModalUI

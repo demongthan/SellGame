@@ -4,6 +4,7 @@ import { ItemSelect } from "./SelectItem"
 export interface ValueKey{
     Id:string,
     Name:string,
+    PathUrl?:string,
     Status:ModeAction
 }
 

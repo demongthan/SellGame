@@ -23,6 +23,9 @@ export const categoryApiRequest = {
     deleteCategory:(input:{id:string | null, token:string|undefined})=>
         http.delete<ApiReponse<boolean>>(`/Category/DeleteCategory/${input.id}`, input.token),
 
+    uploadImageCategoryPropertyDetail:(input:{idPropertyDetail:string, body: FormData, token:string|undefined})=>
+        http.post<ApiReponse<string>>(`/Category/UploadImageCategoryPropertyDetail/${input.idPropertyDetail}`, input.body, input.token),
+
     getAllCategory:(input:{search:string, fields:string, pageNumber:number, token:string|undefined})=>
         http.get<ApiReponse<CategorySearchDto>>(`/Category/GetAllCategory${input.fields}&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`, input.token)
 }

@@ -455,11 +455,13 @@ const Category = () => {
           
           <footer className='pt-5'>
             <DefaultPagination 
-                currentPage={metaData.currentPage}
-                totalPages={metaData.totalPages}
-                hasPrevious={metaData.hasPrevious}
-                hasNext={metaData.hasNext} 
-                EventClickSwitchPage={getAllCategoryByPageNumber}></DefaultPagination>
+              currentPage={metaData.currentPage}
+              totalPages={metaData.totalPages}
+              hasPrevious={metaData.hasPrevious}
+              hasNext={metaData.hasNext}
+              EventClickSwitchPage={getAllCategoryByPageNumber} 
+              totalCount={metaData.totalCount}>
+            </DefaultPagination>
           </footer>
           
       </Card>
