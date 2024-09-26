@@ -2,7 +2,7 @@
 
 import { ServiceDetailDto } from '@/apiRequests/DataDomain/ServiceDetail/ServiceDetailDto';
 import { serviceDetailApiRequest } from '@/apiRequests/service-detail';
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, MethodCalculateDisplay, RatingDisplay, ServiceDetailModalUI, UploadImageForServiceDetailModalUI } from '@/components'
+import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteWarningModalUI, InputUI, LoadingUI, MethodCalculateDisplay, RatingDisplay, ServiceDetailModalUI, UploadImageForServiceDetailModalUI } from '@/components'
 import { adminServiceDetailTable } from '@/utils/constant/TitleTable/AdminServiceDetailTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { showToast } from '@/utils/showToast';
@@ -206,7 +206,7 @@ const ServiceDetail = () => {
             {isOpenImageModel && (<UploadImageForServiceDetailModalUI closeModel={openImageModel} idServiceDetail={idServiceDetail} 
             refreshAllServiceDetailUpdate={refreshAllServiceDetail}></UploadImageForServiceDetailModalUI>)}
 
-            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'dịch vụ game'} eventDeleteItem={deleteServiceDetail}></DeleteModalUI>)}
+            {isOpenDeleteModal && (<DeleteWarningModalUI closeModal={openDeleteModal} title={'dịch vụ game'} eventDeleteItem={deleteServiceDetail}></DeleteWarningModalUI>)}
 
             <Card className={"w-full pb-10 p-4 h-full"}>
                 <header className="relative">

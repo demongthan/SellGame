@@ -9,6 +9,7 @@ import { MinusCircleIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicon
 import React, {useState } from 'react';
 import { ModeAction } from '@/utils/types/ModeAction';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { isNullOrEmpty } from '@/utils/utils';
 
 interface Props{
     closeModal:()=>void,
@@ -23,6 +24,7 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson, admin
     const [indexProperty, setIndexProperty]=useState<number>(-1);
     const [isOnly, setIsOnly]=useState<boolean>(true);
     const [propertyValueJson, setPropertyValueJson]=useState<string>('[]');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const addProperty=()=>{
         let property:PropertiesJson={
@@ -95,6 +97,12 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson, admin
         closeModal();
     }
 
+    const eventCloseModal=async ()=>{
+        let valueKeys:ValueKey[]=[];
+
+        
+    }
+
   return (
     <>
         {isOpenPropertyValueModal && <PropertyValueModalUI closeModel={openModal} addProperty={setPropertyValue}
@@ -135,7 +143,7 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson, admin
                                 {properties && properties.map((property:PropertiesJson, index)=>{
                                     let data;
 
-                                    if(property.Status!=3){
+                                    if(property.Status!=ModeAction.DELETE){
                                         data=(
                                             <div className="flex flex-row gap-4 w-[97%]" key={index}>
                                                 <InputUI value={property.Name} name={`Name${index}`} classDiv={"w-[45%]"} classInput={"w-full"}
@@ -152,13 +160,18 @@ const PropertiesModalUI = ({closeModal, propertiesJson, setPropertiesJson, admin
                                                 <InputUI value={property.Value?property.Value.filter(_=>_.Status!=ModeAction.DELETE).map(_=>_.Name).join(" | "):""} name={`Value${index}`} classDiv={"w-[22%]"} classInput={"w-full"} isDisabled={true}></InputUI>
 
                                                 <div className='flex flex-row w-[7%] gap-1 -mt-2'>
-                                                    <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
-                                                        event.preventDefault();
-                                                        setIndexProperty(index);
-                                                        setPropertyValueJson(JSON.stringify(property.Value));
-                                                        setIsOnly(property.IsOnly);
-                                                        openModal();
-                                                    }} disabled={!property.IsSearch}><PlusCircleIcon className='h-[1.5rem] w-[1.5rem] text-green-600'></PlusCircleIcon></Button>
+                                                    <Button 
+                                                        onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
+                                                            event.preventDefault();
+                                                            setIndexProperty(index);
+                                                            setPropertyValueJson(JSON.stringify(property.Value));
+                                                            setIsOnly(property.IsOnly);
+                                                            openModal();
+                                                        }} 
+                                                        disabled={!property.IsSearch || isNullOrEmpty(property.Name)}
+                                                        className={"disabled:opacity-70"}>
+                                                            <PlusCircleIcon className='h-[1.5rem] w-[1.5rem] text-green-600'></PlusCircleIcon>
+                                                    </Button>
 
                                                     <Button onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                                         event.preventDefault();

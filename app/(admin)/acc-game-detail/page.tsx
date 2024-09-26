@@ -1,6 +1,6 @@
 "use client"
 
-import { AccGameDetailModalUI, AccGameDetailStatusDisplay, AccGameDetailTypeDisplay, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
+import { AccGameDetailModalUI, AccGameDetailStatusDisplay, AccGameDetailTypeDisplay, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteWarningModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { displayDateTime, isNullOrEmpty, truncateString } from '@/utils/utils';
 import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
@@ -278,7 +278,8 @@ const AccGameDetail = () => {
             {isOpenModel && (<AccGameDetailModalUI closeModal={openModal} idAccGameDetail={idAccGameDetail} idCategory={category.Value}
             refreshAllAccGameDetailCreate={getAllAccGameDetail} refreshAllAccGameDetailUpdate={refreshAllAccGameDetail} adminDisplay={adminDisplay}></AccGameDetailModalUI>)}
 
-            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'tài khoản game'} eventDeleteItem={deleteAccGameDetail}></DeleteModalUI>)}
+            {isOpenDeleteModal && (<DeleteWarningModalUI closeModal={openDeleteModal} title={'Xóa tài khoản game'} 
+            eventDeleteItem={deleteAccGameDetail} description={'Bạn có chắn chắn xóa Tài khoản Game.'} isDelete={true}></DeleteWarningModalUI>)}
 
             {isOpenImageModel && (<UploadImageForAccGameDetailModalUI closeModel={openImageModel} idAccGameDetail={idAccGameDetail}
             refreshAllAccGameDetailUpdate={refreshAllAccGameDetail} adminDisplay={adminDisplay}></UploadImageForAccGameDetailModalUI>)}

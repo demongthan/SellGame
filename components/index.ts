@@ -29,7 +29,7 @@ import ButtonAddItemUI from "./Common/UI/Button/ButtonAddItemUI";
 import CategoryModalUI from "./Admin/Modal/Category/CategoryModalUI";
 import ButtonUpdateItemUI from "./Common/UI/Button/ButtonUpdateItemUI";
 import UploadImageModalUI from "./Admin/Modal/Category/UploadImageModalUI";
-import DeleteModalUI from "./Admin/Modal/DeleteModalUI";
+import DeleteWarningModalUI from "./Admin/Modal/DeleteWarningModalUI";
 import ImageDetailModalUI from "./Admin/Modal/ImageDetail/ImageDetailModalUI";
 import UploadImageForImageDetailModalUI from "./Admin/Modal/ImageDetail/UploadImageForImageDetailModalUI";
 import AccGameDetailModalUI from "./Admin/Modal/AccGameDetail/AccGameDetailModalUI";
@@ -82,7 +82,7 @@ export{
     CategoryModalUI,
     ButtonUpdateItemUI,
     UploadImageModalUI,
-    DeleteModalUI,
+    DeleteWarningModalUI,
     ImageDetailModalUI,
     UploadImageForImageDetailModalUI,
     AccGameDetailModalUI,

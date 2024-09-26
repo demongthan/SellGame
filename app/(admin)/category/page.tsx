@@ -9,7 +9,7 @@ import { ButtonAddItemUI,
   CategoryModalUI, 
   CheckboxUI, 
   DefaultPagination, 
-  DeleteModalUI, 
+  DeleteWarningModalUI, 
   InputUI, LoadingUI, 
   RatingDisplay, 
   UploadImageModalUI 
@@ -280,7 +280,8 @@ const Category = () => {
     
   return (
     <>
-      {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'danh mục'} eventDeleteItem={deleteCategory }></DeleteModalUI>)}
+      {isOpenDeleteModal && (<DeleteWarningModalUI closeModal={openDeleteModal} title={'Xóa danh mục'} eventDeleteItem={deleteCategory} 
+      description={'Bạn có chắc chắn xóa Danh mục.'} isDelete={true}></DeleteWarningModalUI>)}
 
       {isOpenImageModel && (<UploadImageModalUI closeModel={openImageModel} idCategory={idCategory} 
       refreshAllCategoryUpdate={refreshAllCategory} adminDisplay={adminDisplay}></UploadImageModalUI>)}

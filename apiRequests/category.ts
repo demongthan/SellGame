@@ -3,6 +3,7 @@ import http from "./http";
 import { CategoryDto } from "./DataDomain/Category/CategoryDto";
 import { CategorySearchDto } from "./DataDomain/Category/CategorySearchDto";
 import { CreateCategoryDto } from "./DataDomain/Category/CreateCategoryDto";
+import { ValueKey } from "@/utils/types/PropertiesJson";
 
 export const categoryApiRequest = {
     createCategory:(input:{body:CreateCategoryDto, token:string|undefined})=>
@@ -25,6 +26,13 @@ export const categoryApiRequest = {
 
     uploadImageCategoryPropertyDetail:(input:{idPropertyDetail:string, body: FormData, token:string|undefined})=>
         http.post<ApiReponse<string>>(`/Category/UploadImageCategoryPropertyDetail/${input.idPropertyDetail}`, input.body, input.token),
+
+    deleteImageCategoryPropertyDetailNotSave:(input:{body:ValueKey[], token:string|undefined})=>
+        http.put<ApiReponse<string>>(`/Category/DeleteImageCategoryPropertyDetailNotSave`, input.body, input.token),
+
+    deleteImageCategoryPropertyDetail:(input:{body:string | undefined, token:string|undefined})=>
+        http.put<ApiReponse<string>>(`/Category/DeleteImageCategoryPropertyDetail`, input.body, input.token),
+
 
     getAllCategory:(input:{search:string, fields:string, pageNumber:number, token:string|undefined})=>
         http.get<ApiReponse<CategorySearchDto>>(`/Category/GetAllCategory${input.fields}&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`, input.token)

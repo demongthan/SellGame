@@ -1,6 +1,6 @@
 "use client"
 
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteModalUI, ImageDetailModalUI, InputUI, LoadingUI, UploadImageForImageDetailModalUI } from '@/components'
+import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteWarningModalUI, ImageDetailModalUI, InputUI, LoadingUI, UploadImageForImageDetailModalUI } from '@/components'
 import { adminImageDetailTable } from '@/utils/constant/TitleTable/AdminImageDetailTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { imageDetailApiRequest } from '@/apiRequests/image-detail';
@@ -238,7 +238,7 @@ const ImageDetail = () => {
 
     return (
         <>
-            {isOpenDeleteModal && (<DeleteModalUI closeModal={openDeleteModal} title={'thông tin ảnh'} eventDeleteItem={deleteImageDetail}></DeleteModalUI>)}
+            {isOpenDeleteModal && (<DeleteWarningModalUI closeModal={openDeleteModal} title={'thông tin ảnh'} eventDeleteItem={deleteImageDetail}></DeleteWarningModalUI>)}
 
             {isOpenImageModel && (<UploadImageForImageDetailModalUI closeModel={openImageModel} idImageDetail={idImageDetail}
             refreshAllImageDetailUpdate={refreshAllImageDetail} adminDisplay={adminDisplay}></UploadImageForImageDetailModalUI>)}
