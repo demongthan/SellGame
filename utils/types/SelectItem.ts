@@ -1,4 +1,5 @@
 export interface ItemSelect{
     Name:string,
-    Value:string
+    Value:string,
+    PathUrl?:string
 }

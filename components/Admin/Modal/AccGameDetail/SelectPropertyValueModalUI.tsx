@@ -1,7 +1,7 @@
 "use client"
 
 import { categoryApiRequest } from '@/apiRequests/category';
-import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, SelectUI } from '@/components';
+import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, DeleteWarningModalUI, InputUI, LoadingUI, SelectUI } from '@/components';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
 import { PropertiesItemJson, PropertiesJson, ValueItemKey, ValueKey } from '@/utils/types/PropertiesJson';
 import { ItemSelect } from '@/utils/types/SelectItem';
@@ -27,6 +27,8 @@ interface Props{
 const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, propertyValues, adminDisplay, isCreate, indexPropertyValue, editPropertyValue}:Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
+    const [isOpenWarningModal, setIsOpenWarningModal]=useState<boolean>(false);
+    const [isChangeData, setIsChangeData]=useState<boolean>(false);
 
     const [name, setName] = useState<ItemSelect>({Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
     const [value, setValue] = useState<ItemSelect>({Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
@@ -52,6 +54,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
     }
 
     const addValues=(values:ValueItemKey[])=>{
+        setIsChangeData(true);
         setValues(values);
     }
 
@@ -78,7 +81,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                             setIsOnly(propertiesJsons[index].IsOnly);
                             setIsSearch(propertiesJsons[index].IsSearch);
 
-                            const selectData:ItemSelect[]=propertiesJsons[index].Value?propertiesJsons[index].Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
+                            const selectData:ItemSelect[]=propertiesJsons[index].Value?propertiesJsons[index].Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id, PathUrl:item.PathUrl})):[];
                             setValueSelectData(selectData);
 
                             if(propertiesJsons[index].IsOnly){
@@ -97,11 +100,10 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                                 names.push({Name:propertiesJson.Name, Value:propertiesJson.Id});
                             }
 
-                            console.log(index, propertiesJson, propertyValues, indexPropertyValue)
                             if(index==indexPropertyValue){
                                 setIsOnly(propertiesJson.IsOnly);
                                 setIsSearch(propertiesJson.IsSearch);
-                                const selectData:ItemSelect[]=propertiesJson.Value?propertiesJson.Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
+                                const selectData:ItemSelect[]=propertiesJson.Value?propertiesJson.Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id, PathUrl:item.PathUrl})):[];
                                 setValueSelectData(selectData);
 
                                 if(propertiesJson.IsOnly){
@@ -140,6 +142,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
         switch (name) {
             case "name":
                 setName(e);
+                setIsChangeData(true);
 
                 const index:number=properties.findIndex(_=>_.Id==e.Value);
                 setIsOnly(properties[index].IsOnly);
@@ -162,6 +165,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                 break;
             case "value":
                 setValue(e);
+                setIsChangeData(true);
                 values[0].IdValue=e?e.Value:"";
                 values[0].Value=e?e.Name:"";
                 if(values[0].Status==ModeAction.NOCHANGE)
@@ -170,9 +174,11 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                 break;
             case "isShow":
                 setIsShow(!isShow);
+                setIsChangeData(true);
                 break;
             case "description":
                 setDescription(e.target.value);
+                setIsChangeData(true);
                 break;
             default:
                 break;
@@ -182,6 +188,14 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
     const openModal=()=>
         setIsOpenModel(!isOpenModel);
 
+    const openWarningModal=()=>
+        setIsOpenWarningModal(!isOpenWarningModal);
+
+    const eventCloseModal=async()=>{
+        openWarningModal();
+        closeModel();
+    }
+
     useEffect(() =>{
         getSelectDataInit();
     }, [setNameSelectData, setValueSelectData, setIsLoading, setName, setValue]);
@@ -190,6 +204,9 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
         <>
             {isOpenModel && (<SelectPropertyValueNotOnlyModalUI closeModel={openModal} 
             valueSelectData={valueSelectData} values={values} addValue={addValues}></SelectPropertyValueNotOnlyModalUI>)}
+
+            {isOpenWarningModal && (<DeleteWarningModalUI closeModal={openWarningModal} title={'Cảnh báo dữ liệu thay đổi'} description={'Bạn đã thay đổi dữ liệu, nhưng chưa lưu.'} 
+            eventDeleteItem={eventCloseModal} isDelete={false}></DeleteWarningModalUI>)}
 
             <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[150] justify-center bg-model
                 items-center w-full md:inset-0 h-full max-h-full">
@@ -203,7 +220,10 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                                 <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                                 w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                     event.preventDefault();
-                                    closeModel();
+                                    if(isChangeData)
+                                        openWarningModal();
+                                    else
+                                        closeModel();
                                 }}>
                                     <XMarkIcon className="w-6 h-6"></XMarkIcon>
                                     <span className="sr-only">Close modal</span>
@@ -251,9 +271,9 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                                 </div>
 
                                 {isCreate?(
-                                    <ButtonAddItemUI isDisabled={!name || isNullOrEmpty(name.Value)} titleButton={"Thêm"} eventButtonClicked={eventButtonAddClick}></ButtonAddItemUI>
+                                    <ButtonAddItemUI isDisabled={!name || isNullOrEmpty(name.Value) || isChangeData} titleButton={"Thêm"} eventButtonClicked={eventButtonAddClick}></ButtonAddItemUI>
                                 ):(
-                                    <ButtonUpdateItemUI titleButton='Cập nhật' eventButtonClicked={eventButtonEditClick}></ButtonUpdateItemUI>
+                                    <ButtonUpdateItemUI isDisabled={!name || isNullOrEmpty(name.Value) || !isChangeData} titleButton='Cập nhật' eventButtonClicked={eventButtonEditClick}></ButtonUpdateItemUI>
                                 )}
                             </div>
                         </div>

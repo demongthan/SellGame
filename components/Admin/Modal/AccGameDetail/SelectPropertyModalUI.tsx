@@ -1,6 +1,6 @@
 "use client"
 
-import { ButtonAddItemUI, CheckboxUI, InputUI } from '@/components'
+import { ButtonAddItemUI, CheckboxUI, DeleteWarningModalUI, InputUI } from '@/components'
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
 import { PropertiesItemJson, ValueItemKey } from '@/utils/types/PropertiesJson';
 import { ItemSelect } from '@/utils/types/SelectItem';
@@ -24,6 +24,7 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
     const [propertyValues, setPropertyValues]=useState<PropertiesItemJson[]>(JSON.parse(propertyValueJson));
     const [isOpenPropertyValueModal, setIsOpenPropertyValueModal]=useState<boolean>(false);
     const [isChangeData, setIsChangeData]=useState<boolean>(false);
+    const [isOpenWarningModal, setIsOpenWarningModal]=useState<boolean>(false);
 
     const [isCreate, setIsCreate]=useState<boolean>(true);
     const [indexPropertyValue, setIndexPropertyValue]=useState<number>(0);
@@ -85,9 +86,20 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
         setPropertyValueJson(JSON.stringify(propertyValues));
         closeModel();
     }
+
+    const openWarningModal=()=>
+        setIsOpenWarningModal(!isOpenWarningModal);
+
+    const eventCloseModal=async()=>{
+        openWarningModal();
+        closeModel();
+    }
     
     return (
         <>
+            {isOpenWarningModal && (<DeleteWarningModalUI closeModal={openWarningModal} title={'Cảnh báo dữ liệu thay đổi'} description={'Bạn thay đổi dữ liệu, nhưng chưa lưu.'} 
+            eventDeleteItem={eventCloseModal} isDelete={false}></DeleteWarningModalUI>)}
+
             {isOpenPropertyValueModal && (<SelectPropertyValueModalUI closeModel={openModal} idCategory={idCategory}
             addPropertyValue={addPropertyValue} propertyValues={propertyValues} adminDisplay={adminDisplay}
             isCreate={isCreate} indexPropertyValue={indexPropertyValue} editPropertyValue={editPropertyValue}></SelectPropertyValueModalUI>)}
@@ -103,7 +115,11 @@ const SelectPropertyModalUI = ({closeModel, propertyValueJson, idCategory, setPr
                             <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                             w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                 event.preventDefault();
-                                closeModel();
+                                
+                                if(isChangeData)
+                                    openWarningModal();
+                                else
+                                    closeModel();
                             }}>
                                 <XMarkIcon className="w-6 h-6"></XMarkIcon>
                                 <span className="sr-only">Close modal</span>

@@ -75,7 +75,7 @@ const UploadImagePropertyValueModalUI = ({pathUrl, closeModel, adminDisplay, cha
     return (
         <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[300] justify-center bg-model
         items-center w-full md:inset-0 h-full max-h-full">
-            <div className="relative p-4 w-full max-w-md max-h-full">
+            <div className="relative p-4 w-full max-w-xs max-h-full">
                 {isLoading?(<LoadingUI></LoadingUI>):(
                     <div className="relative bg-white rounded-lg shadow">
                         {isLoadingPopup &&(

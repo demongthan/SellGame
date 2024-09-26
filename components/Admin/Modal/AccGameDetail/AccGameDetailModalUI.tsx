@@ -4,7 +4,7 @@ import { PencilSquareIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20
 import React, { FormEvent, useEffect, useState } from 'react'
 
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
-import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI, SelectUI } from '@/components';
+import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, DeleteWarningModalUI, InputUI, LoadingUI, SelectUI } from '@/components';
 import { accGameDetailType, AccGameDetailTypeItem } from '@/utils/constant/AccGameDetail/AccGameDetailType';
 import { showToast } from '@/utils/showToast';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
@@ -27,6 +27,7 @@ interface Props{
 const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshAllAccGameDetailCreate, refreshAllAccGameDetailUpdate, adminDisplay}:Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
+    const [isOpenWarningModal, setIsOpenWarningModal]=useState<boolean>(false);
 
     const isCreate=isNullOrEmpty(idAccGameDetail);
     const [errArr, setErrArr]=useState<ErrorValidate[]>();
@@ -210,6 +211,14 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
         }
     }
 
+    const openWarningModal=()=>
+        setIsOpenWarningModal(!isOpenWarningModal);
+
+    const eventCloseModal=async()=>{
+        openWarningModal();
+        closeModal();
+    }
+
     useEffect(() => {
         if(isCreate){
             setIsLoading(false);
@@ -227,6 +236,9 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
             {isOpenReturnPropertiesModal && (<ReturnPropertyModalUI closeModel={openModalReturnProperties} returnPropertiesJson={returnProperties} 
             setReturnPropertiesJson={setReturnPropertiesJson}></ReturnPropertyModalUI>)}
 
+            {isOpenWarningModal && (<DeleteWarningModalUI closeModal={openWarningModal} title={'Cảnh báo dữ liệu thay đổi'} description={'Bạn thay đổi dữ liệu, nhưng chưa lưu.'} 
+            eventDeleteItem={eventCloseModal} isDelete={false}></DeleteWarningModalUI>)}
+
             <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center bg-model
             items-center w-full md:inset-0 h-full max-h-full">
                 {isLoading?(<LoadingUI></LoadingUI>):(
@@ -238,7 +250,10 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                             <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                             w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                 event.preventDefault();
-                                closeModal();
+                                if(isChangeData)
+                                    openWarningModal();
+                                else
+                                    closeModal();
                             }}>
                                 <XMarkIcon className="w-6 h-6"></XMarkIcon>
                                 <span className="sr-only">Close modal</span>

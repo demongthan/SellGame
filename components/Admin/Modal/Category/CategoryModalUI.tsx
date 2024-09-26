@@ -1,6 +1,6 @@
 "use client"
 
-import { ButtonUpdateItemUI, CheckboxUI, LoadingUI, SelectUI } from '@/components'
+import { ButtonUpdateItemUI, CheckboxUI, DeleteWarningModalUI, LoadingUI, SelectUI } from '@/components'
 import ButtonAddItemUI from '@/components/Common/UI/Button/ButtonAddItemUI'
 import InputUI from '@/components/Common/UI/InputUI'
 import PropertiesModalUI from './PropertiesModalUI'
@@ -12,8 +12,9 @@ import { AdminDisplay } from '@/utils/types/AdminDisplay'
 import { Button, Input } from '@headlessui/react'
 import { PencilSquareIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import React, { FormEvent, useEffect, useState } from 'react'
-import { PropertiesJson } from '@/utils/types/PropertiesJson'
+import { PropertiesJson, ValueKey } from '@/utils/types/PropertiesJson'
 import { CreateCategoryDto } from '@/apiRequests/DataDomain/Category/CreateCategoryDto'
+import { ModeAction } from '@/utils/types/ModeAction'
 
 interface Props{
     refreshAllCategoryCreate:()=>Promise<void>,
@@ -28,6 +29,7 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
     const [isLoadingPopup, setIsLoadingPopup] = useState<boolean>(false);
     const [isChangeData, setIsChangeData] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isOpenWarningModal, setIsOpenWarningModal]=useState<boolean>(false);
 
     const [errArr, setErrArr]=useState<ErrorValidate[]>();
     const isCreate=isNullOrEmpty(idCategory);
@@ -155,6 +157,48 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
         setIsChangeData(true);
     }
 
+    const openWarningModal=()=>
+        setIsOpenWarningModal(!isOpenWarningModal);
+
+    const eventCloseModal=async ()=>{
+        openWarningModal();
+        let valueKeys:ValueKey[]=[];
+        const properties:PropertiesJson[]=JSON.parse(propertiesJson);
+        
+        if(properties.length>0){
+            properties.forEach((value, index)=>{
+                if(value.Status!=ModeAction.NOCHANGE){
+                    const valueKeyItems:ValueKey[]=properties[index].Value.filter(_=>(_.Status==ModeAction.CREATE && !isNullOrEmpty(_.PathUrl)) 
+                    || _.Status==ModeAction.UPLOAD || (_.Status==ModeAction.UPLOADDELETE))
+
+                    if(valueKeyItems.length!=0){
+                        valueKeys=valueKeys.concat(valueKeyItems);
+                    }
+                }
+            });
+
+            if(valueKeys.length!=0){
+                setIsLoading(true);
+                try{
+                    await categoryApiRequest.deleteImageCategoryPropertyDetailNotSave({body:valueKeys, token:adminDisplay?.token}).then((res)=>{
+                        closeModel();
+                    })
+                }
+                catch(error){
+                    console.log(error);
+                    showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
+                    setIsLoading(false);
+                }
+            }
+            else{
+                closeModel();
+            }
+        }
+        else{
+            closeModel();
+        }
+    }
+
     useEffect(()=>{
         if(!isCreate){
             getCategoryInit();
@@ -167,7 +211,11 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
 
   return (
     <>
-        {isOpenPropertiesModal && <PropertiesModalUI closeModal={openModel} propertiesJson={propertiesJson} setPropertiesJson={setProperties} adminDisplay={adminDisplay} ></PropertiesModalUI>}
+        {isOpenPropertiesModal && <PropertiesModalUI closeModal={openModel} propertiesJson={propertiesJson} 
+        setPropertiesJson={setProperties} adminDisplay={adminDisplay} ></PropertiesModalUI>}
+
+        {isOpenWarningModal && (<DeleteWarningModalUI closeModal={openWarningModal} title={'Thay đổi dữ liệu'} description={'Dữ liệu đã thay đổi nhưng chưa được lưu'} 
+            eventDeleteItem={eventCloseModal} isDelete={false}></DeleteWarningModalUI>)}
         
         <div aria-hidden="true" className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center bg-model
         items-center w-full md:inset-0 h-full max-h-full">
@@ -181,7 +229,11 @@ const CategoryModalUI = ({closeModel, refreshAllCategoryCreate, refreshAllCatego
                             <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm 
                             w-8 h-8 ms-auto inline-flex justify-center items-center" onClick={(event: React.MouseEvent<HTMLButtonElement>)=>{
                                 event.preventDefault();
-                                closeModel();
+
+                                if(isChangeData)
+                                    openWarningModal();
+                                else
+                                    closeModel();
                             }}>
                                 <XMarkIcon className="w-6 h-6"></XMarkIcon>
                                 <span className="sr-only">Close modal</span>

@@ -11,6 +11,7 @@ import React, { useState } from 'react'
 import UploadImagePropertyValueModalUI from './UploadImagePropertyValueModalUI';
 import { AdminDisplay } from '@/utils/types/AdminDisplay';
 import { categoryApiRequest } from '@/apiRequests/category';
+import { showToast } from '@/utils/showToast';
 
 interface Props{
     closeModel:()=>void,
@@ -24,9 +25,11 @@ interface Props{
 const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyValueJson, isOnly, adminDisplay}:Props) => {
     const [propertyValues, setPropertyValues]=useState<ValueKey[]>(JSON.parse(propertyValueJson));
     const [search, setSearch] = useState<string>("");
+    const [indexPropertyValue, setIndexPropertyValue]=useState<number>(-1);
+    
     const [isOpenUploadImageModal, setIsOpenUploadImageModal]=useState<boolean>(false);
     const [isOpenWarningModal, setIsOpenWarningModal]=useState<boolean>(false);
-    const [indexPropertyValue, setIndexPropertyValue]=useState<number>(-1);
+
     const [isChangeData, setIsChangeData]=useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -56,10 +59,17 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
             if(!isNullOrEmpty(propertyValues[index].PathUrl)){
                 setIsLoading(true);
 
-                await categoryApiRequest.deleteImageCategoryPropertyDetail({body:propertyValues[index].PathUrl, token:adminDisplay?.token}).then((res)=>{
-                    setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
+                try{
+                    await categoryApiRequest.deleteImageCategoryPropertyDetail({body:propertyValues[index].PathUrl, token:adminDisplay?.token}).then((res)=>{
+                        setPropertyValues([...propertyValues.slice(0, index), ...propertyValues.slice(index + 1)]);
+                        setIsLoading(false);
+                    })
+                }
+                catch(error){
+                    console.log(error);
+                    showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
                     setIsLoading(false);
-                })
+                }
 
             }
             else{   
@@ -92,8 +102,13 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
         setSearch(e.target.value);
 
     const eventButtonAddItem=()=>{
-        addProperty(indexProperty, propertyValues.filter(_=>!isNullOrEmpty(_.Name)));
-        closeModel();
+        if(propertyValues.some(_=>isNullOrEmpty(_.Name))){
+            showToast("warning", <p>Giá trị không được để trống. Vui lòng nhập đầy đủ</p>)
+        }
+        else{
+            addProperty(indexProperty, propertyValues.filter(_=>!isNullOrEmpty(_.Name)));
+            closeModel();
+        }
     }
 
     const openUploadImageModal=()=>
@@ -103,15 +118,22 @@ const PropertyValueModalUI = ({closeModel, indexProperty, addProperty, propertyV
         setIsOpenWarningModal(!isOpenWarningModal);
 
     const eventCloseModal=async ()=>{
-        setIsLoading(true);
         openWarningModal();
         const valueKeys:ValueKey[]=propertyValues.filter(_=>(_.Status==ModeAction.CREATE && !isNullOrEmpty(_.PathUrl)) 
         || _.Status==ModeAction.UPLOAD || (_.Status==ModeAction.UPLOADDELETE) )
 
         if(valueKeys.length!=0){
-            await categoryApiRequest.deleteImageCategoryPropertyDetailNotSave({body:valueKeys, token:adminDisplay?.token}).then((response)=>{
-                closeModel();
-            })
+            setIsLoading(true);
+            try{
+                await categoryApiRequest.deleteImageCategoryPropertyDetailNotSave({body:valueKeys, token:adminDisplay?.token}).then((response)=>{
+                    closeModel();
+                })
+            }
+            catch(error){
+                console.log(error);
+                showToast("error", <p>Lỗi Server. Vui lòng liên hệ Quản trị viên.</p>);
+                setIsLoading(false);
+            }
         }
         else{
             closeModel();
