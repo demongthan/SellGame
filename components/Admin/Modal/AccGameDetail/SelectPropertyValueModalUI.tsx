@@ -28,7 +28,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
     const [isOpenWarningModal, setIsOpenWarningModal]=useState<boolean>(false);
-    const [isChangeData, setIsChangeData]=useState<boolean>(false);
+    const [isChangeData, setIsChangeData]=useState<boolean>(isCreate);
 
     const [name, setName] = useState<ItemSelect>({Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
     const [value, setValue] = useState<ItemSelect>({Name:"", Value:"74055f4b-afea-46a6-b467-7680014808c5"});
@@ -142,13 +142,12 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
         switch (name) {
             case "name":
                 setName(e);
-                setIsChangeData(true);
 
                 const index:number=properties.findIndex(_=>_.Id==e.Value);
                 setIsOnly(properties[index].IsOnly);
                 setIsSearch(properties[index].IsSearch);
                 
-                const selectData:ItemSelect[]=properties[index].Value?properties[index].Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id})):[];
+                const selectData:ItemSelect[]=properties[index].Value?properties[index].Value.map((item:ValueKey)=>({Name:item.Name, Value:item.Id, PathUrl:item.PathUrl})):[];
                 setValueSelectData(selectData);
 
                 if(properties[index].IsSearch){
@@ -271,7 +270,7 @@ const SelectPropertyValueModalUI = ({closeModel, idCategory, addPropertyValue, p
                                 </div>
 
                                 {isCreate?(
-                                    <ButtonAddItemUI isDisabled={!name || isNullOrEmpty(name.Value) || isChangeData} titleButton={"Thêm"} eventButtonClicked={eventButtonAddClick}></ButtonAddItemUI>
+                                    <ButtonAddItemUI isDisabled={!name || isNullOrEmpty(name.Value) || !isChangeData} titleButton={"Thêm"} eventButtonClicked={eventButtonAddClick}></ButtonAddItemUI>
                                 ):(
                                     <ButtonUpdateItemUI isDisabled={!name || isNullOrEmpty(name.Value) || !isChangeData} titleButton='Cập nhật' eventButtonClicked={eventButtonEditClick}></ButtonUpdateItemUI>
                                 )}

@@ -1,9 +1,11 @@
+"use client"
+
 import { Button, Input } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
-import { ButtonAddItemUI, CheckboxUI, DeleteWarningModalUI, InputUI } from '@/components';
+import { ButtonAddItemUI, CheckboxUI, DeleteWarningModalUI, InputUI, LoadingUI } from '@/components';
 import { ModeAction } from '@/utils/types/ModeAction';
 import { ValueItemKey } from '@/utils/types/PropertiesJson';
 import { ItemSelect } from '@/utils/types/SelectItem';
@@ -18,8 +20,11 @@ interface Props{
 
 const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values, addValue}:Props) => {
     const [isSelectAll, setIsSelectAll]=useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isChangeData, setIsChangeData]=useState<boolean>(false);
     const [isOpenWarningModal, setIsOpenWarningModal]=useState<boolean>(false);
+
+    console.log(valueSelectData);
 
     const compareValue=(a:ItemSelect, b:ItemSelect, values:ValueItemKey[])=>{
         const aInValue = values.some(_=>_.IdValue==a.Value);
@@ -121,6 +126,14 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
         closeModel();
     }
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 500); 
+    
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
         <>
             {isOpenWarningModal && (<DeleteWarningModalUI closeModal={openWarningModal} title={'Cảnh báo dữ liệu thay đổi'} description={'Bạn đã chọn Team Color, nhưng chưa lưu.'} 
@@ -147,36 +160,40 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
                                 <span className="sr-only">Close modal</span>
                             </Button>
                         </div>
-                        
-                        <div className="p-4 md:p-5">
-                            <div className="flex flex-col gap-4 mb-4 w-full">
-                                <div className='flex flex-row gap-5 justify-start border-b border-double border-cyan-400 pb-5'>
-                                    <InputUI name='Value' value={value} onChangeEvent={handleChange("value")} isBlockLabel={false} label={"Giá trị :"} 
-                                    classDiv={"w-[83%]"} classInput={"w-[40%]"} classLabel={"w-[10%]"}></InputUI>
 
-                                    <CheckboxUI name='SelectAll' isBlockLabel={false} label={"Chọn tất cả"} classDiv={"w-[17%]"} classLabel={"w-[90%]"} 
-                                    isChecked={isSelectAll} onChangeEvent={handleChange("selectAll")}></CheckboxUI>
-                                </div>
+                        {isLoading?(<div className='h-[30rem]'><LoadingUI></LoadingUI></div>):(
+                            <div className="p-4 md:p-5">
+                                <div className="flex flex-col gap-4 mb-4 w-full">
+                                    <div className='flex flex-row gap-5 justify-start border-b border-double border-cyan-400 pb-5'>
+                                        <InputUI name='Value' value={value} onChangeEvent={handleChange("value")} isBlockLabel={false} label={"Giá trị :"} 
+                                        classDiv={"w-[83%]"} classInput={"w-[40%]"} classLabel={"w-[10%]"}></InputUI>
 
-                                <div className="grid gap-4 grid-cols-4 h-96 overflow-y-auto w-full px-2">
-                                    {valueSelectDataShow && valueSelectDataShow.map((item:ItemSelect, index:number)=>(
-                                        <div key={index} className='flex flex-col'>
-                                            {item.PathUrl && (<Image src={item.PathUrl} width={0} height={0} sizes="100vw" 
-                                            style={{ width: '100%', height: '100%' }} alt='Uplaoded Media'></Image>)}
+                                        <CheckboxUI name='SelectAll' isBlockLabel={false} label={"Chọn tất cả"} classDiv={"w-[17%]"} classLabel={"w-[90%]"} 
+                                        isChecked={isSelectAll} onChangeEvent={handleChange("selectAll")}></CheckboxUI>
+                                    </div>
 
-                                            <div className="flex justify-center items-center h-12">
-                                                <Input id={`Value${index}`} checked={valuesSelect.some(_=>_.IdValue==item.Value && _.Status!=ModeAction.DELETE)} type="checkbox" value="" 
-                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500  focus:ring-2"
-                                                onChange={handleSelectChange(index)}></Input>
-                                                <label htmlFor={`Value${index}`} className="ms-2 text-sm font-medium text-gray-900">{item.Name}</label>
+                                    <div className="grid gap-4 grid-cols-4 h-96 overflow-y-auto w-full px-2">
+                                        {valueSelectDataShow && valueSelectDataShow.map((item:ItemSelect, index:number)=>(
+                                            <div key={index} className='flex flex-col h-52'>
+                                                <div className='h-40'>
+                                                    {item.PathUrl && (<Image src={item.PathUrl} width={0} height={0} sizes="100vw" 
+                                                    style={{ width: '100%', height: '100%' }} alt='Uplaoded Media'></Image>)}
+                                                </div>
+
+                                                <div className="flex justify-center items-center pt-1 text-center h-12">
+                                                    <Input id={`Value${index}`} checked={valuesSelect.some(_=>_.IdValue==item.Value && _.Status!=ModeAction.DELETE)} type="checkbox" value="" 
+                                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500  focus:ring-2"
+                                                    onChange={handleSelectChange(index)}></Input>
+                                                    <label htmlFor={`Value${index}`} className="ms-2 text-sm font-medium text-gray-900">{item.Name}</label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <ButtonAddItemUI isDisabled={!isChangeData} titleButton={"Thêm"} eventButtonClicked={eventButtonAddClicked}></ButtonAddItemUI>
-                        </div>
+                                <ButtonAddItemUI isDisabled={!isChangeData} titleButton={"Thêm"} eventButtonClicked={eventButtonAddClicked}></ButtonAddItemUI>
+                            </div>  
+                        )}
                     </div>
                 </div>
             </div>
