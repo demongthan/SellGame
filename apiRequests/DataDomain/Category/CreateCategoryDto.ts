@@ -1,4 +1,4 @@
-import { CategoryType } from "@/utils/types/CategoryType";
+import { CategoryType } from "@/utils/types/Enum/CategoryType";
 
 export interface CreateCategoryDto{
     Name:string,

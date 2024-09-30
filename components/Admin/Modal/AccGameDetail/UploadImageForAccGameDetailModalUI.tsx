@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 import { showToast } from '@/utils/showToast';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 
 interface Props{
     closeModel:()=>void,

@@ -5,7 +5,7 @@ export interface OrderSearchValue{
 
 export const orderSearch:OrderSearchValue[] = [
     {
-        Name:"Ngẫu nhiên",
+        Name:"",
         Value:""
     },
     {

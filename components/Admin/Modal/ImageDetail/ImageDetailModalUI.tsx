@@ -3,7 +3,7 @@
 import { imageDetailApiRequest } from '@/apiRequests/image-detail';
 import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, InputUI, LoadingUI } from '@/components';
 import { showToast } from '@/utils/showToast';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 import { isNullOrEmpty } from '@/utils/utils';
 
 import { Button } from '@headlessui/react';

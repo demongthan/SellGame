@@ -7,13 +7,14 @@ import { accGameDetailApiRequest } from '@/apiRequests/acc-game-detail';
 import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, DeleteWarningModalUI, InputUI, LoadingUI, SelectUI } from '@/components';
 import { accGameDetailType, AccGameDetailTypeItem } from '@/utils/constant/AccGameDetail/AccGameDetailType';
 import { showToast } from '@/utils/showToast';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 import { convertNumberENtoNumber, convertNumberStrENtoString, isNullOrEmpty, truncateString } from '@/utils/utils';
 import SelectPropertyModalUI from './SelectPropertyModalUI';
 import ReturnPropertyModalUI from './ReturnPropertyModalUI';
-import { PropertiesItemJson, ValueReturnItem } from '@/utils/types/PropertiesJson';
 import { CreateAccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/CreateAccGameDetailDto';
 import { UpdateAccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/UpdateAccGameDetailDto';
+import { PropertiesItemJson } from '@/utils/types/Json/PropertiesItemJson';
+import { ValueReturnItem } from '@/utils/types/Json/ValueReturnItem';
 
 interface Props{
     closeModal:()=>void,

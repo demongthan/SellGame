@@ -1,4 +1,4 @@
-import { MethodCalculate } from "../types/MethodCalculate";
+import { MethodCalculate } from "../types/Enum/MethodCalculate";
 
 export interface MethodCalculateSelectValue{
     Name:string,

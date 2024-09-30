@@ -1,7 +1,7 @@
 "use client"
 
 import jwt from 'jsonwebtoken';
-import { DecodedToken } from '@/utils/types/DecodedToken';
+import { DecodedToken } from '@/utils/types/Auth/DecodedToken';
 import { usePathname } from "next/navigation";
 import React, {createContext, useCallback, useContext, useEffect, useState} from "react";
 

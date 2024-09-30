@@ -1,4 +1,4 @@
-import { MethodCalculate } from "@/utils/types/MethodCalculate";
+import { MethodCalculate } from "@/utils/types/Enum/MethodCalculate";
 
 export interface ServiceDetailDto{
     Id:string,

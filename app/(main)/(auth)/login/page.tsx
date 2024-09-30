@@ -11,10 +11,10 @@ import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider
 import {ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { showToast } from '@/utils/showToast';
 import jwt from 'jsonwebtoken';
-import { DecodedToken } from '@/utils/types/DecodedToken';
-import { UserRole } from '@/utils/types/UserRole';
+import { DecodedToken } from '@/utils/types/Auth/DecodedToken';
 import { Button } from '@headlessui/react';
-import { TokenCookies } from '@/utils/types/TokenCookies';
+import { TokenCookies } from '@/utils/types/Auth/TokenCookies';
+import { UserRole } from '@/utils/types/Enum/UserRole';
 
 const Login = () => {
     const router = useRouter();

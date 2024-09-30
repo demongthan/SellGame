@@ -7,14 +7,14 @@ import PropertiesModalUI from './PropertiesModalUI'
 import { categoryApiRequest } from '@/apiRequests/category'
 import { showToast } from '@/utils/showToast'
 import { isNullOrEmpty, truncateString } from '@/utils/utils'
-import { AdminDisplay } from '@/utils/types/AdminDisplay'
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay'
 
 import { Button, Input } from '@headlessui/react'
 import { PencilSquareIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import React, { FormEvent, useEffect, useState } from 'react'
 import { PropertiesJson, ValueKey } from '@/utils/types/PropertiesJson'
 import { CreateCategoryDto } from '@/apiRequests/DataDomain/Category/CreateCategoryDto'
-import { ModeAction } from '@/utils/types/ModeAction'
+import { ModeAction } from '@/utils/types/Enum/ModeAction'
 
 interface Props{
     refreshAllCategoryCreate:()=>Promise<void>,

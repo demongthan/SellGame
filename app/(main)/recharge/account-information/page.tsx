@@ -3,7 +3,7 @@
 import { accountInformationApiRequest } from '@/apiRequests/account-information'
 import { ButtonV1UI, InputUI, LoadingUI, TitleRecharge } from '@/components'
 import { showToast } from '@/utils/showToast'
-import { DecodedToken } from '@/utils/types/DecodedToken';
+import { DecodedToken } from '@/utils/types/Auth/DecodedToken';
 
 import jwt from 'jsonwebtoken';
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'

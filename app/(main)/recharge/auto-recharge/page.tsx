@@ -11,7 +11,7 @@ import { generateThreeDigitNumber, isNullOrEmpty } from '@/utils/utils'
 import { Button, Input } from '@headlessui/react'
 import { ArrowPathIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import React, { FormEvent, useEffect, useState } from 'react'
-import { DecodedToken } from '@/utils/types/DecodedToken';
+import { DecodedToken } from '@/utils/types/Auth/DecodedToken';
 import jwt from 'jsonwebtoken';
 
 const AutoRecharge = () => {

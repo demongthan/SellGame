@@ -1,6 +1,6 @@
 'use client';
 
-import { AdminDisplay } from "@/utils/types/AdminDisplay";
+import { AdminDisplay } from "@/utils/types/Auth/AdminDisplay";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 interface Props {

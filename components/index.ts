@@ -50,6 +50,8 @@ import ReturnPropertyModalUI from "./Admin/Modal/AccGameDetail/ReturnPropertyMod
 import AccGameDetailStatusDisplay from "./Admin/AccGameDetailStatusDisplay";
 import AccGameDetailTypeDisplay from "./Admin/AccGameDetailTypeDisplay";
 import ImageModal from "./Common/ImageModal";
+import InputSearchUI from "./Common/UI/InputSearchUI";
+import SelectSearchUI from "./Common/UI/SelectSearchUI";
 
 export{
     Header,
@@ -100,5 +102,7 @@ export{
     DescriptionDisplay,
     AccGameDetailStatusDisplay,
     AccGameDetailTypeDisplay,
-    ImageModal
+    ImageModal,
+    InputSearchUI,
+    SelectSearchUI
 }

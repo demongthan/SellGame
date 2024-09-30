@@ -1,9 +1,9 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { PropertiesItemJson } from '@/utils/types/PropertiesJson'
 import parse from 'html-react-parser';
 import { ShoppingCartIcon } from '@heroicons/react/20/solid';
+import { PropertiesItemJson } from '@/utils/types/Json/PropertiesItemJson';
 
 interface Props{
     urlImage: string,
@@ -38,10 +38,10 @@ const CardGameDetail = ({urlImage,
             </div>
 
             <div className='flex flex-col w-full gap-2 px-8 text-sm'>
-                {properties && properties.map((property, index)=>(
+                {properties && properties.map((property:PropertiesItemJson, index)=>(
                     <div key={index} className='w-full'>
                         <p className='inline-block w-2/5 font-semibold'>{property.Name} :</p>
-                        <p className='inline-block text-right w-3/5'>{property.Value}</p>
+                        <p className='inline-block text-right w-3/5'>{property.Name}</p>
                     </div>
                 ))}
             </div>

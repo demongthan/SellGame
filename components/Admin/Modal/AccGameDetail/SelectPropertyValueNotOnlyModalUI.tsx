@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import { ButtonAddItemUI, CheckboxUI, DeleteWarningModalUI, ImageModal, InputUI, LoadingUI } from '@/components';
-import { ModeAction } from '@/utils/types/ModeAction';
+import { ModeAction } from '@/utils/types/Enum/ModeAction';
 import { ValueItemKey } from '@/utils/types/PropertiesJson';
 import { ItemSelect } from '@/utils/types/SelectItem';
 import { isNullOrEmpty } from '@/utils/utils';

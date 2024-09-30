@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
 
-import { AdminDisplay } from '@/utils/types/AdminDisplay'
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay'
 import { showToast } from '@/utils/showToast';
 import { categoryApiRequest } from '@/apiRequests/category';
 import { isNullOrEmpty } from '@/utils/utils';

@@ -6,6 +6,9 @@ export interface PriceSearchValue{
 
 export const priceSearch:PriceSearchValue[]=[
     {
+        Name:"",
+    },
+    {
         Name:"Dưới 50K",
         MaxValue:50000,
     },

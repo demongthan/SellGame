@@ -17,9 +17,9 @@ import { ButtonAddItemUI,
 import { adminCategoryTable } from '@/utils/constant/TitleTable/AdminCategoryTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { showToast } from '@/utils/showToast';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 import { displayDateTime, isNullOrEmpty, truncateString } from '@/utils/utils';
-import { DecodedToken } from '@/utils/types/DecodedToken';
+import { DecodedToken } from '@/utils/types/Auth/DecodedToken';
 
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';

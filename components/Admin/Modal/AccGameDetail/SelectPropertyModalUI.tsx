@@ -1,16 +1,17 @@
 "use client"
 
 import { ButtonAddItemUI, CheckboxUI, DeleteWarningModalUI, InputUI } from '@/components'
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
-import { PropertiesItemJson, ValueItemKey } from '@/utils/types/PropertiesJson';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 import { ItemSelect } from '@/utils/types/SelectItem';
 
 import { Button } from '@headlessui/react';
 import { MinusCircleIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useState } from 'react'
 import SelectPropertyValueModalUI from './SelectPropertyValueModalUI';
-import { ModeAction } from '@/utils/types/ModeAction';
+import { ModeAction } from '@/utils/types/Enum/ModeAction';
 import { truncateString } from '@/utils/utils';
+import { PropertiesItemJson } from '@/utils/types/Json/PropertiesItemJson';
+import { ValueItemKey } from '@/utils/types/Json/ValueItemKey';
 
 interface Props {
     closeModel: () => void;

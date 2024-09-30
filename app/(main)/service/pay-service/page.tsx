@@ -9,7 +9,7 @@ import { ServiceDetailDto } from '@/apiRequests/DataDomain/ServiceDetail/Service
 import { useSearchParams } from 'next/navigation';
 import { serviceDetailApiRequest } from '@/apiRequests/service-detail';
 import { ServiceDetailPrice, ServiceDetailProperties } from '@/utils/types/PropertiesJson';
-import { MethodCalculate } from '@/utils/types/MethodCalculate';
+import { MethodCalculate } from '@/utils/types/Enum/MethodCalculate';
 import { isNullOrEmpty } from '@/utils/utils';
 
 const PayService = () => {

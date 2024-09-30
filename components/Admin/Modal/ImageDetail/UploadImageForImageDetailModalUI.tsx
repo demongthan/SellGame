@@ -8,7 +8,7 @@ import Image from 'next/image'
 import { LoadingUI } from '@/components';
 import { showToast } from '@/utils/showToast';
 import { imageDetailApiRequest } from '@/apiRequests/image-detail';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 
 interface Props{
     closeModel:()=>void,

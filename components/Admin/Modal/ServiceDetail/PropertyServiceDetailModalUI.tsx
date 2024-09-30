@@ -1,7 +1,7 @@
 "use client"
 
 import { ButtonAddItemUI, InputUI, SelectCoefficientModalUI, SelectPriceModalUI } from '@/components';
-import { MethodCalculate } from '@/utils/types/MethodCalculate';
+import { MethodCalculate } from '@/utils/types/Enum/MethodCalculate';
 import { ServiceDetailProperties, ValueKey } from '@/utils/types/PropertiesJson';
 import { ItemSelect } from '@/utils/types/SelectItem';
 import { isNullOrEmpty } from '@/utils/utils';

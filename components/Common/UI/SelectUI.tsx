@@ -1,6 +1,6 @@
 "use client"
 
-import { ValueKey } from '@/utils/types/PropertiesJson';
+import { ItemSelect } from '@/utils/types/SelectItem';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import React, { ChangeEventHandler, Fragment, useState } from 'react'
@@ -35,7 +35,7 @@ const SelectUI = ({
     const filteredItem =
     query === ""
       ? data
-      : data?.filter((item:ValueKey) =>
+      : data?.filter((item:ItemSelect) =>
           item.Name
             .toLowerCase()
             .replace(/\s+/g, "")

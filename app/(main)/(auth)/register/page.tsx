@@ -8,12 +8,12 @@ import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { Button } from '@headlessui/react';
 import { signIn } from 'next-auth/react';
 
-import { DecodedToken } from '@/utils/types/DecodedToken';
+import { DecodedToken } from '@/utils/types/Auth/DecodedToken';
 import { UserRole } from '@/utils/types/UserRole';
 import { authApiRequest } from '@/apiRequests/auth';
 import { ButtonV1UI, InputUI, LoadingUI } from '@/components'
 import { GlobalContextProps, useGlobalState } from '@/AppProvider/GlobalProvider';
-import { TokenCookies } from '@/utils/types/TokenCookies';
+import { TokenCookies } from '@/utils/types/Auth/TokenCookies';
 
 const Register = () => {
     const router = useRouter();

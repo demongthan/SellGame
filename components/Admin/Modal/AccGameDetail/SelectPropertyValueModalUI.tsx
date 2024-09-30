@@ -2,8 +2,7 @@
 
 import { categoryApiRequest } from '@/apiRequests/category';
 import { ButtonAddItemUI, ButtonUpdateItemUI, CheckboxUI, DeleteWarningModalUI, InputUI, LoadingUI, SelectUI } from '@/components';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
-import { PropertiesItemJson, PropertiesJson, ValueItemKey, ValueKey } from '@/utils/types/PropertiesJson';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 import { ItemSelect } from '@/utils/types/SelectItem';
 import { isNullOrEmpty } from '@/utils/utils';
 
@@ -11,7 +10,11 @@ import { Button } from '@headlessui/react';
 import { PlusCircleIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
 import SelectPropertyValueNotOnlyModalUI from './SelectPropertyValueNotOnlyModalUI';
-import { ModeAction } from '@/utils/types/ModeAction';
+import { ModeAction } from '@/utils/types/Enum/ModeAction';
+import { ValueItemKey } from '@/utils/types/Json/ValueItemKey';
+import { PropertiesItemJson } from '@/utils/types/Json/PropertiesItemJson';
+import { PropertiesJson } from '@/utils/types/Json/PropertiesJson';
+import { ValueKey } from '@/utils/types/Json/ValueKey';
 
 interface Props{
     closeModel:()=>void,

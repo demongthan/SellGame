@@ -7,8 +7,8 @@ import PropertyValueModalUI from './PropertyValueModalUI'
 
 import { MinusCircleIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import React, {useState } from 'react';
-import { ModeAction } from '@/utils/types/ModeAction';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { ModeAction } from '@/utils/types/Enum/ModeAction';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 import { isNullOrEmpty } from '@/utils/utils';
 import { categoryApiRequest } from '@/apiRequests/category';
 import { showToast } from '@/utils/showToast';

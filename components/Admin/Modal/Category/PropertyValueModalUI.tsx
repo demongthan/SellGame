@@ -1,7 +1,7 @@
 "use client"
 
 import { ButtonAddItemUI, DeleteWarningModalUI, InputUI, LoadingUI } from '@/components';
-import { ModeAction } from '@/utils/types/ModeAction';
+import { ModeAction } from '@/utils/types/Enum/ModeAction';
 import { ValueKey } from '@/utils/types/PropertiesJson';
 import { isNullOrEmpty } from '@/utils/utils';
 import { Button } from '@headlessui/react';
@@ -9,7 +9,7 @@ import { ArrowUpTrayIcon, MinusCircleIcon, XMarkIcon } from '@heroicons/react/20
 
 import React, { useState } from 'react'
 import UploadImagePropertyValueModalUI from './UploadImagePropertyValueModalUI';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
 import { categoryApiRequest } from '@/apiRequests/category';
 import { showToast } from '@/utils/showToast';
 

@@ -7,8 +7,8 @@ import { imageDetailApiRequest } from '@/apiRequests/image-detail';
 import { showToast } from '@/utils/showToast';
 import { ImageDetailDto } from '@/apiRequests/DataDomain/ImageDetail/ImageDetailDto';
 import { AdminContextProps, useAdminState } from '@/AppProvider/AdminProvider';
-import { AdminDisplay } from '@/utils/types/AdminDisplay';
-import { DecodedToken } from '@/utils/types/DecodedToken';
+import { AdminDisplay } from '@/utils/types/Auth/AdminDisplay';
+import { DecodedToken } from '@/utils/types/Auth/DecodedToken';
 
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
