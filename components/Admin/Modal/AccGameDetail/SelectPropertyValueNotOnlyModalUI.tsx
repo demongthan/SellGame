@@ -5,7 +5,7 @@ import { XMarkIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
-import { ButtonAddItemUI, CheckboxUI, DeleteWarningModalUI, InputUI, LoadingUI } from '@/components';
+import { ButtonAddItemUI, CheckboxUI, DeleteWarningModalUI, ImageModal, InputUI, LoadingUI } from '@/components';
 import { ModeAction } from '@/utils/types/ModeAction';
 import { ValueItemKey } from '@/utils/types/PropertiesJson';
 import { ItemSelect } from '@/utils/types/SelectItem';
@@ -172,12 +172,11 @@ const SelectPropertyValueNotOnlyModalUI = ({closeModel, valueSelectData, values,
                                         isChecked={isSelectAll} onChangeEvent={handleChange("selectAll")}></CheckboxUI>
                                     </div>
 
-                                    <div className="grid gap-4 grid-cols-4 h-96 overflow-y-auto w-full px-2">
+                                    <div className="grid gap-4 grid-cols-4 h-[28rem] overflow-y-auto w-full px-2">
                                         {valueSelectDataShow && valueSelectDataShow.map((item:ItemSelect, index:number)=>(
-                                            <div key={index} className='flex flex-col h-52'>
-                                                <div className='h-40'>
-                                                    {item.PathUrl && (<Image src={item.PathUrl} width={0} height={0} sizes="100vw" 
-                                                    style={{ width: '100%', height: '100%' }} alt='Uplaoded Media'></Image>)}
+                                            <div key={index} className='flex flex-col h-40'>
+                                                <div className='h-28'>
+                                                    {item.PathUrl && (<ImageModal src={item.PathUrl}></ImageModal>)}
                                                 </div>
 
                                                 <div className="flex justify-center items-center pt-1 text-center h-12">

@@ -289,7 +289,7 @@ const Category = () => {
       {isOpenModel && (<CategoryModalUI refreshAllCategoryCreate={getAllCategoryTotal} closeModel={openModel} idCategory={idCategory} 
       refreshAllCategoryUpdate={refreshAllCategory} adminDisplay={adminDisplay} ></CategoryModalUI>)}
 
-      <Card className={"w-full pb-10 p-4 h-full"}>
+      <Card className={"w-full pb-6 p-4 h-full"}>
           <header className="relative">
               <form className='flex flex-col gap-5' onSubmit={onSubmit}>
                 <div className='flex flex-row w-full gap-10'>
@@ -309,10 +309,10 @@ const Category = () => {
 
           {isLoading?(<div className='mt-8 h-[58vh]'><LoadingUI></LoadingUI></div>):(
             <>
-              <div className='mt-8 flex justify-end'>
+              <div className='flex justify-end'>
                 <ButtonAddItemUI titleButton={'Thêm danh mục'} eventButtonClicked={openModalCreate} ></ButtonAddItemUI>
               </div>
-              <div className="mt-8 w-full h-[50vh] overflow-auto">
+              <div className="mt-4 w-full h-[56vh] overflow-auto">
                 <table {...getTableProps()} className="w-[107rem]">
                   <thead className='sticky top-0 z-10 bg-white shadow-custom'>
                     {headerGroups.map((headerGroup:any, index:any) => (
@@ -321,7 +321,7 @@ const Category = () => {
                           <th
                             {...column.getHeaderProps(column.getSortByToggleProps())}
                             key={index}
-                            className="border-b border-gray-200 pr-4 pb-[10px] text-start"
+                            className="border-b border-gray-200 pr-4 pb-[15px] pt-[10px] text-start"
                           >
                             <div className="flex w-full justify-between pr-4 text-sm tracking-wide text-gray-600">
                               {column.render("TitleHeader")}

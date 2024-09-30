@@ -1,6 +1,6 @@
 "use client"
 
-import { AccGameDetailModalUI, AccGameDetailStatusDisplay, AccGameDetailTypeDisplay, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteWarningModalUI, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
+import { AccGameDetailModalUI, AccGameDetailStatusDisplay, AccGameDetailTypeDisplay, ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteWarningModalUI, ImageModal, InputUI, LoadingUI, SelectUI, UploadImageForAccGameDetailModalUI } from '@/components'
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { displayDateTime, isNullOrEmpty, truncateString } from '@/utils/utils';
 import { adminAccGameDetailTable } from '@/utils/constant/TitleTable/AdminAccGameDetailTable';
@@ -284,37 +284,41 @@ const AccGameDetail = () => {
             {isOpenImageModel && (<UploadImageForAccGameDetailModalUI closeModel={openImageModel} idAccGameDetail={idAccGameDetail}
             refreshAllAccGameDetailUpdate={refreshAllAccGameDetail} adminDisplay={adminDisplay}></UploadImageForAccGameDetailModalUI>)}
 
-            <Card className={"w-full pb-10 p-4 h-full"}>
+            <Card className={"w-full pb-6 p-4 h-full"}>
                 <header className="relative">
                     <form className='flex flex-col gap-5' onSubmit={onSubmit} ref={ref}>
                         <div className='flex flex-row w-full gap-10'>
                             <SelectUI isBlockLabel={false} label={"Danh mục :"} name={"Category"} data={categorySearch} selected={category}
-                            classDiv={"w-[20%]"} classLabel={"w-[35%]"} classSelect={"w-[65%]"} onChangeEvent={handleChange("category")}></SelectUI>
+                            classDiv={"w-1/3"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={handleChange("category")}></SelectUI>
 
                             <SelectUI isBlockLabel={false} label={"Trạng thái :"} name={"AccGameDetailStatus"} data={accGameDetailStatus} selected={status}
-                            classDiv={"w-[20%]"} classLabel={"w-[35%]"} classSelect={"w-[65%]"} onChangeEvent={handleChange("status")}></SelectUI>
+                            classDiv={"w-1/3"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={handleChange("status")}></SelectUI>
 
                             <SelectUI isBlockLabel={false} label={"Loại :"} name={"AccGameDetailType"} data={accGameDetailType} selected={type}
-                            classDiv={"w-[20%]"} classLabel={"w-[35%]"} classSelect={"w-[65%]"} onChangeEvent={handleChange("type")}></SelectUI>
+                            classDiv={"w-1/3"} classLabel={"w-[20%]"} classSelect={"w-[80%]"} onChangeEvent={handleChange("type")}></SelectUI>
+                        </div>
 
+                        <div className='flex flex-row w-full gap-10'>
                             <InputUI name='Code' value={code} onChangeEvent={handleChange("code")} isBlockLabel={false} label={"Mã số :"} 
-                            classDiv={"w-[20%]"} classInput={"w-[75%]"} classLabel={"w-[25%]"}></InputUI>
+                            classDiv={"w-1/3"} classInput={"w-[80%]"} classLabel={"w-[20%]"}></InputUI>
 
-                            <CheckboxUI name='Active' isChecked={active} label={"Hiệu lực :"} classDiv={"w-[16%]"} classLabel={"w-2/5"}
+                            <CheckboxUI name='Active' isChecked={active} label={"Hiệu lực :"} classDiv={"w-1/3"} classLabel={"w-1/5"}
                             onChangeEvent={handleChange("active")}></CheckboxUI>
+
+                            <div className='w-1/3'></div>
                         </div>
 
                         <ButtonSearchUI classDiv={"w-1/5 h-9"} eventButtonAllClick={getAllAccGameDetail}></ButtonSearchUI>
                     </form>
                 </header>
 
-                {isLoading?(<div className='mt-8 h-[58vh]'><LoadingUI></LoadingUI></div>):(
+                {isLoading?(<div className='h-[58vh]'><LoadingUI></LoadingUI></div>):(
                     <>
-                        <div className='mt-8 flex justify-end'>
+                        <div className='flex justify-end'>
                             <ButtonAddItemUI titleButton={'Tạo'} eventButtonClicked={openModelCreate} ></ButtonAddItemUI>
                         </div>
 
-                        <div className="mt-8 w-full h-[50vh] overflow-auto">
+                        <div className="mt-4 w-full h-[49vh] overflow-auto">
                             <table {...getTableProps()} className='w-full'>
                                 <thead className='sticky top-0 z-10 bg-white shadow-custom'>
                                     {headerGroups.map((headerGroup:any, index:number) => (
@@ -323,7 +327,7 @@ const AccGameDetail = () => {
                                                 <th
                                                     {...column.getHeaderProps(column.getSortByToggleProps())}
                                                     key={index}
-                                                    className="border-b border-gray-200 pr-4 pb-[10px] text-start"
+                                                    className="border-b border-gray-200 pr-4 pb-[15px] pt-[10px] text-start"
                                                 >
                                                     <div className="flex w-full justify-between pr-4 text-sm tracking-wide text-gray-600">
                                                         {column.render("TitleHeader")}
@@ -396,8 +400,7 @@ const AccGameDetail = () => {
                                                     else if (cell.column.Header === "PATHURL") {
                                                         data = (
                                                             <div className='w-[12rem] pr-4'>
-                                                                {cell.value && <Image alt='' src={cell.value} width={0} height={0} sizes="100vw" 
-                                                                style={{ width: '100%', height: '100%' }}></Image>}
+                                                                {cell.value && <ImageModal src={cell.value}></ImageModal>}
                                                             </div>
                                                         );
                                                     }

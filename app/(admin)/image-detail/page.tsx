@@ -1,6 +1,6 @@
 "use client"
 
-import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteWarningModalUI, ImageDetailModalUI, InputUI, LoadingUI, UploadImageForImageDetailModalUI } from '@/components'
+import { ButtonAddItemUI, ButtonSearchUI, Card, CheckboxUI, DefaultPagination, DeleteWarningModalUI, ImageDetailModalUI, ImageModal, InputUI, LoadingUI, UploadImageForImageDetailModalUI } from '@/components'
 import { adminImageDetailTable } from '@/utils/constant/TitleTable/AdminImageDetailTable';
 import { HeaderItem } from '@/utils/constant/TitleTable/types';
 import { imageDetailApiRequest } from '@/apiRequests/image-detail';
@@ -318,8 +318,7 @@ const ImageDetail = () => {
                                                     else if (cell.column.Header === "PATHURL") {
                                                         data = (
                                                             <div className='w-[10rem] pr-4'>
-                                                                {cell.value && <Image alt='' src={cell.value} width={0} height={0} sizes="100vw" 
-                                                                style={{ width: '100%', height: '100%' }}></Image>}
+                                                                {cell.value && <ImageModal src={cell.value}></ImageModal>}
                                                             </div>
                                                         );
                                                     }
