@@ -38,15 +38,14 @@ const SelectSearchUI = ({
     );
 
     return (
-        <div className={`flex flex-row ${classDiv} border border-s2gray2 rounded-lg transition-input 
-        ease-in-out delay-150 focus:outline-none focus:border-s2cyan h-12`}>
-            <label htmlFor={name} className={`bg-gray-100 rounded-l-lg border-r border-s2gray2 h-full text-base text-black font-semibold leading-6 ${classLabel} flex justify-start items-center pl-2`}>{label}</label>
+        <div className={`flex flex-row ${classDiv} border border-slate-300 rounded-lg h-12 shadow-xl`}>
+            <label htmlFor={name} className={`bg-lime-50 rounded-l-lg border-r border-slate-300 h-full text-base text-coolGray-500 font-semibold leading-6 ${classLabel} flex justify-start items-center pl-2`}>{label}</label>
 
             <Combobox value={selected} onChange={onChangeEvent}>
                 <div className={`relative ${classSelect}`}>
-                    <div className="relative w-full cursor-default overflow-hidden bg-white text-left">
+                    <div className="flex w-full rounded-r-lg px-2 h-full cursor-default overflow-hidden bg-white text-left">
                         <ComboboxInput name={name}
-                            className="w-full text-sm leading-5 text-gray-900 focus:outline-none"
+                            className="w-full text-slate-500 font-normal text-sm leading-5 focus:outline-none"
                             displayValue={(item:any) => item?item.Name:""}
                             onChange={(event) => setQuery(event.target.value)}
                         >
@@ -76,14 +75,14 @@ const SelectSearchUI = ({
                             filteredItem.map((item:any, index:any) => (
                                 <ComboboxOption
                                 key={index}
-                                className={`relative cursor-default select-none py-2 pl-10 pr-4 text-gray-900`}
+                                className={`relative cursor-default select-none py-2 pl-10 pr-4`}
                                 value={item}
                                 >
                                 {({ selected}) => (
                                     <>
                                     <span
                                         className={`block truncate ${
-                                        selected ? "font-medium" : "font-normal"
+                                        selected ? "font-medium text-slate-500" : "font-normal text-gray-600"
                                         }`}
                                     >
                                         {item.Name}

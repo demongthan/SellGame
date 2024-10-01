@@ -187,15 +187,17 @@ const BuyAccountDetail = () => {
 
             <DescriptionDisplay content={description}></DescriptionDisplay>
 
-            <form className='flex flex-col gap-5 w-full' onSubmit={onSubmit}>
-                <div className='grid grid-cols-4 gap-5 w-full'>
+            <form className='flex flex-col gap-10 w-full' onSubmit={onSubmit}>
+                <div className='grid grid-cols-3 gap-5 w-full px-2'>
                     <InputSearchUI 
                         value={code} name={"Code"} label={"Mã số"} classDiv='w-full' classLabel='w-[30%]' classInput='w-[70%]'
                         onChangeEvent={handleChange("code", 0)}>
                     </InputSearchUI>
                 
-                    <SelectSearchUI selected={money} label={"Giá tiền"} name={"Price"} data={valueSelectPrices}
-                    onChangeEvent={handleChange("money", 0)}></SelectSearchUI>
+                    <SelectSearchUI 
+                        selected={money} label={"Giá tiền"} name={"Price"} data={valueSelectPrices} classDiv='w-full' 
+                        classLabel='w-[30%]' classSelect='w-[70%]' onChangeEvent={handleChange("money", 0)}>
+                    </SelectSearchUI>
 
                     {propertySearches && propertySearches.map((property, index)=>{
                         let data;
@@ -205,8 +207,10 @@ const BuyAccountDetail = () => {
 
                             if(property.IsOnly){
                                 data=(
-                                    <SelectSearchUI selected={propertyItems[index]} key={index} label={property.Name} data={[{Name:"", Value:""}, ...valueSelects]}
-                                    onChangeEvent={handleChange("property", index)}></SelectSearchUI>
+                                    <SelectSearchUI 
+                                        selected={propertyItems[index]} key={index} label={property.Name} data={[{Name:"", Value:""}, ...valueSelects]}
+                                        classDiv='w-full' classLabel='w-[30%]' classSelect='w-[70%]' onChangeEvent={handleChange("property", index)}>
+                                    </SelectSearchUI>
                                 )
                             }
                             else{
@@ -237,8 +241,8 @@ const BuyAccountDetail = () => {
                         return data;
                     })}
 
-                    <SelectSearchUI selected={order} label={"Sắp xếp theo"} name={"Order"} data={valueSelectOrders}
-                    onChangeEvent={handleChange("order", 0)}></SelectSearchUI>
+                    <SelectSearchUI selected={order} label={"Sắp xếp theo"} name={"Order"} data={valueSelectOrders} 
+                    classDiv='w-full' classLabel='w-[30%]' classSelect='w-[70%]' onChangeEvent={handleChange("order", 0)}></SelectSearchUI>
                 </div>
                 
                 <ButtonSearchUI classDiv={"w-[23.5%] h-9"} eventButtonAllClick={getAllAccGameDetail}></ButtonSearchUI>

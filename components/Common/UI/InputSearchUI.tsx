@@ -27,12 +27,11 @@ const InputSearchUI = ({
         classLabel=""
     }:Props) => {
     return (
-        <div className={`flex flex-row ${classDiv} border border-s2gray2 rounded-lg transition-input 
-        ease-in-out delay-150 focus:outline-none focus:border-s2cyan h-12`}>
-            <label htmlFor={name} className={`bg-gray-100 rounded-l-lg border-r border-s2gray2 h-full text-base text-black font-semibold leading-6 ${classLabel} flex justify-start items-center pl-2`}>{label}</label>
+        <div className={`flex flex-row ${classDiv} border rounded-lg border-slate-300 h-12 shadow-xl`}>
+            <label htmlFor={name} className={`bg-lime-50 rounded-l-lg border-r border-slate-300 h-full text-base text-coolGray-500 font-semibold leading-6 ${classLabel} flex justify-start items-center pl-2`}>{label}</label>
 
             <Input type={"text"} name={name} maxLength={max} value={value} onBlur={onBlurEvent} onChange={onChangeEvent}
-                className={`rounded-r-lg h-full text-sm focus:outline-none px-2 ${classInput}`} placeholder={placeholder}>
+                className={`rounded-r-lg h-full text-slate-500 font-normal text-sm focus:outline-none px-2 ${classInput}`} placeholder={placeholder}>
             </Input>
         </div>
     )

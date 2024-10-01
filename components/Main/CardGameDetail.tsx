@@ -2,12 +2,13 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import parse from 'html-react-parser';
+
 import { ShoppingCartIcon } from '@heroicons/react/20/solid';
-import { PropertiesItemJson } from '@/utils/types/Json/PropertiesItemJson';
+import { PropertyAccGameDetail } from '@/utils/types/Json/PropertyAccGameDetail';
 
 interface Props{
     urlImage: string,
-    properties:PropertiesItemJson[],
+    properties:PropertyAccGameDetail[],
     discount: number,
     titleButton:string,
     price:number,
@@ -27,26 +28,30 @@ const CardGameDetail = ({urlImage,
 }:Props) => {
   return (
     <div className='p-2'>
-        <div className='relative flex flex-col w-full h-full max-h-[45rem] border-2 rounded-md divide-solid border-red-500 items-center justify-center gap-6 pb-3 hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+        <div className='relative flex flex-col w-full h-[30rem] border-2 rounded-md divide-solid border-red-500 items-center justify-center gap-4 pb-3 hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
             <div className='w-full h-[14rem] flex flex-col'>
-                <Image src={urlImage} 
-                alt="" width={0} height={0} className='rounded-t-md' sizes="100vw" style={{ width: '100%', height: '100%' }}></Image>
+                <div className='h-[12rem] rounded-t-md'>
+                    <Image 
+                        src={urlImage} alt="" width={0} height={0} className='rounded-t-md' 
+                        sizes="100vw" style={{ width: '100%', height: '100%' }}>
+                    </Image>
+                </div>
                 
                 {description && (<div className='flex justify-center items-center !text-xs font-semibold truncate text-gray-900 bg-gradient-to-r from-cyan-500 to-blue-500 px-1 py-2 h-[2rem]'>
                     {parse(description)}
                 </div>)}
             </div>
 
-            <div className='flex flex-col w-full gap-2 px-8 text-sm'>
-                {properties && properties.map((property:PropertiesItemJson, index)=>(
+            <div className='flex flex-col w-full gap-2 px-8 text-sm h-[10rem] overflow-y-auto'>
+            {properties && properties.map((property:PropertyAccGameDetail, index)=>(
                     <div key={index} className='w-full'>
                         <p className='inline-block w-2/5 font-semibold'>{property.Name} :</p>
-                        <p className='inline-block text-right w-3/5'>{property.Name}</p>
+                        <p className='inline-block text-right w-3/5'>{property.Value}</p>
                     </div>
                 ))}
             </div>
 
-            <div className='border bg-gradient-to-br from-teal-300 to-lime-300 flex justify-center items-center w-[90%] h-[2.5rem]'>
+            <div className='border bg-gradient-to-br from-teal-300 to-lime-300 flex justify-center items-center w-[90%] h-[3rem]'>
                 {discount<=0?(
                     <span className='font-semibold text-gray-600'>{price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</span>
                 ):(
@@ -57,7 +62,8 @@ const CardGameDetail = ({urlImage,
                 )}
             </div>
 
-            <Link href={`${urlButton}`} className="relative inline-flex items-center justify-center px-7 py-2.5 overflow-hidden font-medium text-cyan-400 transition duration-300 ease-out border-2 border-cyan-400 divide-solid rounded-full shadow-md group">
+            <Link href={`${urlButton}`} className="relative inline-flex items-center justify-center px-7 py-2.5 overflow-hidden 
+            font-medium text-cyan-400 transition duration-300 ease-out border-2 border-cyan-400 divide-solid rounded-full shadow-md group h-[3rem]">
                 <span className="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-gradient-to-br from-purple-500 to-pink-500 group-hover:translate-x-0 ease">
                     <ShoppingCartIcon className='w-[1.2rem] h-[1.2rem]'></ShoppingCartIcon>
                 </span>
