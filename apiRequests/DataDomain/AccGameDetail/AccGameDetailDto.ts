@@ -7,6 +7,7 @@ export interface AccGameDetailDto{
     Status:AccGameDetailStatus,
     Type:AccGameDetailType,
     Description?: string,
+    DescriptionDetail?: string,
     Price:number,
     Discount:number,
     Deposit:number,

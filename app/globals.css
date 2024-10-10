@@ -133,3 +133,22 @@ input:checked.defaultCheckboxInline::before {
 #Description ul{
   padding-left: 2rem;
 }
+
+/* Thêm lớp này trong file CSS của bạn */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Ẩn scrollbar trên Chrome, Safari */
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Ẩn scrollbar trên IE và Edge */
+  scrollbar-width: none;  /* Ẩn scrollbar trên Firefox */
+}
+
+.fancybox__container {
+  padding-top: 50px !important; /* Điều chỉnh khoảng cách từ phía trên */
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  display: none !important;
+}

@@ -13,14 +13,13 @@ import { DecodedToken } from '@/utils/types/Auth/DecodedToken';
 import {accGameDetailStatus } from '@/utils/constant/AccGameDetail/AccGameDetailStatus';
 import { AccGameDetailDto } from '@/apiRequests/DataDomain/AccGameDetail/AccGameDetailDto';
 import envConfig from '@/config';
+import { accGameDetailType } from '@/utils/constant/AccGameDetail/AccGameDetailType';
 
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {useGlobalFilter,usePagination,useSortBy,useTable,} from "react-table";
-import Image from 'next/image'
 import { Button } from '@headlessui/react';
 import { ArrowUpTrayIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import jwt from 'jsonwebtoken';
-import { accGameDetailType } from '@/utils/constant/AccGameDetail/AccGameDetailType';
 
 const AccGameDetail = () => {
     const ref = useRef<HTMLFormElement>(null);
@@ -28,7 +27,7 @@ const AccGameDetail = () => {
     const [tableData, setTableData]=useState<AccGameDetailDto[]>([]);
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
-    const [flieds]=useState<string>("Fields=Id%2CCode%2CStatus%2CType%2CDescription%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc")
+    const [flieds]=useState<string>("Fields=Id%2CCode%2CStatus%2CType%2CDescription%2CDescriptionDetail%2CPrice%2CDiscount%2CDeposit%2CPathUrl%2CActive%2CCreatedDateUtc%2CUpdatedDateUtc")
 
     const tableInstance = useTable(
         {
@@ -365,6 +364,13 @@ const AccGameDetail = () => {
                                                         );
                                                     }
                                                     else if (cell.column.Header === "DESCRIPTION") {
+                                                        data = (
+                                                            <p className="text-sm text-navy-700 w-[25rem] pr-4">
+                                                                {cell.value?truncateString(cell.value, 200):""}
+                                                            </p>
+                                                        );
+                                                    }
+                                                    else if (cell.column.Header === "DESCRIPTIONDETAIL") {
                                                         data = (
                                                             <p className="text-sm text-navy-700 w-[25rem] pr-4">
                                                                 {cell.value?truncateString(cell.value, 200):""}

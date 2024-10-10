@@ -42,6 +42,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
     const [active, setActive]=useState<boolean>(true);
     const [deposit, setDeposit]=useState<number>(0);
     const [description, setDescription]=useState<string | undefined>("");
+    const [descriptionDetail, setDescriptionDetail]=useState<string | undefined>("");
     const [returnProperties, setReturnProperties]=useState<string>("[]");
     const [type, setType]=useState<AccGameDetailTypeItem>(accGameDetailType[0]);
 
@@ -74,7 +75,8 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                         Properties: properties,
                         Description: description,
                         ReturnProperties: returnProperties,
-                        Type:type.Value
+                        Type:type.Value,
+                        DescriptionDetail: descriptionDetail
                     }
                     const result = await accGameDetailApiRequest.createAccGameDetail({body:createAccGameDetailDto, token:adminDisplay?.token});
 
@@ -96,7 +98,8 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                         Properties: properties,
                         Description: description,
                         ReturnProperties: returnProperties,
-                        Type:type.Value
+                        Type:type.Value,
+                        DescriptionDetail: descriptionDetail   
                     }
 
                     const result = await accGameDetailApiRequest.updateAccGameDetail({id:idAccGameDetail,body:updateAccGameDetailDto, token:adminDisplay?.token});
@@ -162,6 +165,10 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                 setDescription(e.target.value);
                 setIsChangeData(true);
                 break;
+            case "descriptionDetail":
+                setDescriptionDetail(e.target.value);
+                setIsChangeData(true);
+                break;
             case "type":
                 setType(e);
                 setIsChangeData(true);
@@ -190,7 +197,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
         try{
             await accGameDetailApiRequest.getAccGameDetailById({
                 id:idAccGameDetail, 
-                fields:"?fields=Price%2CDescription%2CType%2CDiscount%2CDeposit%2CActive%2CProperties%2CReturnProperties", 
+                fields:"?fields=Price%2CDescription%2CDescriptionDetail%2CType%2CDiscount%2CDeposit%2CActive%2CProperties%2CReturnProperties", 
                 token:adminDisplay?.token
             }).then((res)=>{
                 const typeAccGame=accGameDetailType.find(item=>item.Value==res.payload.data.Type);
@@ -198,6 +205,7 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                 setActive(res.payload.data.Active);
                 setPrice(res.payload.data.Price);
                 setDescription(res.payload.data.Description);
+                setDescriptionDetail(res.payload.data.DescriptionDetail);
                 setDiscount(res.payload.data.Discount);
                 setDeposit(res.payload.data.Deposit);
                 setType(typeAccGame?typeAccGame:accGameDetailType[0]);
@@ -295,15 +303,22 @@ const AccGameDetailModalUI = ({closeModal, idAccGameDetail, idCategory, refreshA
                                     isChecked={active} onChangeEvent={handleChange("active")}></CheckboxUI>
                                 </div>
 
-                                <div className="col-span-2">
+                                <div className="col-span-1">
                                     <SelectUI label={"Loại :"} name={"AccGameDetailType"} data={accGameDetailType} selected={type}
                                     classDiv={"w-full"} classSelect={"w-full"} onChangeEvent={handleChange("type")}></SelectUI>
                                 </div>
 
-                                <div className="col-span-3">
+                                <div className="col-span-1">
                                     <InputUI name='Description' label={"Mô tả :"} classDiv={"w-full"} classInput={"w-full"}
                                     value={description}
                                     onChangeEvent={handleChange("description")}
+                                    ></InputUI>
+                                </div>
+
+                                <div className="col-span-3">
+                                    <InputUI name='DescriptionDetail' label={"Mô tả chi tiết :"} classDiv={"w-full"} classInput={"w-full"}
+                                    value={descriptionDetail}
+                                    onChangeEvent={handleChange("descriptionDetail")}
                                     ></InputUI>
                                 </div>
 

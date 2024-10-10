@@ -3,6 +3,7 @@ import { AccGameDetailType } from "@/utils/constant/AccGameDetail/AccGameDetailT
 export interface CreateAccGameDetailDto{
     IdCategory:string | undefined,
     Description?: string,
+    DescriptionDetail?: string,
     Price:number,
     Discount:number,
     Deposit:number,

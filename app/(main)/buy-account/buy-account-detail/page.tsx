@@ -7,6 +7,7 @@ import { orderSearch, OrderSearchValue } from '@/utils/constant/Search/OrderSear
 import { priceSearch, PriceSearchValue } from '@/utils/constant/Search/PriceSearch';
 import { PropertiesJson } from '@/utils/types/Json/PropertiesJson';
 import { PropertySearch } from '@/utils/types/Json/PropertySearch';
+import { PropertySearchItem } from '@/utils/types/Json/PropertySearchItem';
 import { ValueKey } from '@/utils/types/Json/ValueKey';
 import { ItemSelect } from '@/utils/types/SelectItem';
 import { isNullOrEmpty } from '@/utils/utils';
@@ -20,7 +21,7 @@ const BuyAccountDetail = () => {
     const params = useSearchParams();
     const idCategory:string | undefined= params.get("id")?.split(',')[1];
     const pathTitles:any= params.get("title")?.split(',');
-    const [fields]=useState<string>("Fields=PathUrl%2CProperties%2CDiscount%2CPrice%2CCode%2CDescription%2CId");
+    const [fields]=useState<string>("Fields=PathUrl%2CProperties%2CDiscount%2CPrice%2CCode%2CDescription%2CId%2CType");
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingSearch, setIsLoadingSearch] = useState<boolean>(false);
@@ -101,12 +102,25 @@ const BuyAccountDetail = () => {
                 searches.push("Order="+order?.Value);
             }
 
-            if(propertySearches.length>0){
-                let propertySearchItems:PropertySearch[]=[];
+            const isSearchProperty=propertySearches.length>0 && propertySearchItems.some(_=>_.IdPropertyDetails.length>0 && _.IdPropertyDetails.some(_=>!isNullOrEmpty(_.Value)));
+            console.log(propertySearchItems)
 
-                
+            if(isSearchProperty){
+                let propertySearchItemBEs:PropertySearchItem[]=[];
+
+                propertySearchItems.filter(_=>_.IdPropertyDetails.length>0 && _.IdPropertyDetails.some(_=>!isNullOrEmpty(_.Value)))
+                .forEach((propertySearchItem:PropertySearch, index:number)=>{
+                    propertySearchItemBEs.push({
+                        IdProperty:propertySearchItem.IdProperty,
+                        IdPropertyDetails:propertySearchItem.IdPropertyDetails.filter(_=>!isNullOrEmpty(_.Value)).map((_:ItemSelect)=>(_.Value))
+                    })
+                });
+
+                console.log(propertySearchItemBEs);
+                searches.push("Properties="+JSON.stringify(propertySearchItemBEs));
             }
 
+            console.log(searches);
             setSearchConditions(searches);
 
             await accGameDetailApiRequest.getAllAccGamesDetail({idCategory:idCategory, search:searches.join('&'), pageNumber:1, fields:fields}).then((res)=>{
@@ -128,7 +142,7 @@ const BuyAccountDetail = () => {
                 const properties:PropertiesJson[]=JSON.parse(res.payload.data.properties);
 
                 setPropertyItems(new Array(properties.length).fill({Name:"", Value:""}));
-                setPropertySearchItems(properties?properties.map((property:PropertiesJson)=>({IdProperty:property.Id, IdPropertyDetails:[]})):[]);
+                setPropertySearchItems(properties?properties.map((property:PropertiesJson)=>({IdProperty:property.Id, IdPropertyDetails:[{Name:"", Value:""}]})):[]);
                 setPropertySearches(properties);
                 setAccGameDetails(res.payload.data.accGameDetails); 
                 setMetaData(res.payload.data.metaData);
@@ -162,7 +176,11 @@ const BuyAccountDetail = () => {
                 propertyItems[index]=e;
                 setPropertyItems([...propertyItems]);
 
+                propertySearchItems[index].IdPropertyDetails[0].Name=e.Name;
+                propertySearchItems[index].IdPropertyDetails[0].Value=e.Value;
+                setPropertySearchItems([...propertySearchItems]);
 
+                console.log(propertySearchItems)
                 break;
             default:
               break;
@@ -203,7 +221,7 @@ const BuyAccountDetail = () => {
                         let data;
 
                         if(property.IsSearch){
-                            const valueSelects:ItemSelect[]=property.Value?property.Value.map((property:ValueKey)=>({Name:property.Name, Value:property.Id, PathUrl:property.PathUrl})):[];
+                            const valueSelects:ItemSelect[]=property.Value?property.Value.map((value:ValueKey)=>({Name:value.Name, Value:value.Id, PathUrl:value.PathUrl})):[];
 
                             if(property.IsOnly){
                                 data=(
@@ -250,17 +268,18 @@ const BuyAccountDetail = () => {
             
             {isLoadingSearch ?(<div className='h-[50rem]'><LoadingUI></LoadingUI></div>):(
                 <>
-                    <div className='grid grid-cols-4 gap-4 w-full'>
+                    <div className='grid grid-cols-4 w-full'>
                         {accGameDetails && accGameDetails.map((accGameDetail, index)=>(
                             <CardGameDetail key={index}
-                                urlImage={accGameDetail.PathUrl ? accGameDetail.PathUrl : ''}
-                                properties={JSON.parse(accGameDetail.Properties)}
-                                discount={accGameDetail.Discount}
-                                titleButton={'Mua ngay'}
-                                price={accGameDetail.Price}
-                                code={accGameDetail.Code} 
-                                description={accGameDetail.Description}
-                                urlButton={`/buy-account/buy-account-detail/pay-account?title=${params.get("title")},Thanh toán&id=${params.get("id")},${accGameDetail.Id}`}>
+                            urlImage={accGameDetail.PathUrl ? accGameDetail.PathUrl : ''}
+                            properties={JSON.parse(accGameDetail.Properties)}
+                            discount={accGameDetail.Discount}
+                            titleButton={'Mua ngay'}
+                            price={accGameDetail.Price}
+                            code={accGameDetail.Code}
+                            description={accGameDetail.Description}
+                            urlButton={`/buy-account/buy-account-detail/pay-account?title=${params.get("title")},Thanh toán&id=${params.get("id")},${accGameDetail.Id}`} 
+                            type={accGameDetail.Type}>
                             </CardGameDetail>
                         ))}
                     </div>

@@ -1,7 +1,6 @@
 "use client"
 
 import { ContentBannerSlide, GameCategory, GameService, LoadingUI, OutstandingService } from "@/components";
-import { useEffect, useState } from "react";
 
 export default function Home() {
   return (

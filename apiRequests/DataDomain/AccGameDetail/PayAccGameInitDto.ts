@@ -1,4 +1,7 @@
+import { AccGameDetailDto } from "./AccGameDetailDto";
+
 export interface PayAccGameInitDto{
     urlImages:string[],
-    accGameDetail:AccGameDetailDto
+    accGameDetail:AccGameDetailDto,
+    accGameDetails:AccGameDetailDto[]
 }

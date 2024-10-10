@@ -27,7 +27,7 @@ export const Fancybox=(props: PropsWithChildren<Props>) =>{
       NativeFancybox.unbind(container);
       NativeFancybox.close();
     };
-  });
+  }, []);
 
   return <div ref={containerRef}>{props.children}</div>;
 }

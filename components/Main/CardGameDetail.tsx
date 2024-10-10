@@ -1,10 +1,13 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import parse from 'html-react-parser';
 
 import { ShoppingCartIcon } from '@heroicons/react/20/solid';
 import { PropertyAccGameDetail } from '@/utils/types/Json/PropertyAccGameDetail';
+import { AccGameDetailType } from '@/utils/constant/AccGameDetail/AccGameDetailType';
 
 interface Props{
     urlImage: string,
@@ -14,7 +17,8 @@ interface Props{
     price:number,
     code:string,
     urlButton:string,
-    description?:string
+    description?:string,
+    type:AccGameDetailType
 }
 
 const CardGameDetail = ({urlImage,
@@ -24,11 +28,31 @@ const CardGameDetail = ({urlImage,
     price,
     code,
     urlButton,
-    description
+    description,
+    type
 }:Props) => {
+    const [urlImageType]=useState<string>(()=>{
+        let url="";
+
+        switch(type) {
+            case AccGameDetailType.Hot:
+                url='/img/AccGameDetailType/IconProductHot.png';
+                break;
+            case AccGameDetailType.Limited:
+                url='/img/AccGameDetailType/IconLimitedPro.png';
+                break;
+            case AccGameDetailType.Special:
+                url="/img/AccGameDetailType/IconSpecial.png";
+                break;
+            default:
+        }
+
+        return url;
+    })
+
   return (
-    <div className='p-2'>
-        <div className='relative flex flex-col w-full h-[30rem] border-2 rounded-md divide-solid border-red-500 items-center justify-center gap-4 pb-3 hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+    <div className='p-4'>
+        <div className='relative flex flex-col px-0.5 w-full h-[30rem] border-2 rounded-md divide-solid border-red-500 items-center justify-center gap-4 pb-3 hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
             <div className='w-full h-[14rem] flex flex-col'>
                 <div className='h-[12rem] rounded-t-md'>
                     <Image 
@@ -42,7 +66,7 @@ const CardGameDetail = ({urlImage,
                 </div>)}
             </div>
 
-            <div className='flex flex-col w-full gap-2 px-8 text-sm h-[10rem] overflow-y-auto'>
+            <div className='flex flex-col gap-2 w-[90%] text-sm h-[10rem] overflow-y-auto scrollbar-hide'>
             {properties && properties.map((property:PropertyAccGameDetail, index)=>(
                     <div key={index} className='w-full'>
                         <p className='inline-block w-2/5 font-semibold'>{property.Name} :</p>
@@ -51,7 +75,7 @@ const CardGameDetail = ({urlImage,
                 ))}
             </div>
 
-            <div className='border bg-gradient-to-br from-teal-300 to-lime-300 flex justify-center items-center w-[90%] h-[3rem]'>
+            <div className='border bg-gradient-to-br text-sm from-teal-300 to-lime-300 flex justify-center items-center w-[90%] h-[3rem]'>
                 {discount<=0?(
                     <span className='font-semibold text-gray-600'>{price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</span>
                 ):(
@@ -79,13 +103,33 @@ const CardGameDetail = ({urlImage,
                 <span className='font-semibold text-sm text-white'>MS: {code}</span>
             </div>
 
-            {discount>0 && (
-                <div className="absolute -top-2 right-3 w-[2.5rem]">
-                    <div className='bg-s2red3 border-l-2 border-r-2 border-white text-center'>
-                        <span className='text-white font-semibold text-sm relative top-1'>-{discount}%</span>
+            {
+                type!=AccGameDetailType.Regular && (
+                    <div className='absolute -top-6 -right-4'>
+                        <Image alt='' src={urlImageType} height={70} width={70} className='animate-zoomShake'></Image>
                     </div>
-                    <div className="w-[2.5rem] h-[2.1rem] overflow-hidden inline-block">
-                        <div className="h-[1.8rem] w-[1.8rem] bg-s2red3 border-2 border-white -rotate-45 transform origin-top-left"></div>
+                )
+            }
+
+            {discount>0 && (
+                <div className="absolute z-50 top-[40%] -left-1 w-[1.5rem]">
+                    <div className="flex items-center justify-center">
+                        <div className="relative transform rotate-12 p-2 bg-red-500 text-white rounded-lg shadow-lg border-4 group border-gradient-to-br">
+                            <div className="absolute top-1 right-1 w-1 h-1 bg-white rounded-full"></div>
+                            <Image alt='' src={'/img/IconPin.png'} width={30} height={30} className="absolute -top-[15px] -right-[14px]"></Image>
+                            <div className="text-center">
+                                <div className="text-[8px] font-bold text-white flex justify-center">
+                                    <span className="animate-letter opacity-0" style={{ animationDelay: '0s' }}>S</span>
+                                    <span className="animate-letter opacity-0" style={{ animationDelay: '0.5s' }}>A</span>
+                                    <span className="animate-letter opacity-0" style={{ animationDelay: '1s' }}>L</span>
+                                    <span className="animate-letter opacity-0" style={{ animationDelay: '1.5s' }}>E</span>
+                                </div>
+
+                                <div className="text-xs font-bold text-white animate-popUp opacity-0">
+                                    {discount}%
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

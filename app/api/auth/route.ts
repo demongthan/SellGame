@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server'
 import { cookies } from 'next/headers'
-import { UserRole } from '@/utils/types/UserRole';
+import { UserRole } from '@/utils/types/Enum/UserRole';
 
 export const POST=async (request: NextRequest)=> {
     const body = await request.json();

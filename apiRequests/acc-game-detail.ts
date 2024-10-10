@@ -4,6 +4,8 @@ import { PayAccGameInitDto } from "./DataDomain/AccGameDetail/PayAccGameInitDto"
 import { AccGameDetailDto } from "./DataDomain/AccGameDetail/AccGameDetailDto";
 import { AccGameDetailSearchDto } from "./DataDomain/AccGameDetail/AccGameDetailSearchDto";
 import { AccGameDetailAdminInit } from "./DataDomain/AccGameDetail/AccGameDetailAdminInit";
+import { CreateAccGameDetailDto } from "./DataDomain/AccGameDetail/CreateAccGameDetailDto";
+import { UpdateAccGameDetailDto } from "./DataDomain/AccGameDetail/UpdateAccGameDetailDto";
 
 export const accGameDetailApiRequest={
     getAllAccGameDetailForAdminInit:(input:{fields:string ,token?:string})=>
@@ -11,7 +13,7 @@ export const accGameDetailApiRequest={
 
     getAllAccGamesDetailInit:(input:{idCategory:string | undefined, fields: string})=>
         http.get<ApiReponse<AccGameDetailInitDto>>(
-            `/AccGameDetail/GetAllAccGameDetailInit/${input.idCategory}?Active=true&${input.fields}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}`),
+            `/AccGameDetail/GetAllAccGameDetailInit/${input.idCategory}?Active=true&${input.fields}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE_MAIN}`),
 
     createAccGameDetail:(input:{body:CreateAccGameDetailDto, token?:string})=>
         http.post<ApiReponse<boolean>>(`/AccGameDetail/CreateAccGameDetail`, input.body, input.token),
@@ -29,9 +31,9 @@ export const accGameDetailApiRequest={
         http.delete<ApiReponse<boolean>>(`/AccGameDetail/DeleteAccGameDetail/${input.id}`, input.token),
 
     getPayAccGameInit:(input:{id:string | undefined, fields: string})=>
-        http.get<ApiReponse<PayAccGameInitDto>>(`/AccGameDetail/GetPayAccGameInit/${input.id}${input.fields}`),
+        http.get<ApiReponse<PayAccGameInitDto>>(`/AccGameDetail/GetPayAccGameInit/${input.id}?pageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE_REF}${input.fields}`),
 
     getAllAccGamesDetail:(input:{idCategory:string | undefined, search:string, pageNumber:number, fields:string})=>
         http.get<ApiReponse<AccGameDetailSearchDto>>(
-            `/AccGameDetail/GetAllAccGameDetail/${input.idCategory}?${input.fields}&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE}&${input.search}`)
+            `/AccGameDetail/GetAllAccGameDetail/${input.idCategory}?${input.fields}&PageNumber=${input.pageNumber}&PageSize=${envConfig.NEXT_PUBLIC_PAGE_SIZE_MAIN}&${input.search}`)
 }

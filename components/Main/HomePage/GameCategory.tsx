@@ -14,7 +14,7 @@ const GameCategory = () => {
 
     const getCategoryGames=async():Promise<void>=>{
         try{
-          const res=await categoryApiRequest.getAllCategoryByActive("?Fields=Id%2C%20Name%2C%20TotalSale%2C%20Rating%2C%20PathUrl");
+          const res=await categoryApiRequest.getAllCategoryByActive("?Fields=Id%2C%20Name%2C%20Total%2C%20TotalSale%2C%20Rating%2C%20PathUrl");
           setGames(res.payload.data);
           setIsLoading(false);
         }
@@ -37,7 +37,7 @@ const GameCategory = () => {
             {isLoading?(<div className='h-[30vh]'><LoadingUI></LoadingUI></div>):(
               <div className='grid grid-cols-4 gap-4 w-full'>
                 {games && games?.map((game, index)=>(
-                  <CardGame key={index} isHot={false}
+                  <CardGame key={index}
                   totalSale={game.TotalSale}
                   total={game.Total}
                   rating={game.Rating}

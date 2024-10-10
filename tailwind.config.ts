@@ -15,6 +15,34 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      keyframes:{
+        zoomShake: {
+          '0%, 100%': {transform: 'scale(1)'},
+          '20%, 60%': {transform: 'scale(1.1)'},
+          '40%, 80%': {transform: 'scale(1)'}
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' }
+        },
+        fadeOut: {
+          '0%' :{ opacity: '1' },
+          '100%': { opacity: '0' }
+        },
+        popUp: {
+          '0%': { transform: 'scale(0)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' }
+        }
+    
+      },
+      animation: {
+        zoomShake: 'zoomShake 2s ease-in-out infinite',
+        letter:'fadeIn 2s forwards, fadeOut 2s 4s forwards infinite',
+        popUp: 'popUp 2s ease-in-out infinite'
+      },
+      transitionDelay: {
+        '1500': '1500ms',
+      },
       width: {
         "1p": "1%",
         "2p": "2%",
